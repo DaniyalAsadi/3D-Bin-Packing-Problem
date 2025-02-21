@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "3D Bin Packing Problem", "3D Bin Packing Problem\3D Bin Packing Problem.csproj", "{68AE0442-5882-4A3A-9818-9A63198944FD}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{68AE0442-5882-4A3A-9818-9A63198944FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68AE0442-5882-4A3A-9818-9A63198944FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68AE0442-5882-4A3A-9818-9A63198944FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68AE0442-5882-4A3A-9818-9A63198944FD}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6556EF7E-5B79-48EF-9419-5D65814FC646}
+	EndGlobalSection
+EndGlobal
