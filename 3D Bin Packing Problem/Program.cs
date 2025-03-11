@@ -1,4 +1,4 @@
-﻿using _3D_Bin_Packing_Problem.Models;
+﻿using _3D_Bin_Packing_Problem.Model;
 
 namespace _3D_Bin_Packing_Problem;
 
@@ -44,49 +44,34 @@ public partial class Program
             new () { Id = 2, Length = 1, Width = 1, Height = 1, Price =  1000 },
         };
 
-        var boxPlacements = new BoxPlacement(boxes[0]);
-        foreach (var product in products)
-        {
-            var result = boxPlacements.TryPlaceProduct(new Gene(product, Orientation.WHL));
-            if (result)
-            {
-                Console.WriteLine("Product Placed");
-            }
-            else
-            {
-                Console.WriteLine("Product Not Placed");
-            }
-
-        }
-
 
 
         //List<Box> boxes = new()
         //{
-        //    new() { Id = 1, Length = 15, Width = 10, Hight = 10, Price = 3600},
-        //    new() { Id = 2, Length = 20, Width = 15, Hight = 10, Price = 6450},
-        //    new() { Id = 3, Length = 20, Width = 20, Hight = 15, Price = 8900},
-        //    new() { Id = 4, Length = 30, Width = 20, Hight = 20, Price = 12000},
-        //    new() { Id = 5, Length = 35, Width = 25, Hight = 20, Price = 16300},
-        //    new() { Id = 6, Length = 45, Width = 25, Hight = 20, Price = 18900},
-        //    new() { Id = 7, Length = 40, Width = 30, Hight = 25, Price = 22400},
-        //    new() { Id = 8, Length = 45, Width = 40, Hight = 30, Price = 55000},
-        //    new() { Id = 9, Length = 55, Width = 45, Hight = 35, Price = 80148},
+        //    new() { Id = 1, Length = 15, Width = 10, Height = 10, Price = 3600},
+        //    new() { Id = 2, Length = 20, Width = 15, Height = 10, Price = 6450},
+        //    new() { Id = 3, Length = 20, Width = 20, Height = 15, Price = 8900},
+        //    new() { Id = 4, Length = 30, Width = 20, Height = 20, Price = 12000},
+        //    new() { Id = 5, Length = 35, Width = 25, Height = 20, Price = 16300},
+        //    new() { Id = 6, Length = 45, Width = 25, Height = 20, Price = 18900},
+        //    new() { Id = 7, Length = 40, Width = 30, Height = 25, Price = 22400},
+        //    new() { Id = 8, Length = 45, Width = 40, Height = 30, Price = 55000},
+        //    new() { Id = 9, Length = 55, Width = 45, Height = 35, Price = 80148},
         //};
+        FitnessFunctionWeights fitnessFunctionWeights = new FitnessFunctionWeights();
+        GeneticAlgorithm ga = new(
+            products,
+            boxes,
+            fitnessFunctionWeights.BasePackingFactor,
+            fitnessFunctionWeights.MaxPackingFactor,
+            fitnessFunctionWeights.BaseCostFactor,
+            fitnessFunctionWeights.MinCostFactor);
 
-        //GeneticAlgorithm ga = new(
-        //    products,
-        //    boxes,
-        //    baseAlpha,
-        //    maxAlpha,
-        //    baseBeta,
-        //    minBeta);
+        Console.WriteLine("Population: Initialized");
 
-        //Console.WriteLine("Population: Initialized");
-
-        //var chromosome = ga.Run();
-        //Console.WriteLine(chromosome.Fitness);
-        //chromosome.BoxPlacements.ToList().ForEach(Console.WriteLine);
+        var chromosome = ga.Run();
+        Console.WriteLine(chromosome.Fitness);
+        chromosome.BoxPlacements.ToList().ForEach(Console.WriteLine);
 
 
     }
