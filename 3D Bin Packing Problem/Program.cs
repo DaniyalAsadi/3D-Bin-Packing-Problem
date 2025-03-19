@@ -58,19 +58,10 @@ public partial class Program
         //    new() { Id = 8, Length = 45, Width = 40, Height = 30, Price = 55000},
         //    new() { Id = 9, Length = 55, Width = 45, Height = 35, Price = 80148},
         //};
-        FitnessFunctionWeights fitnessFunctionWeights = new FitnessFunctionWeights();
-        GeneticAlgorithm ga = new(
-            products,
-            boxes,
-            fitnessFunctionWeights.BasePackingFactor,
-            fitnessFunctionWeights.MaxPackingFactor,
-            fitnessFunctionWeights.BaseCostFactor,
-            fitnessFunctionWeights.MinCostFactor);
 
         Console.WriteLine("Population: Initialized");
 
-        var chromosome = ga.Run();
-        Console.WriteLine(chromosome.Fitness);
+
         chromosome.BoxPlacements.ToList().ForEach(Console.WriteLine);
 
 
