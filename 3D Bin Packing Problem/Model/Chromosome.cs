@@ -3,5 +3,3 @@ internal interface IChromosome
 {
     public double Fitness { get; set; }
 }
-
-public class

@@ -62,7 +62,7 @@ public partial class Program
         Console.WriteLine("Population: Initialized");
 
 
-        chromosome.BoxPlacements.ToList().ForEach(Console.WriteLine);
+        //chromosome.BoxPlacements.ToList().ForEach(Console.WriteLine);
 
 
     }
