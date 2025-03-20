@@ -99,7 +99,23 @@
 
             return (min, max);
         }
+        public static bool IsPointInsidePoly(Vector3[] poly, Vector3 point)
+        {
+            List<Vector3> axes = GetFaceNormals(poly);
 
+            foreach (Vector3 axis in axes)
+            {
+                if (axis.LengthSquared() < 1e-6) continue;
+
+                (float minPoly, float maxPoly) = ProjectPolygon(poly, axis);
+                float pointProjection = Vector3.Dot(point, axis);
+
+                if (pointProjection < minPoly || pointProjection > maxPoly)
+                    return false;
+            }
+
+            return true;
+        }
         // تست عملکرد
         //public static void Main()
         //{

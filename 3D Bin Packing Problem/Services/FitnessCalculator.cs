@@ -31,5 +31,20 @@ internal class FitnessCalculator
         }
         return overlappingMatrix;
     }
+
+    public static bool[] IsProductOutSideOfBox(Chromosome chromosome)
+    {
+        bool[] isProductOutSideOfBox = new bool[chromosome.Placement.PlacedProducts.Count];
+        for (int i = 0; i < chromosome.Placement.PlacedProducts.Count; i++)
+        {
+            var poly = chromosome.Placement.PlacedProducts[i].PositionNodes;
+            
+
+        }
+        return isProductOutSideOfBox;
+
+    }
+
+
     
 }
