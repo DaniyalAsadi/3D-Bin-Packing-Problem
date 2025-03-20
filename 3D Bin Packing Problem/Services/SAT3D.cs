@@ -123,8 +123,14 @@
             };
 
             Vector3[] cubeB = {
-            new Vector3(2f, 2f,2f), new Vector3(3f, 2f, 2f), new Vector3(3f, 3f, 2f), new Vector3(2f, 3f, 2f),
-            new Vector3(2f, 2f, 3f), new Vector3(3f, 2f, 3f), new Vector3(3f, 3f, 3f), new Vector3(2f, 3f, 3f)
+            new Vector3(2f, 2f,2f),
+            new Vector3(3f, 2f, 2f),
+            new Vector3(3f, 3f, 2f),
+            new Vector3(2f, 3f, 2f),
+            new Vector3(2f, 2f, 3f),
+            new Vector3(3f, 2f, 3f),
+            new Vector3(3f, 3f, 3f),
+            new Vector3(2f, 3f, 3f)
         };
 
             bool collision = IsColliding(cubeA, cubeB);
