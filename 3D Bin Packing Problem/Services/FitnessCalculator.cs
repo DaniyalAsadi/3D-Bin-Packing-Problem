@@ -19,7 +19,7 @@ internal class FitnessCalculator
         return fitness;
     }
 
-    private static bool[,] OverLappingMatrix(Chromosome chromosome)
+    public static bool[,] OverLappingMatrix(Chromosome chromosome)
     {
         bool[,] overlappingMatrix = new bool[chromosome.Placement.PlacedProducts.Count, chromosome.Placement.PlacedProducts.Count];
         for (int i = 0; i < chromosome.Placement.PlacedProducts.Count; i++)
@@ -31,4 +31,5 @@ internal class FitnessCalculator
         }
         return overlappingMatrix;
     }
+    
 }

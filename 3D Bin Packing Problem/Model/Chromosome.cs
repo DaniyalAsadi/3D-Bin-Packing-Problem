@@ -55,7 +55,7 @@ public class BoxPlacement(Box box)
        StringBuilder builder = new StringBuilder();
         foreach (var product in PlacedProducts)
         {
-            product.ToString();
+            builder.AppendLine(product.ToString());
         }
         return builder.ToString();
     }
