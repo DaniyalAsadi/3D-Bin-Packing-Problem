@@ -5,10 +5,18 @@ namespace _3D_Bin_Packing_Problem.Extensions
 {
     public static class ProductsExtension
     {
-        public static Vector3 ToVector3D(this Product product)
+        public static Vector3[] ToVector3(this Product product, Vector3 middle)
         {
-            return new Vector3 { X = product.Length, Y = product.Height, Z = product.Width };
+            Vector3[] poly = new Vector3[8];
+            poly[0] = new Vector3(middle.X - product.Length / 2, middle.Y - product.Width / 2, middle.Z - product.Height / 2);
+            poly[1] = new Vector3(middle.X + product.Length / 2, middle.Y - product.Width / 2, middle.Z - product.Height / 2);
+            poly[2] = new Vector3(middle.X + product.Length / 2, middle.Y + product.Width / 2, middle.Z - product.Height / 2);
+            poly[3] = new Vector3(middle.X - product.Length / 2, middle.Y + product.Width / 2, middle.Z - product.Height / 2);
+            poly[4] = new Vector3(middle.X - product.Length / 2, middle.Y - product.Width / 2, middle.Z + product.Height / 2);
+            poly[5] = new Vector3(middle.X + product.Length / 2, middle.Y - product.Width / 2, middle.Z + product.Height / 2);
+            poly[6] = new Vector3(middle.X + product.Length / 2, middle.Y + product.Width / 2, middle.Z + product.Height / 2);
+            poly[7] = new Vector3(middle.X - product.Length / 2, middle.Y + product.Width / 2, middle.Z + product.Height / 2);
+            return poly;
         }
-
     }
 }

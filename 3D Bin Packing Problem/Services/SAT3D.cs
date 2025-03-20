@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace _3D_Bin_Packing_Problem.Services
+﻿namespace _3D_Bin_Packing_Problem.Services
 {
     using System;
     using System.Collections.Generic;
@@ -110,10 +104,22 @@ namespace _3D_Bin_Packing_Problem.Services
         // تست عملکرد
         public static void Main()
         {
+            var x = 0.5f;
+            var y = 0.5f;
+            var z = 0.5f;
+            Vector3 middle = new Vector3(x, y, z);
+
+
             // دو مکعب که ممکن است برخورد داشته باشند
             Vector3[] cubeA = {
-            new Vector3(0, 0, 0), new Vector3(1, 0, 0), new Vector3(1, 1, 0), new Vector3(0, 1, 0),
-            new Vector3(0, 0, 1), new Vector3(1, 0, 1), new Vector3(1, 1, 1), new Vector3(0, 1, 1)
+            new Vector3(0, 0, 0),
+            new Vector3(1, 0, 0),
+            new Vector3(1, 1, 0),
+            new Vector3(0, 1, 0),
+            new Vector3(0, 0, 1),
+            new Vector3(1, 0, 1),
+            new Vector3(1, 1, 1),
+            new Vector3(0, 1, 1)
             };
 
             Vector3[] cubeB = {
