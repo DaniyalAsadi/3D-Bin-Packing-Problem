@@ -23,7 +23,26 @@ public class Program
             new () { Id = Guid.NewGuid(), Length = 4, Width = 4, Height = 4 },
         };
         GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(products.OrderBy(e=>e.Id).ToList(), boxes);
-        geneticAlgorithm.Execute();
+        var x = geneticAlgorithm.Execute();
+        Console.WriteLine(x);
+
+        var m =FitnessCalculator.OverLappingMatrix(x);
+        for (int i = 0; i < m.GetLength(0); i++)
+        {
+            for (int j = 0; j < m.GetLength(1); j++)
+            {
+                if (m[i, j])
+                {
+                    Console.Write(1);
+                }
+                else
+                {
+                    Console.Write(0);
+                }
+            }
+            Console.WriteLine();
+
+        }
 
 
 
