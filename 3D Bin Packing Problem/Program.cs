@@ -23,18 +23,8 @@ public class Program
             new () { Id = Guid.NewGuid(), Length = 4, Width = 4, Height = 4 },
         };
         GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(products, boxes);
+        geneticAlgorithm.Execute();
 
-        Chromosome chromosome = new Chromosome(products, boxes);
-        var x = FitnessCalculator.OverLappingMatrixV2(chromosome);
-
-        for(int i = 0; i < x.GetLength(0); i++)
-        {
-            for (int j = 0; j < x.GetLength(1); j++)
-            {
-                Console.Write(x[i, j] + " ");
-            }
-            Console.WriteLine();
-        }
 
 
         //List<Box> boxes = new()

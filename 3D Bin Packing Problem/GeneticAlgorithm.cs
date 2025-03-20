@@ -25,10 +25,5 @@ public class GeneticAlgorithm(List<Product> products, List<Box> boxes)
         {
             Population.Add(new Chromosome(_products, _boxes));
         }
-        foreach (var chromosome in Population)
-        {
-            Console.WriteLine(chromosome);
-            Console.WriteLine("------------------");
-        }
     }
 }

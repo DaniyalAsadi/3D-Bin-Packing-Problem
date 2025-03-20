@@ -9,6 +9,7 @@ public class Chromosome
     private Random _random = new();
     public Chromosome(List<Product> products, List<Box> availableBoxes)
     {
+        // ToDo : OrderBy Volume and Should Pick One Box
         availableBoxes = availableBoxes.Where(x => x.Volume > products.Sum(y => y.Volume)).ToList();
 
         int random = _random.Next(0, availableBoxes.Count);
