@@ -8,14 +8,14 @@ public class Chromosome
 {
     public double Fitness { get; set; }
     public BoxPlacement Placement { get; set; }
-
-    public Chromosome(List<Product> products, List<Box> avaiableBoxes)
+    private Random _random = new();
+    public Chromosome(List<Product> products, List<Box> availableBoxes)
     {
-        avaiableBoxes = avaiableBoxes.Where(x => x.Volume > products.Sum(x => x.Volume)).ToList();
+        availableBoxes = availableBoxes.Where(x => x.Volume > products.Sum(y => y.Volume)).ToList();
 
-        int random = new Random().Next(0, avaiableBoxes.Count);
+        int random = _random.Next(0, availableBoxes.Count);
 
-        var selectedBoxes = avaiableBoxes[random].Clone();
+        var selectedBoxes = availableBoxes[random].Clone();
         Placement = new BoxPlacement(selectedBoxes);
 
         foreach (var product in products)
