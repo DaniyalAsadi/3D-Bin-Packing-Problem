@@ -17,8 +17,6 @@ public class GeneticAlgorithm(List<Product> products, List<Box> boxes)
     public void Execute()
     {
         InitializePopulation();
-
-
     }
     public void InitializePopulation()
     {

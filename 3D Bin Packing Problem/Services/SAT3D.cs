@@ -1,6 +1,5 @@
 ﻿namespace _3D_Bin_Packing_Problem.Services
 {
-    using System;
     using System.Collections.Generic;
     using System.Numerics;
 
@@ -102,40 +101,40 @@
         }
 
         // تست عملکرد
-        public static void Main()
-        {
-            var x = 0.5f;
-            var y = 0.5f;
-            var z = 0.5f;
-            Vector3 middle = new Vector3(x, y, z);
+        //public static void Main()
+        //{
+        //    var x = 0.5f;
+        //    var y = 0.5f;
+        //    var z = 0.5f;
+        //    Vector3 middle = new Vector3(x, y, z);
 
 
-            // دو مکعب که ممکن است برخورد داشته باشند
-            Vector3[] cubeA = {
-            new Vector3(0, 0, 0),
-            new Vector3(1, 0, 0),
-            new Vector3(1, 1, 0),
-            new Vector3(0, 1, 0),
-            new Vector3(0, 0, 1),
-            new Vector3(1, 0, 1),
-            new Vector3(1, 1, 1),
-            new Vector3(0, 1, 1)
-            };
+        //    // دو مکعب که ممکن است برخورد داشته باشند
+        //    Vector3[] cubeA = {
+        //    new Vector3(0, 0, 0),
+        //    new Vector3(1, 0, 0),
+        //    new Vector3(1, 1, 0),
+        //    new Vector3(0, 1, 0),
+        //    new Vector3(0, 0, 1),
+        //    new Vector3(1, 0, 1),
+        //    new Vector3(1, 1, 1),
+        //    new Vector3(0, 1, 1)
+        //    };
 
-            Vector3[] cubeB = {
-            new Vector3(2f, 2f,2f),
-            new Vector3(3f, 2f, 2f),
-            new Vector3(3f, 3f, 2f),
-            new Vector3(2f, 3f, 2f),
-            new Vector3(2f, 2f, 3f),
-            new Vector3(3f, 2f, 3f),
-            new Vector3(3f, 3f, 3f),
-            new Vector3(2f, 3f, 3f)
-        };
+        //    Vector3[] cubeB = {
+        //    new Vector3(2f, 2f,2f),
+        //    new Vector3(3f, 2f, 2f),
+        //    new Vector3(3f, 3f, 2f),
+        //    new Vector3(2f, 3f, 2f),
+        //    new Vector3(2f, 2f, 3f),
+        //    new Vector3(3f, 2f, 3f),
+        //    new Vector3(3f, 3f, 3f),
+        //    new Vector3(2f, 3f, 3f)
+        //};
 
-            bool collision = IsColliding(cubeA, cubeB);
-            //Console.WriteLine(collision ? "💥 برخورد دارد!" : "✅ برخورد ندارد!");
-            Console.WriteLine(collision);
-        }
+        //    bool collision = IsColliding(cubeA, cubeB);
+        //    //Console.WriteLine(collision ? "💥 برخورد دارد!" : "✅ برخورد ندارد!");
+        //    Console.WriteLine(collision);
+        //}
     }
 }
