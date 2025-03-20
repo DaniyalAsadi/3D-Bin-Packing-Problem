@@ -3,45 +3,57 @@
     using System.Collections.Generic;
     using System.Numerics;
 
+    /// <summary>
+    /// Provides methods for detecting collisions and point containment in 3D objects using the Separating Axis Theorem (SAT).
+    /// </summary>
     public class SAT3D
     {
-        // بررسی برخورد دو جسم سه‌بعدی
+        /// <summary>
+        /// Determines if two 3D objects are colliding.
+        /// </summary>
+        /// <param name="polyA">The vertices of the first 3D object.</param>
+        /// <param name="polyB">The vertices of the second 3D object.</param>
+        /// <returns>True if the objects are colliding, otherwise false.</returns>
         public static bool IsColliding(Vector3[] polyA, Vector3[] polyB)
         {
             List<Vector3> axes = new List<Vector3>();
 
-            // محورها را از نرمال سطوح دو جسم استخراج می‌کنیم
+            // Extract axes from the face normals of both objects
             axes.AddRange(GetFaceNormals(polyA));
             axes.AddRange(GetFaceNormals(polyB));
 
-            // همچنین باید حاصل‌ضرب برداری بین اضلاع دو جسم را به عنوان محور بررسی کنیم
+            // Also consider the cross products of the edges of both objects as axes
             axes.AddRange(GetEdgeCrossProducts(polyA, polyB));
 
-            // بررسی برخورد بر روی هر محور
+            // Check for collision on each axis
             foreach (Vector3 axis in axes)
             {
-                if (axis.LengthSquared() < 1e-6) continue; // حذف محورها با مقدار صفر
+                if (axis.LengthSquared() < 1e-6) continue; // Skip axes with zero length
 
                 if (!OverlapOnAxis(polyA, polyB, axis))
-                    return false; // برخوردی وجود ندارد
+                    return false; // No collision
             }
 
-            return true; // همه محورها همپوشانی دارند، پس برخورد وجود دارد
+            return true; // Collision detected on all axes
         }
 
-        // دریافت نرمال سطوح برای یک جسم
+        /// <summary>
+        /// Gets the face normals for a 3D object.
+        /// </summary>
+        /// <param name="poly">The vertices of the 3D object.</param>
+        /// <returns>A list of face normals.</returns>
         private static List<Vector3> GetFaceNormals(Vector3[] poly)
         {
             List<Vector3> axes = new List<Vector3>();
 
             for (int i = 0; i < poly.Length; i += 3)
             {
-                // یک سطح سه‌ضلعی را انتخاب می‌کنیم
+                // Select a triangular face
                 Vector3 p1 = poly[i];
                 Vector3 p2 = poly[(i + 1) % poly.Length];
                 Vector3 p3 = poly[(i + 2) % poly.Length];
 
-                // محاسبه نرمال سطح
+                // Calculate the face normal
                 Vector3 edge1 = p2 - p1;
                 Vector3 edge2 = p3 - p1;
                 Vector3 normal = Vector3.Cross(edge1, edge2);
@@ -53,7 +65,12 @@
             return axes;
         }
 
-        // دریافت محورها از حاصل‌ضرب برداری اضلاع دو جسم
+        /// <summary>
+        /// Gets the axes from the cross products of the edges of two 3D objects.
+        /// </summary>
+        /// <param name="polyA">The vertices of the first 3D object.</param>
+        /// <param name="polyB">The vertices of the second 3D object.</param>
+        /// <returns>A list of axes.</returns>
         private static List<Vector3> GetEdgeCrossProducts(Vector3[] polyA, Vector3[] polyB)
         {
             List<Vector3> axes = new List<Vector3>();
@@ -67,7 +84,7 @@
                     Vector3 edgeB = polyB[(j + 1) % polyB.Length] - polyB[j];
 
                     Vector3 axis = Vector3.Cross(edgeA, edgeB);
-                    if (axis.LengthSquared() > 1e-6) // حذف محورها با مقدار صفر
+                    if (axis.LengthSquared() > 1e-6) // Skip axes with zero length
                         axes.Add(Vector3.Normalize(axis));
                 }
             }
@@ -75,16 +92,27 @@
             return axes;
         }
 
-        // بررسی همپوشانی دو چندوجهی روی محور خاص
+        /// <summary>
+        /// Checks if two 3D objects overlap on a specific axis.
+        /// </summary>
+        /// <param name="polyA">The vertices of the first 3D object.</param>
+        /// <param name="polyB">The vertices of the second 3D object.</param>
+        /// <param name="axis">The axis to check for overlap.</param>
+        /// <returns>True if the objects overlap on the axis, otherwise false.</returns>
         private static bool OverlapOnAxis(Vector3[] polyA, Vector3[] polyB, Vector3 axis)
         {
             (float minA, float maxA) = ProjectPolygon(polyA, axis);
             (float minB, float maxB) = ProjectPolygon(polyB, axis);
 
-            return !(maxA < minB || maxB < minA); // اگر هیچ همپوشانی‌ای وجود ندارد، برخورد نیست
+            return !(maxA < minB || maxB < minA); // No overlap
         }
 
-        // فرافکنی یک چندوجهی روی محور
+        /// <summary>
+        /// Projects a 3D object onto an axis.
+        /// </summary>
+        /// <param name="poly">The vertices of the 3D object.</param>
+        /// <param name="axis">The axis to project onto.</param>
+        /// <returns>The minimum and maximum values of the projection.</returns>
         private static (float, float) ProjectPolygon(Vector3[] poly, Vector3 axis)
         {
             float min = float.MaxValue;
@@ -99,6 +127,13 @@
 
             return (min, max);
         }
+
+        /// <summary>
+        /// Determines if a point is inside a 3D object.
+        /// </summary>
+        /// <param name="poly">The vertices of the 3D object.</param>
+        /// <param name="point">The point to check.</param>
+        /// <returns>True if the point is inside the object, otherwise false.</returns>
         public static bool IsPointInsidePoly(Vector3[] poly, Vector3 point)
         {
             List<Vector3> axes = GetFaceNormals(poly);
@@ -116,41 +151,5 @@
 
             return true;
         }
-        // تست عملکرد
-        //public static void Main()
-        //{
-        //    var x = 0.5f;
-        //    var y = 0.5f;
-        //    var z = 0.5f;
-        //    Vector3 middle = new Vector3(x, y, z);
-
-
-        //    // دو مکعب که ممکن است برخورد داشته باشند
-        //    Vector3[] cubeA = {
-        //    new Vector3(0, 0, 0),
-        //    new Vector3(1, 0, 0),
-        //    new Vector3(1, 1, 0),
-        //    new Vector3(0, 1, 0),
-        //    new Vector3(0, 0, 1),
-        //    new Vector3(1, 0, 1),
-        //    new Vector3(1, 1, 1),
-        //    new Vector3(0, 1, 1)
-        //    };
-
-        //    Vector3[] cubeB = {
-        //    new Vector3(2f, 2f,2f),
-        //    new Vector3(3f, 2f, 2f),
-        //    new Vector3(3f, 3f, 2f),
-        //    new Vector3(2f, 3f, 2f),
-        //    new Vector3(2f, 2f, 3f),
-        //    new Vector3(3f, 2f, 3f),
-        //    new Vector3(3f, 3f, 3f),
-        //    new Vector3(2f, 3f, 3f)
-        //};
-
-        //    bool collision = IsColliding(cubeA, cubeB);
-        //    //Console.WriteLine(collision ? "💥 برخورد دارد!" : "✅ برخورد ندارد!");
-        //    Console.WriteLine(collision);
-        //}
     }
 }
