@@ -10,7 +10,7 @@ public class Product
 
     public override string ToString()
     {
-        return $"Id: {Id}, Length: {Length}, Width: {Width}, Height: {Height}";
+        return $"Length: {Length}, Width: {Width}, Height: {Height}";
     }
 
 }
