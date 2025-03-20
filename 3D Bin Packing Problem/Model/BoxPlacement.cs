@@ -20,6 +20,10 @@ public class BoxPlacement(Box box)
         var productPlacement = new ProductPlacement(product, middle);
         PlacedProducts.Add(productPlacement);
     }
+    public void PlaceProduct(List<ProductPlacement> productPlacements)
+    {
+        PlacedProducts.AddRange(productPlacements);
+    }
     public override string ToString()
     {
        StringBuilder builder = new StringBuilder();

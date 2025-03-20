@@ -24,6 +24,12 @@ public class Chromosome
 
         Fitness = FitnessCalculator.CalculateFitness(this);
     }
+    public Chromosome(BoxPlacement boxPlacement)
+    {
+        Placement = boxPlacement;
+        Fitness = FitnessCalculator.CalculateFitness(this);
+
+    }
     public override string ToString()
     {
         return Placement.ToString();

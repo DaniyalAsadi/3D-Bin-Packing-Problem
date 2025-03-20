@@ -9,7 +9,7 @@ namespace _3D_Bin_Packing_Problem.Services;
 
 public class CrossOverStrategy
 {
-    public static (Chromosome, Chromosome) Crossover (Chromosome parent1, Chromosome parent2)
+    public static (Chromosome, Chromosome) Crossover(Chromosome parent1, Chromosome parent2)
     {
         var count = parent1.Placement.PlacedProducts.Count;
         var random = new Random();
@@ -24,18 +24,23 @@ public class CrossOverStrategy
         var firstParts1 = parent1.Placement.PlacedProducts.GetRange(0, crossoverPoint1);
         var secondParts1 = parent2.Placement.PlacedProducts.GetRange(crossoverPoint1, crossoverPoint2 - crossoverPoint1);
         var thirdParts1 = parent1.Placement.PlacedProducts.GetRange(crossoverPoint2, count - crossoverPoint2);
+        var pp1 = firstParts1.Concat(secondParts1).Concat(thirdParts1).ToList();
 
-        var firstProducts = firstParts1.Concat(secondParts1).Concat(thirdParts1).Select(x => x.Product).ToList();
+        BoxPlacement firstBoxPlacement = new BoxPlacement(firstBox);
+        firstBoxPlacement.PlaceProduct(pp1);
 
-        var firstChromosome = new Chromosome(firstProducts, new List<Box> { firstBox });
+
+
+        var firstChromosome = new Chromosome(firstBoxPlacement);
         // Choromosome 2
         var firstParts2 = parent2.Placement.PlacedProducts.GetRange(0, crossoverPoint1);
         var secondParts2 = parent1.Placement.PlacedProducts.GetRange(crossoverPoint1, crossoverPoint2 - crossoverPoint1);
         var thirdParts2 = parent2.Placement.PlacedProducts.GetRange(crossoverPoint2, count - crossoverPoint2);
+        var pp2 = firstParts2.Concat(secondParts2).Concat(thirdParts2).ToList();
 
-        var secondProducts = firstParts2.Concat(secondParts2).Concat(thirdParts2).Select(x => x.Product).ToList();
-
-        var secondChromosome = new Chromosome(secondProducts, new List<Box> { secondBox });
+        BoxPlacement secondBoxPlacement = new BoxPlacement(firstBox);
+        secondBoxPlacement.PlaceProduct(pp2);
+        var secondChromosome = new Chromosome(secondBoxPlacement);
 
         return (firstChromosome, secondChromosome);
     }

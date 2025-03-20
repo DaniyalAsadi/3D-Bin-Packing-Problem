@@ -22,7 +22,7 @@ public class Program
         {
             new () { Id = Guid.NewGuid(), Length = 4, Width = 4, Height = 4 },
         };
-        GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(products, boxes);
+        GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(products.OrderBy(e=>e.Id).ToList(), boxes);
         geneticAlgorithm.Execute();
 
 
