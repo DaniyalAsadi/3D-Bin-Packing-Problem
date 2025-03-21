@@ -2,6 +2,9 @@
 namespace _3D_Bin_Packing_Problem.Services;
 internal class FitnessCalculator
 {
+    // 1 - Dont Have Overlapping
+    // 2 - Fit Inside of Box
+
     public static double CalculateFitness(Chromosome chromosome)
     {
         double fitness = 0;

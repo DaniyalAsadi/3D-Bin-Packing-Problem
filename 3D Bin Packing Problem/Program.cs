@@ -62,5 +62,20 @@ public class Program
         //chromosome.BoxPlacements.ToList().ForEach(Console.WriteLine);
 
 
+        Product product21312 = new Product()
+        {
+            Id = Guid.NewGuid(),
+            Length = 7,
+            Width = 1,
+            Height = 4
+        };
+        Product product21313 = new Product()
+        {
+            Id = Guid.NewGuid(),
+            Length = 1,
+            Width = 7,
+            Height = 4
+        };
+
     }
 }

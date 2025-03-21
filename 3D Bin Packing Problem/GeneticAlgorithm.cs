@@ -33,9 +33,7 @@ public class GeneticAlgorithm(List<Product> products, List<Box> boxes)
             Population.Add(children.Item1);
             Population.Add(children.Item2);
         }
-
         return Population.OrderBy(e => e.Fitness).First();
-
     }
     public void InitializePopulation()
     {
