@@ -15,7 +15,7 @@ internal class FitnessCalculator
             {
                 if (overlappingMatrix[i, j])
                 {
-                    fitness += 1;
+                    fitness = double.MaxValue;
                 }
             }
         }

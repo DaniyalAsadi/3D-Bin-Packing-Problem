@@ -9,27 +9,17 @@ public class GeneticAlgorithm(List<Product> products, List<Box> boxes)
     private readonly List<Box> _boxes = boxes;
 
     public List<Chromosome> Population { get; set; }
-    private readonly int _populationSize = 10;
-    private readonly int _generations = 100;
+    private readonly int _populationSize = 100;
+    private readonly int _generations = 200;
     private readonly double _mutationRate = 0.1;
-    private readonly double _crossoverRate = 0.9;
-    private readonly int _elitismCount = 5;
 
     public Chromosome Execute()
     {
         InitializePopulation();
-        while(Population.Count < _populationSize)
+        while(Population.Count < _generations)
         {
             var parents=  RouletteSelectionStrategy.Select(Population, 2);
             var children = CrossOverStrategy.Crossover(parents[0], parents[1]);
-            if (_random.NextDouble() < _mutationRate)
-            {
-                children.Item1.Mutate();
-            }
-            if (_random.NextDouble() < _mutationRate)
-            {
-                children.Item2.Mutate();
-            }
             Population.Add(children.Item1);
             Population.Add(children.Item2);
         }

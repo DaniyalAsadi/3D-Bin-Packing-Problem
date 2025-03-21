@@ -33,19 +33,4 @@ public class Chromosome
     {
         return Placement.ToString();
     }
-
-    internal void Mutate()
-    {
-        var random = _random.Next(0, Placement.PlacedProducts.Count);
-        var x = _random.Next(-1, 1);
-        var y = _random.Next(-1, 1);
-        var z = _random.Next(-1, 1);
-        Placement.PlacedProducts[random].PositionNodes = 
-            Placement.PlacedProducts[random].PositionNodes
-            .Select(o => new Vector3(
-                o.X + x, 
-                o.Y + y, 
-                o.Z + z)).ToArray();
-        Fitness = FitnessCalculator.CalculateFitness(this);
-    }
 }
