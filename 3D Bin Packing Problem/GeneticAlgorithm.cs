@@ -9,16 +9,16 @@ public class GeneticAlgorithm(List<Product> products, List<Box> boxes)
     private readonly List<Box> _boxes = boxes;
 
     public List<Chromosome> Population { get; set; }
-    private readonly int _populationSize = 100;
-    private readonly int _generations = 200;
+    private readonly int _populationSize = 500;
+    private readonly int _generations = 900;
     private readonly double _mutationRate = 0.1;
 
     public Chromosome Execute()
     {
         InitializePopulation();
-        while(Population.Count < _generations)
+        while (Population.Count < _generations)
         {
-            var parents=  RouletteSelectionStrategy.Select(Population, 2);
+            var parents = RouletteSelectionStrategy.Select(Population, 2);
             var children = CrossOverStrategy.Crossover(parents[0], parents[1]);
             Population.Add(children.Item1);
             Population.Add(children.Item2);

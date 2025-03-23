@@ -33,7 +33,7 @@ public static class CrossOverStrategy
         var thirdParts2 = parent2.Placement.PlacedProducts.GetRange(crossoverPoint2, count - crossoverPoint2);
         var pp2 = firstParts2.Concat(secondParts2).Concat(thirdParts2).ToList();
 
-        var secondBoxPlacement = new BoxPlacement(firstBox);
+        var secondBoxPlacement = new BoxPlacement(secondBox);
         secondBoxPlacement.PlaceProduct(pp2);
         var secondChromosome = new Chromosome(secondBoxPlacement);
 

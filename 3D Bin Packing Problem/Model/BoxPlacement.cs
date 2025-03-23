@@ -11,9 +11,9 @@ public class BoxPlacement(Box box)
 
     public void PlaceProduct(Product product)
     {
-        var xMiddlePosition = _random.Next(0, Box.Width);
-        var yMiddlePosition = _random.Next(0, Box.Height);
-        var zMiddlePosition = _random.Next(0, Box.Length);
+        var xMiddlePosition = _random.Next(product.Width / 2, Box.Width - product.Width / 2);
+        var yMiddlePosition = _random.Next(product.Height / 2, Box.Height - product.Height / 2);
+        var zMiddlePosition = _random.Next(product.Length / 2, Box.Length - product.Length / 2);
 
         var middle = new Vector3(xMiddlePosition, yMiddlePosition, zMiddlePosition);
 
@@ -26,7 +26,7 @@ public class BoxPlacement(Box box)
     }
     public override string ToString()
     {
-       StringBuilder builder = new StringBuilder();
+        StringBuilder builder = new StringBuilder();
         foreach (var product in PlacedProducts)
         {
             builder.AppendLine(product.ToString());
