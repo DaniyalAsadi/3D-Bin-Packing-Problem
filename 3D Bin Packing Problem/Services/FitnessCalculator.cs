@@ -16,10 +16,11 @@ internal class FitnessCalculator
                 if (overlappingMatrix[i, j])
                 {
                     fitness = double.MaxValue;
+                    return fitness;
                 }
             }
         }
-        return fitness;
+        return 0;
     }
 
     public static bool[,] OverLappingMatrix(Chromosome chromosome)

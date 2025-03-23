@@ -10,7 +10,7 @@ public class GeneticAlgorithm(List<Product> products, List<Box> boxes)
 
     public List<Chromosome> Population { get; set; }
     private readonly int _populationSize = 500;
-    private readonly int _generations = 900;
+    private readonly int _generations = 1500;
     private readonly double _mutationRate = 0.1;
 
     public Chromosome Execute()

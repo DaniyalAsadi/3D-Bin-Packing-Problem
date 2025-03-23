@@ -29,12 +29,12 @@ public class Chromosome
         Fitness = FitnessCalculator.CalculateFitness(this);
 
     }
-    //public override string ToString()
-    //{
-    //    return Placement.ToString();
-    //}
     public override string ToString()
     {
-        return Fitness.ToString(CultureInfo.InvariantCulture);
+        return Placement.ToString();
     }
+    //public override string ToString()
+    //{
+    //    return Fitness.ToString(CultureInfo.InvariantCulture);
+    //}
 }

@@ -1,4 +1,5 @@
-﻿//using _3D_Bin_Packing_Problem.Model;
+﻿using _3D_Bin_Packing_Problem.Model;
+using _3D_Bin_Packing_Problem.Services;
 namespace _3D_Bin_Packing_Problem;
 
 public class Program
@@ -20,11 +21,11 @@ public class Program
     //    {
     //        new () { Id = Guid.NewGuid(), Length = 4, Width = 4, Height = 4 },
     //    };
-    //    GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(products.OrderBy(e=>e.Id).ToList(), boxes);
+    //    GeneticAlgorithm geneticAlgorithm = new GeneticAlgorithm(products.OrderBy(e => e.Id).ToList(), boxes);
     //    var x = geneticAlgorithm.Execute();
     //    Console.WriteLine(x);
 
-    //    var m =FitnessCalculator.OverLappingMatrix(x);
+    //    var m = FitnessCalculator.OverLappingMatrix(x);
     //    for (int i = 0; i < m.GetLength(0); i++)
     //    {
     //        for (int j = 0; j < m.GetLength(1); j++)

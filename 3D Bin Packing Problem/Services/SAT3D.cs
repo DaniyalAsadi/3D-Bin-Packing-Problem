@@ -151,5 +151,32 @@
 
             return true;
         }
+
+        public static void Main()
+        {
+            Vector3[] poly1 = new Vector3[]
+            {
+                new(0,0,0),
+                new(2,0,0),
+                new(0,2,0),
+                new(2,2,0),
+                new(0,0,2),
+                new(2,0,2),
+                new(0,2,2),
+                new(2,2,2),
+            };
+            Vector3[] poly2 = new Vector3[]
+            {
+                new(2,2,2),
+                new(4,2,2),
+                new(2,4,2),
+                new(4,4,2),
+                new(2,2,4),
+                new(4,2,4),
+                new(2,4,4),
+                new(4,4,4),
+            };
+            Console.WriteLine(IsColliding(poly1, poly2)); 
+        }
     }
 }
