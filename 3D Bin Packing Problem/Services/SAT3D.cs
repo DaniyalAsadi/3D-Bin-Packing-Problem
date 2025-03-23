@@ -1,8 +1,9 @@
-﻿namespace _3D_Bin_Packing_Problem.Services
-{
-    using System.Collections.Generic;
-    using System.Numerics;
+﻿using _3D_Bin_Packing_Problem.Comparer;
+using System.Collections.Generic;
+using System.Numerics;
 
+namespace _3D_Bin_Packing_Problem.Services
+{
     /// <summary>
     /// Provides methods for detecting collisions and point containment in 3D objects using the Separating Axis Theorem (SAT).
     /// </summary>
@@ -44,7 +45,7 @@
         /// <returns>A list of face normals.</returns>
         private static List<Vector3> GetFaceNormals(Vector3[] poly)
         {
-            List<Vector3> axes = new List<Vector3>();
+            HashSet<Vector3> uniqueNormals = new HashSet<Vector3>(new Vector3EqualityComparer());
 
             for (int i = 0; i < poly.Length; i += 3)
             {
@@ -59,10 +60,10 @@
                 Vector3 normal = Vector3.Cross(edge1, edge2);
                 normal = Vector3.Normalize(normal);
 
-                axes.Add(normal);
+                uniqueNormals.Add(normal);
             }
+            return [.. uniqueNormals];
 
-            return axes;
         }
 
         /// <summary>
@@ -128,55 +129,62 @@
             return (min, max);
         }
 
-        /// <summary>
-        /// Determines if a point is inside a 3D object.
-        /// </summary>
-        /// <param name="poly">The vertices of the 3D object.</param>
-        /// <param name="point">The point to check.</param>
-        /// <returns>True if the point is inside the object, otherwise false.</returns>
-        public static bool IsPointInsidePoly(Vector3[] poly, Vector3 point)
-        {
-            List<Vector3> axes = GetFaceNormals(poly);
-
-            foreach (Vector3 axis in axes)
-            {
-                if (axis.LengthSquared() < 1e-6) continue;
-
-                (float minPoly, float maxPoly) = ProjectPolygon(poly, axis);
-                float pointProjection = Vector3.Dot(point, axis);
-
-                if (pointProjection < minPoly || pointProjection > maxPoly)
-                    return false;
-            }
-
-            return true;
-        }
-
         public static void Main()
         {
             Vector3[] poly1 = new Vector3[]
             {
-                new(0,0,0),
-                new(2,0,0),
-                new(0,2,0),
-                new(2,2,0),
-                new(0,0,2),
-                new(2,0,2),
-                new(0,2,2),
-                new(2,2,2),
+                   // Face 1 (Bottom)
+                   new(0,0,0), new(2,0,0), new(0,2,0),
+                   new(2,0,0), new(2,2,0), new(0,2,0),
+
+                   // Face 2 (Top)
+                   new(0,0,2), new(2,0,2), new(0,2,2),
+                   new(2,0,2), new(2,2,2), new(0,2,2),
+
+                   // Face 3 (Front)
+                   new(0,0,0), new(2,0,0), new(0,0,2),
+                   new(2,0,0), new(2,0,2), new(0,0,2),
+
+                   // Face 4 (Back)
+                   new(0,2,0), new(2,2,0), new(0,2,2),
+                   new(2,2,0), new(2,2,2), new(0,2,2),
+
+                   // Face 5 (Left)
+                   new(0,0,0), new(0,2,0), new(0,0,2),
+                   new(0,2,0), new(0,2,2), new(0,0,2),
+
+                   // Face 6 (Right)
+                   new(2,0,0), new(2,2,0), new(2,0,2),
+                   new(2,2,0), new(2,2,2), new(2,0,2),
             };
             Vector3[] poly2 = new Vector3[]
             {
-                new(2,2,2),
-                new(4,2,2),
-                new(2,4,2),
-                new(4,4,2),
-                new(2,2,4),
-                new(4,2,4),
-                new(2,4,4),
-                new(4,4,4),
+                    // Face 1 (Bottom)
+                   new(2,2,2), new(4,2,2), new(2,4,2),
+                   new(4,2,2), new(4,4,2), new(2,4,2),
+
+                   // Face 4 (Top)
+                   new(2,2,4), new(4,2,4), new(2,4,4),
+                   new(4,2,4), new(4,4,4), new(2,4,4),
+
+                   // Face 3 (Front)
+                   new(2,2,2), new(4,2,2), new(2,2,4),
+                   new(4,2,2), new(4,2,4), new(2,2,4),
+
+                   // Face 4 (Back)
+                   new(2,4,2), new(4,4,2), new(2,4,4),
+                   new(4,4,2), new(4,4,4), new(2,4,4),
+
+                   // Face 5 (Left)
+                   new(2,2,2), new(2,4,2), new(2,2,4),
+                   new(2,4,2), new(2,4,4), new(2,2,4),
+
+                   // Face 6 (Right)
+                   new(4,2,2), new(4,4,2), new(4,2,4),
+                   new(4,4,2), new(4,4,4), new(4,2,4),
             };
-            Console.WriteLine(IsColliding(poly1, poly2)); 
+            Console.WriteLine(IsColliding(poly1, poly2));
         }
     }
+}
 }
