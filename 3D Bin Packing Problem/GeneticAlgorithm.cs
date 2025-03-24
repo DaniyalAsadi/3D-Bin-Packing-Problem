@@ -10,8 +10,8 @@ public class GeneticAlgorithm(List<Product> products, List<Box> boxes)
 
     public List<Chromosome> Population { get; set; }
     private readonly int _populationSize = 500;
-    private readonly int _generations = 1500;
-    private readonly double _mutationRate = 0.1;
+    private readonly int _generations = 3000;
+    private readonly double _mutationRate = 0.3;
 
     public Chromosome Execute()
     {
@@ -22,6 +22,21 @@ public class GeneticAlgorithm(List<Product> products, List<Box> boxes)
             var children = CrossOverStrategy.Crossover(parents[0], parents[1]);
             Population.Add(children.Item1);
             Population.Add(children.Item2);
+            if (_random.NextDouble() < _mutationRate)
+            {
+                if (children.Item1 is { Fitness: double.MaxValue })
+                {
+                    MutationStrategy.PositionShiftMutation(children.Item1);
+
+                }
+            }
+            if (_random.NextDouble() < _mutationRate)
+            {
+                if (children.Item2 is { Fitness: double.MaxValue })
+                {
+                    MutationStrategy.PositionShiftMutation(children.Item2);
+                }
+            }
         }
         return Population.OrderBy(e => e.Fitness).First();
     }

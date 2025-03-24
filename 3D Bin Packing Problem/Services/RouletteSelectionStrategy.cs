@@ -1,9 +1,4 @@
 ﻿using _3D_Bin_Packing_Problem.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace _3D_Bin_Packing_Problem.Services;
 
@@ -20,23 +15,35 @@ public class RouletteSelectionStrategy
     /// <returns>A list of selected chromosomes.</returns>
     public static List<Chromosome> Select(List<Chromosome> chromosomes, int count)
     {
-        var totalFitness = chromosomes.Sum(x => x.Fitness);
+        const double epsilon = 1e-6; // مقدار کوچک برای جلوگیری از تقسیم بر صفر
+        var maxFitness = chromosomes.Max(x => x.Fitness);
+
+        // محاسبه فیتنس معکوس شده
+        var adjustedFitness = chromosomes
+            .Select(x => (maxFitness - x.Fitness) + epsilon)
+            .ToList();
+
+        var totalAdjustedFitness = adjustedFitness.Sum();
         var selectedChromosomes = new List<Chromosome>();
         var random = new Random();
+
         for (int i = 0; i < count; i++)
         {
-            var randomValue = random.NextDouble() * totalFitness;
+            var randomValue = random.NextDouble() * totalAdjustedFitness;
             var currentSum = 0.0;
-            foreach (var chromosome in chromosomes)
+
+            for (int j = 0; j < chromosomes.Count; j++)
             {
-                currentSum += chromosome.Fitness;
+                currentSum += adjustedFitness[j];
                 if (currentSum >= randomValue)
                 {
-                    selectedChromosomes.Add(chromosome);
+                    selectedChromosomes.Add(chromosomes[j]);
                     break;
                 }
             }
         }
+
         return selectedChromosomes;
     }
+
 }

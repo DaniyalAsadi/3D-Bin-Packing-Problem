@@ -1,5 +1,4 @@
 ﻿using _3D_Bin_Packing_Problem.Services;
-using System.Globalization;
 
 namespace _3D_Bin_Packing_Problem.Model;
 
@@ -29,6 +28,7 @@ public class Chromosome
         Fitness = FitnessCalculator.CalculateFitness(this);
 
     }
+
     public override string ToString()
     {
         return Placement.ToString();
