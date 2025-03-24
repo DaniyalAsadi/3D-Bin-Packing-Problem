@@ -38,7 +38,7 @@ namespace _3D_Bin_Packing_Problem.Services
         /// <returns>True if the cuboids overlap on the axis, otherwise false.</returns>
         private static bool OverlapOnAxis(Vector3[] cuboidA, Vector3[] cuboidB, Vector3 axis)
         {
-            bool samePointReachmentIsOverlapping = false;
+            bool samePointReachmentIsOverlapping = true;
 
             (float minA, float maxA) = ProjectCuboid(cuboidA, axis);
             (float minB, float maxB) = ProjectCuboid(cuboidB, axis);
@@ -75,33 +75,33 @@ namespace _3D_Bin_Packing_Problem.Services
             return (min, max);
         }
 
-        public static void Main()
-        {
-            Vector3[] cuboid1 = new Vector3[]
-            {
-                new(0,0,0), new(2,0,0), new(0,2,0),
-                new(2,0,0), new(2,2,0), new(0,2,0),
-                new(0,0,2), new(2,0,2), new(0,2,2),
-                new(2,0,2), new(2,2,2), new(0,2,2),
-                new(0,0,0), new(0,2,0), new(0,0,2),
-                new(0,2,0), new(0,2,2), new(0,0,2),
-                new(2,0,0), new(2,2,0), new(2,0,2),
-                new(2,2,0), new(2,2,2), new(2,0,2),
-            };
+        //public static void Main()
+        //{
+        //    Vector3[] cuboid1 = new Vector3[]
+        //    {
+        //        new(0,0,0), new(2,0,0), new(0,2,0),
+        //        new(2,0,0), new(2,2,0), new(0,2,0),
+        //        new(0,0,2), new(2,0,2), new(0,2,2),
+        //        new(2,0,2), new(2,2,2), new(0,2,2),
+        //        new(0,0,0), new(0,2,0), new(0,0,2),
+        //        new(0,2,0), new(0,2,2), new(0,0,2),
+        //        new(2,0,0), new(2,2,0), new(2,0,2),
+        //        new(2,2,0), new(2,2,2), new(2,0,2),
+        //    };
 
-            Vector3[] cuboid2 = new Vector3[]
-            {
-                new(2,2,2), new(4,2,2), new(2,4,2),
-                new(4,2,2), new(4,4,2), new(2,4,2),
-                new(2,2,4), new(4,2,4), new(2,4,4),
-                new(4,2,4), new(4,4,4), new(2,4,4),
-                new(2,2,2), new(2,4,2), new(2,2,4),
-                new(2,4,2), new(2,4,4), new(2,2,4),
-                new(4,2,2), new(4,4,2), new(4,2,4),
-                new(4,4,2), new(4,4,4), new(4,2,4),
-            };
+        //    Vector3[] cuboid2 = new Vector3[]
+        //    {
+        //        new(2,2,2), new(4,2,2), new(2,4,2),
+        //        new(4,2,2), new(4,4,2), new(2,4,2),
+        //        new(2,2,4), new(4,2,4), new(2,4,4),
+        //        new(4,2,4), new(4,4,4), new(2,4,4),
+        //        new(2,2,2), new(2,4,2), new(2,2,4),
+        //        new(2,4,2), new(2,4,4), new(2,2,4),
+        //        new(4,2,2), new(4,4,2), new(4,2,4),
+        //        new(4,4,2), new(4,4,4), new(4,2,4),
+        //    };
 
-            Console.WriteLine(IsColliding(cuboid1, cuboid2)); // Check for collision
-        }
+        //    Console.WriteLine(IsColliding(cuboid1, cuboid2)); // Check for collision
+        //}
     }
 }
