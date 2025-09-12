@@ -1,43 +1,132 @@
-﻿namespace _3D_Bin_Packing_Problem.Model;
+﻿using _3D_Bin_Packing_Problem.ViewModels;
+using System.Collections;
 
-public class Chromosome : IList<Gene>, IEquatable<Chromosome>
+namespace _3D_Bin_Packing_Problem.Model;
+
+public class Chromosome(List<GeneSequence> geneSequences) : IList<GeneSequence>
 {
-    private readonly List<Gene> _genes;
-
-    public Chromosome(IEnumerable<Gene> genes)
+    public List<GeneSequence> GeneSequences { get; set; } = geneSequences;
+    public IEnumerator<GeneSequence> GetEnumerator()
     {
-        _genes = new List<Gene>(genes);
+        return GeneSequences.GetEnumerator();
+    }
+    IEnumerator IEnumerable.GetEnumerator()
+    {
+        return GetEnumerator();
+    }
+    public void Add(GeneSequence item)
+    {
+        GeneSequences.Add(item);
+    }
+    public void Clear()
+    {
+        GeneSequences.Clear();
+    }
+    public bool Contains(GeneSequence item)
+    {
+        return GeneSequences.Contains(item);
+    }
+    public void CopyTo(GeneSequence[] array, int arrayIndex)
+    {
+        GeneSequences.CopyTo(array, arrayIndex);
+    }
+    public bool Remove(GeneSequence item)
+    {
+        return GeneSequences.Remove(item);
+    }
+    public int Count => GeneSequences.Count * 3;
+    public bool IsReadOnly => false;
+    public int IndexOf(GeneSequence item)
+    {
+        return GeneSequences.IndexOf(item);
+    }
+    public void Insert(int index, GeneSequence item)
+    {
+        GeneSequences.Insert(index, item);
+    }
+    public void RemoveAt(int index)
+    {
+        GeneSequences.RemoveAt(index);
+    }
+    public GeneSequence this[int index]
+    {
+        get => GeneSequences[index];
+        set => GeneSequences[index] = value;
     }
 
-    internal Chromosome(Chromosome chromosome) : this(chromosome._genes)
+    public IEnumerable<IndexedGene> IndexedGenes
     {
+        get
+        {
+            for (var seqIndex = 0; seqIndex < Count; seqIndex++)
+            {
+                var seq = GeneSequences[seqIndex];
+                for (var geneIndex = 0; geneIndex < seq.Count; geneIndex++)
+                {
+                    yield return new IndexedGene(seq[geneIndex], seqIndex, geneIndex);
+                }
+            }
+        }
     }
 
-    public List<Gene> Genes => _genes;
+}
 
-    // محاسبه مجموع هزینه انواع Box (صرفاً طراحی)
-    public decimal TotalCost(double unitCost = 0.001)
+public class GeneSequence(Box box) : IEnumerable<Gene>, IEquatable<GeneSequence>
+{
+    public Box Box { get; private set; } = box;
+    public Gene Length { get; private set; } = box.Length;
+    public Gene Width { get; private set; } = box.Width;
+    public Gene Height { get; private set; } = box.Height;
+
+    private IEnumerable<Gene> Items
     {
-        return _genes.Sum(g => g.Cost(unitCost));
+        get
+        {
+            yield return Length;
+            yield return Width;
+            yield return Height;
+        }
     }
 
-    public decimal Fitness => TotalCost();
-
-    // دیکد به لیست BoxType (برای استفاده در Packing Algorithm)
-    public List<Box> DecodeToBoxes(double unitCost = 0.001)
+    // --- IList implementation ---
+    public Gene this[int index]
     {
-        return _genes.Select(t => t.ToBox(unitCost)).ToList();
+        get => index switch
+        {
+            0 => Length,
+            1 => Width,
+            2 => Height,
+            _ => throw new ArgumentOutOfRangeException(nameof(index))
+        };
+        set
+        {
+            switch (index)
+            {
+                case 0: Length = value; break;
+                case 1: Width = value; break;
+                case 2: Height = value; break;
+                default: throw new ArgumentOutOfRangeException(nameof(index));
+            }
+        }
     }
 
-    public override string ToString()
+    public int Count => 3;
+    public bool IsReadOnly => false;
+
+    public IEnumerator<Gene> GetEnumerator() => Items.GetEnumerator();
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+
+    public int IndexOf(Gene item)
     {
-        return $"Chromosome with {Count} genes:\n" +
-               string.Join("\n", _genes.Select(g => "  " + g));
+        if (Equals(item, Length)) return 0;
+        if (Equals(item, Width)) return 1;
+        if (Equals(item, Height)) return 2;
+        return -1;
     }
 
-    public bool Equals(Chromosome? other)
+    public bool Equals(GeneSequence? other)
     {
-        return other != null && Fitness.Equals(other.Fitness);
+        return other != null && Length.Equals(other.Length) && Width.Equals(other.Width) && Height.Equals(other.Height);
     }
 
     public override bool Equals(object? obj)
@@ -45,29 +134,27 @@ public class Chromosome : IList<Gene>, IEquatable<Chromosome>
         return obj switch
         {
             null => false,
-            Chromosome otherChromosome => Equals(otherChromosome),
+            GeneSequence geneSequence => Equals(geneSequence),
             _ => false
         };
     }
 
     public override int GetHashCode()
     {
-        return Fitness.GetHashCode();
+        return HashCode.Combine(Length.GetHashCode(), Width.GetHashCode(), Height.GetHashCode());
     }
+}
 
-    // IList<Gene> implementation (delegates to _genes)
-    public Gene this[int index] { get => _genes[index]; set => _genes[index] = value; }
-    public int Count => _genes.Count;
-    public bool IsReadOnly => false;
 
-    public void Add(Gene item) => _genes.Add(item);
-    public void Clear() => _genes.Clear();
-    public bool Contains(Gene item) => _genes.Contains(item);
-    public void CopyTo(Gene[] array, int arrayIndex) => _genes.CopyTo(array, arrayIndex);
-    public IEnumerator<Gene> GetEnumerator() => _genes.GetEnumerator();
-    public int IndexOf(Gene item) => _genes.IndexOf(item);
-    public void Insert(int index, Gene item) => _genes.Insert(index, item);
-    public bool Remove(Gene item) => _genes.Remove(item);
-    public void RemoveAt(int index) => _genes.RemoveAt(index);
-    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => _genes.GetEnumerator();
+
+public class Gene(int value) : IEquatable<Gene>
+{
+    public int Value { get; } = value;
+
+    public bool Equals(Gene? other) => other is not null && Value == other.Value;
+    public override bool Equals(object? obj) => obj is Gene g && Equals(g);
+    public override int GetHashCode() => Value.GetHashCode();
+
+    public override string ToString() => Value.ToString();
+    public static implicit operator Gene(int value) => new Gene(value);
 }

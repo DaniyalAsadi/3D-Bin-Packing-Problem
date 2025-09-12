@@ -1,5 +1,6 @@
 ﻿using _3D_Bin_Packing_Problem.Model;
 using _3D_Bin_Packing_Problem.Services.Crossover;
+using _3D_Bin_Packing_Problem.Services.FitnessCalculator;
 using _3D_Bin_Packing_Problem.Services.Mutation;
 using _3D_Bin_Packing_Problem.Services.Selection;
 
@@ -7,7 +8,8 @@ namespace _3D_Bin_Packing_Problem;
 public class GeneticAlgorithm(
     List<ICrossoverOperator> crossoverOperators,
     List<IMutationOperator> mutationOperators,
-    ISelection selection)
+    ISelection selection,
+    IFitness fitness)
 {
     private const int MaxIteration = 100;
     private const int PopulationSize = 100;
@@ -71,7 +73,7 @@ public class GeneticAlgorithm(
 
             _elitismPopulation = _population.Take(ElitismPopulationSize).ToList();
 
-            if (_population.First().Fitness <= bestIndividual.Fitness)
+            if (fitness.Evaluate(_population.First()) <= fitness.Evaluate(bestIndividual))
             {
                 bestIndividual = _population.First();
             }
