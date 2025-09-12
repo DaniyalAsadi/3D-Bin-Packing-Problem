@@ -1,6 +1,5 @@
 ﻿using _3D_Bin_Packing_Problem.Model;
-using _3D_Bin_Packing_Problem.Services;
-using System.Numerics;
+
 namespace _3D_Bin_Packing_Problem;
 
 
@@ -8,61 +7,62 @@ public static class Program
 {
     public static void Main(string[] args)
     {
-        List<Product> products =
-        [
-            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
-            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
-            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
-            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
-            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
-            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
-            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
-            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
-        ];
-        List<Box> boxes =
-        [
-            new() { Id = Guid.NewGuid(), Length = 4, Width = 4, Height = 4 }
-        ];
-        //var geneticAlgorithm = new GeneticAlgorithm(products.OrderBy(e => e.Id).ToList(), boxes);
-        //var x = geneticAlgorithm.Execute();
-        //Console.WriteLine(x);
-        var boxPlacement = new BoxPlacement(boxes[0]);
-        List<ProductPlacement> productPlacements =
-        [
-            new (products[0], new Vector3(1, 1, 1)),
-            new (products[1], new Vector3(3, 1, 1)),
-            new (products[2], new Vector3(1, 3, 1)),
-            new (products[3], new Vector3(3, 3, 1)),
-            new (products[4], new Vector3(1, 1, 3)),
-            new (products[5], new Vector3(3, 1, 3)),
-            new (products[6], new Vector3(1, 3, 3)),
-            new (products[7], new Vector3(3, 3, 3)),
-        ];
-        boxPlacement.PlaceProduct(productPlacements);
+        //Test.Execute(args);
+        //List<Product> products =
+        //[
+        //    new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
+        //    new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
+        //    new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
+        //    new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
+        //    new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
+        //    new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
+        //    new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
+        //    new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
+        //];
+        //List<Box> boxes =
+        //[
+        //    new() { Id = Guid.NewGuid(), Length = 4, Width = 4, Height = 4 }
+        //];
+        ////var geneticAlgorithm = new GeneticAlgorithm(products.OrderBy(e => e.Id).ToList(), boxes);
+        ////var x = geneticAlgorithm.Execute();
+        ////Console.WriteLine(x);
+        //var boxPlacement = new BoxPlacement(boxes[0]);
+        //List<ProductPlacement> productPlacements =
+        //[
+        //    new (products[0], new Vector3(1, 1, 1)),
+        //    new (products[1], new Vector3(3, 1, 1)),
+        //    new (products[2], new Vector3(1, 3, 1)),
+        //    new (products[3], new Vector3(3, 3, 1)),
+        //    new (products[4], new Vector3(1, 1, 3)),
+        //    new (products[5], new Vector3(3, 1, 3)),
+        //    new (products[6], new Vector3(1, 3, 3)),
+        //    new (products[7], new Vector3(3, 3, 3)),
+        //];
+        //boxPlacement.PlaceProduct(productPlacements);
 
-        var chromosome = new Chromosome(boxPlacement);
-        Console.WriteLine(chromosome);
-        Console.WriteLine(chromosome.Fitness);
+        //var chromosome = new Chromosome(boxPlacement);
+        //Console.WriteLine(chromosome);
+        //Console.WriteLine(chromosome.Fitness);
 
 
 
-        var m = FitnessCalculator.OverLappingMatrix(chromosome);
-        for (var i = 0; i < m.GetLength(0); i++)
-        {
-            for (int j = 0; j < m.GetLength(1); j++)
-            {
-                if (m[i, j])
-                {
-                    Console.Write(1);
-                }
-                else
-                {
-                    Console.Write(0);
-                }
-            }
-            Console.WriteLine();
+        //var m = FitnessCalculator.OverLappingMatrix(chromosome);
+        //for (var i = 0; i < m.GetLength(0); i++)
+        //{
+        //    for (int j = 0; j < m.GetLength(1); j++)
+        //    {
+        //        if (m[i, j])
+        //        {
+        //            Console.Write(1);
+        //        }
+        //        else
+        //        {
+        //            Console.Write(0);
+        //        }
+        //    }
+        //    Console.WriteLine();
 
-        }
+        //}
 
 
 

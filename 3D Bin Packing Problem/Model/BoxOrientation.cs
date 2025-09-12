@@ -14,27 +14,27 @@ namespace _3D_Bin_Packing_Problem.Model
         /// <summary>
         /// Width Height Length
         /// </summary>
-        WHL,
+        Whl,
         /// <summary>
         /// Width Length Height
         /// </summary>
-        WLH,
+        Wlh,
         /// <summary>
         /// Length Width Height
         /// </summary>
-        LWH,
+        Lwh,
         /// <summary>
         /// Length Height Width
         /// </summary>
-        LHW,
+        Lhw,
         /// <summary>
         /// Height Length Width
         /// </summary>
-        HLW,
+        Hlw,
         /// <summary>
         /// Height Width Length
         /// </summary>
-        HWL
+        Hwl
     }
 }
 
