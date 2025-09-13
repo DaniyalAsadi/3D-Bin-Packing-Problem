@@ -1,5 +1,4 @@
-﻿using _3D_Bin_Packing_Problem.ViewModels;
-using System.Collections;
+﻿using System.Collections;
 
 namespace _3D_Bin_Packing_Problem.Model;
 
@@ -54,21 +53,11 @@ public class Chromosome(List<GeneSequence> geneSequences) : IList<GeneSequence>
         set => GeneSequences[index] = value;
     }
 
-    public IEnumerable<IndexedGene> IndexedGenes
+    public Chromosome Clone()
     {
-        get
-        {
-            for (var seqIndex = 0; seqIndex < Count; seqIndex++)
-            {
-                var seq = GeneSequences[seqIndex];
-                for (var geneIndex = 0; geneIndex < seq.Count; geneIndex++)
-                {
-                    yield return new IndexedGene(seq[geneIndex], seqIndex, geneIndex);
-                }
-            }
-        }
-    }
+        return new Chromosome(GeneSequences);
 
+    }
 }
 
 public class GeneSequence(Box box) : IEnumerable<Gene>, IEquatable<GeneSequence>
@@ -149,7 +138,12 @@ public class GeneSequence(Box box) : IEnumerable<Gene>, IEquatable<GeneSequence>
 
 public class Gene(int value) : IEquatable<Gene>
 {
-    public int Value { get; } = value;
+    private int _value = value;
+
+    public int Value => _value;
+
+    public void SetValue(int value) => _value = value;
+
 
     public bool Equals(Gene? other) => other is not null && Value == other.Value;
     public override bool Equals(object? obj) => obj is Gene g && Equals(g);

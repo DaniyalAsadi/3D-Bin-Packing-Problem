@@ -8,30 +8,34 @@ internal class OnePointSwap : ICrossoverOperator
     public (Chromosome, Chromosome) Crossover(Chromosome c1, Chromosome c2)
     {
         if (c1 == null || c2 == null)
-            throw new ArgumentNullException("Chromosomes must not be null");
+            throw new ArgumentNullException(nameof(c1));
 
         if (c1.Count == 0 || c2.Count == 0)
             throw new ArgumentException("Chromosomes must not be empty");
 
         // pick a crossover point in gene-space
-        int crossoverPoint = Random.Next(0, Math.Min(c1.Count, c2.Count));
+        var crossoverPoint1 = Random.Next(0, c1.Count);
+        var crossoverPoint2 = Random.Next(0, c2.Count);
 
-        // clone parents into children
-        var child1Genes = c1.GeneSequences
-            .Select(gs => new GeneSequence(gs.Box.Clone()))
-            .ToList();
 
-        var child2Genes = c2.GeneSequences
-            .Select(gs => new GeneSequence(gs.Box.Clone()))
-            .ToList();
 
         // map crossover point -> seqIndex and geneIndex
-        int seqIndex = crossoverPoint / 3;
-        int geneIndex = crossoverPoint % 3;
+        var seqIndex1 = crossoverPoint1 / 3;
+        var geneIndex1 = crossoverPoint1 % 3;
+
+
+        var seqIndex2 = crossoverPoint2 / 3;
+        var geneIndex2 = crossoverPoint2 % 3;
+
+
+        var chromosome1 = c1.Clone();
+        var chromosome2 = c2.Clone();
+
+
 
         // swap single gene between children
-        (child1Genes[seqIndex][geneIndex], child2Genes[seqIndex][geneIndex]) = (child2Genes[seqIndex][geneIndex], child1Genes[seqIndex][geneIndex]);
+        (chromosome1[seqIndex1][geneIndex1], chromosome2[seqIndex2][geneIndex2]) = (chromosome2[seqIndex2][geneIndex2], chromosome1[seqIndex1][geneIndex1]);
 
-        return (new Chromosome(child1Genes), new Chromosome(child2Genes));
+        return (chromosome1, chromosome2);
     }
 }
