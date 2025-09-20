@@ -10,7 +10,7 @@ public interface ISelection
     /// <param name="nextGenerationSize">Target size of the next generation.</param>
     /// <param name="elitismPopulationSize">Number of elite individuals to preserve.</param>
     /// <returns>Next generation population.</returns>
-    Chromosome Select(
+    List<Chromosome> Select(
         List<Chromosome> population,
         int nextGenerationSize,
         int elitismPopulationSize);

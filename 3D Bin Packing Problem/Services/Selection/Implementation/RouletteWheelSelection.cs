@@ -2,11 +2,11 @@
 using _3D_Bin_Packing_Problem.Services.FitnessCalculator;
 
 namespace _3D_Bin_Packing_Problem.Services.Selection.Implementation;
-internal class RouletteWheelSelection(IFitness fitnessCalculator) : ISelection
+internal class RouletteWheelSelection(IFitness fitnessCalculator, IComparer<Chromosome> comparer) : ISelection
 {
     private readonly Random _random = new Random();
 
-    public Chromosome Select(
+    public List<Chromosome> Select(
         List<Chromosome> population,
         int nextGenerationSize,
         int elitismPopulationSize)
@@ -53,7 +53,9 @@ internal class RouletteWheelSelection(IFitness fitnessCalculator) : ISelection
             }
         }
 
-        return selected.Last();
+        selected.Sort(comparer);
+        return selected; // 🔹 حالا کل لیست برمی‌گرده
     }
 }
+
 

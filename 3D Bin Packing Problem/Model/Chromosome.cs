@@ -33,7 +33,7 @@ public class Chromosome(List<GeneSequence> geneSequences) : IList<GeneSequence>
     {
         return GeneSequences.Remove(item);
     }
-    public int Count => GeneSequences.Count * 3;
+    public int Count => GeneSequences.Count;
     public bool IsReadOnly => false;
     public int IndexOf(GeneSequence item)
     {
@@ -58,6 +58,7 @@ public class Chromosome(List<GeneSequence> geneSequences) : IList<GeneSequence>
         return new Chromosome(GeneSequences);
 
     }
+
 }
 
 public class GeneSequence(Box box) : IEnumerable<Gene>, IEquatable<GeneSequence>

@@ -1,4 +1,15 @@
 ﻿using _3D_Bin_Packing_Problem.Model;
+using _3D_Bin_Packing_Problem.Services.Crossover;
+using _3D_Bin_Packing_Problem.Services.Crossover.Implementation;
+using _3D_Bin_Packing_Problem.Services.FitnessCalculator;
+using _3D_Bin_Packing_Problem.Services.FitnessCalculator.Implementation;
+using _3D_Bin_Packing_Problem.Services.Mutation;
+using _3D_Bin_Packing_Problem.Services.Mutation.Implementation;
+using _3D_Bin_Packing_Problem.Services.PopulationGenerator;
+using _3D_Bin_Packing_Problem.Services.PopulationGenerator.Implementation;
+using _3D_Bin_Packing_Problem.Services.Selection;
+using _3D_Bin_Packing_Problem.Services.Selection.Implementation;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace _3D_Bin_Packing_Problem;
 
@@ -7,6 +18,46 @@ public static class Program
 {
     public static void Main(string[] args)
     {
+        var services = new ServiceCollection();
+
+
+        services.AddScoped<GeneticAlgorithm>();
+        services.AddScoped<IPopulationGenerator, PopulationGenerator>();
+        services.AddScoped<ISelection, RouletteWheelSelection>();
+        services.AddScoped<IFitness, DefaultFitness>();
+
+        services.AddScoped<ICrossoverOperator, OnePointSwap>();
+        services.AddScoped<ICrossoverOperator, TwoPointSwap>();
+        services.AddScoped<ICrossoverOperator, SequenceReplacement>();
+        services.AddScoped<ICrossoverOperator, SequenceSwap>();
+
+
+        services.AddScoped<IMutationOperator, OnePointMutation>();
+        services.AddScoped<IMutationOperator, TwoPointMutation>();
+
+        services.AddScoped<IComparer<Chromosome>, ChromosomeFitnessComparer>();
+        // ساخت ServiceProvider
+        var serviceProvider = services.BuildServiceProvider();
+
+        // اجرای برنامه
+        var app = serviceProvider.GetRequiredService<GeneticAlgorithm>();
+        List<Product> products =
+        [
+            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
+            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
+            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
+            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
+            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
+            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
+            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
+            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
+        ];
+        var x = app.Execute(products);
+
+
+        Console.WriteLine(x);
+
+
         //Test.Execute(args);
         //List<Product> products =
         //[
