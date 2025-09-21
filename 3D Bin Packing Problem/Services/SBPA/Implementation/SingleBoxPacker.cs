@@ -24,25 +24,22 @@ public class SingleBoxPacker(IPlacementFeasibilityChecker placementFeasibilityCh
 
         foreach (var product in products.ToList())
         {
-            bool placed = false;
+            var placed = false;
             foreach (var subBox in subBoxes.ToList())
             {
-                var (status, result) = placementFeasibilityChecker.CanPlaceProduct(product, subBox);
-                if (status == PlacementStatus.Success)
-                {
-                    box.PackedProducts.Add(product);
-                    products.Remove(product);
-                    placed = true;
+                var status = placementFeasibilityChecker.CanPlaceProduct(product, subBox, out var result);
+                if (!status) continue;
+                ArgumentNullException.ThrowIfNull(result);
+                box.PackedProducts.Add(product);
+                products.Remove(product);
+                placed = true;
+                var orientation = product.GetOrientations()[result.OrientationIndex];
+                var newSubBoxes = subBoxUpdater.UpdateSubBoxes(subBox, product, orientation);
 
 
-                    var orientation = product.GetOrientations()[result.OrientationIndex];
-                    var newSubBoxes = subBoxUpdater.UpdateSubBoxes(subBox, product, orientation);
-
-
-                    subBoxes.Remove(subBox);
-                    subBoxes.AddRange(newSubBoxes);
-                    break;
-                }
+                subBoxes.Remove(subBox);
+                subBoxes.AddRange(newSubBoxes);
+                break;
             }
 
 

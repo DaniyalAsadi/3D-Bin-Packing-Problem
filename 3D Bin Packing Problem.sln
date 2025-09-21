@@ -5,6 +5,8 @@ VisualStudioVersion = 17.11.35327.3
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "3D Bin Packing Problem", "3D Bin Packing Problem\3D Bin Packing Problem.csproj", "{68AE0442-5882-4A3A-9818-9A63198944FD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "3D Bin Packing Problem.Test", "3D Bin Packing Problem.Test\3D Bin Packing Problem.Test.csproj", "{6B75A04E-2EC2-409B-A4D5-FA3DA0BECFAE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{68AE0442-5882-4A3A-9818-9A63198944FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{68AE0442-5882-4A3A-9818-9A63198944FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{68AE0442-5882-4A3A-9818-9A63198944FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6B75A04E-2EC2-409B-A4D5-FA3DA0BECFAE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6B75A04E-2EC2-409B-A4D5-FA3DA0BECFAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6B75A04E-2EC2-409B-A4D5-FA3DA0BECFAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6B75A04E-2EC2-409B-A4D5-FA3DA0BECFAE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

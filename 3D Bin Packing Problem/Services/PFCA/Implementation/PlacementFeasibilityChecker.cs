@@ -2,39 +2,32 @@
 using _3D_Bin_Packing_Problem.Model;
 
 namespace _3D_Bin_Packing_Problem.Services.PFCA.Implementation;
+
 public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
 {
-    public (PlacementStatus status, PlacementResult? result) CanPlaceProduct(Product product, SubBox subBox, double minSupportRatio = 0.75)
+    public bool CanPlaceProduct(Product product, SubBox subBox, out PlacementResult? result, double minSupportRatio = 0.75)
     {
         var orientations = product.GetOrientations();
-
-
-        for (int i = 0; i < orientations.Count; i++)
+        for (var i = 0; i < orientations.Count; i++)
         {
             var (pL, pW, pH) = orientations[i];
-
-
-            bool fits = pL <= subBox.Length && pW <= subBox.Width && pH <= subBox.Height;
+            var fits = pL <= subBox.Length && pW <= subBox.Width && pH <= subBox.Height;
             if (!fits) continue;
-
-
             double supportArea = pL * pW;
             double baseArea = subBox.Length * subBox.Width;
-            double supportRatio = supportArea / baseArea;
-
-
-            if (supportRatio >= minSupportRatio)
+            var supportRatio = supportArea / baseArea;
+            if (!(supportRatio >= minSupportRatio)) continue;
+            result = new PlacementResult
             {
-                return (PlacementStatus.Success, new PlacementResult
-                {
-                    Product = product,
-                    SubBox = subBox,
-                    OrientationIndex = i
-                });
-            }
+                Product = product,
+                SubBox = subBox,
+                OrientationIndex = i
+
+            };
+            return true;
         }
 
-
-        return (PlacementStatus.Failed, null);
+        result = null;
+        return false;
     }
 }
