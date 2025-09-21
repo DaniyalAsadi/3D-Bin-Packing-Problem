@@ -18,7 +18,7 @@ public class PopulationGenerator()
             Length = length.Value,
             Width = width.Value,
             Height = height.Value,
-            Price = 0 // قیمت می‌تونه بعداً بر اساس فرمول مقاله محاسبه بشه
+            Cost = 0 // قیمت می‌تونه بعداً بر اساس فرمول مقاله محاسبه بشه
         };
 
         return new GeneSequence(box);

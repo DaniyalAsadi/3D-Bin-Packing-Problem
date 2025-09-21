@@ -68,5 +68,19 @@ namespace _3D_Bin_Packing_Problem.Extensions
             return vertices.ToArray();
         }
 
+
+        // گرفتن همه حالت‌های چرخش (۶ حالت ممکن)
+        public static List<(int L, int W, int H)> GetOrientations(this Product product)
+        {
+            return new List<(int, int, int)>
+            {
+                (product.Length, product.Width, product.Height),
+                (product.Length, product.Height, product.Width),
+                (product.Width, product.Length, product.Height),
+                (product.Width, product.Height, product.Length),
+                (product.Height, product.Length, product.Width),
+                (product.Height, product.Width, product.Length)
+            };
+        }
     }
 }

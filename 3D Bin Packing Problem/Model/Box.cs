@@ -6,8 +6,8 @@ public class Box
     public required int Width { get; set; }
     public required int Height { get; set; }
     public int Volume => Width * Height * Length;
-    public required decimal Price { get; set; }
-
+    public required decimal Cost { get; set; }
+    public List<Product> PackedProducts { get; set; } = new List<Product>();
     public Box Clone()
     {
         return new Box()
@@ -15,7 +15,7 @@ public class Box
             Length = Height,
             Width = Width,
             Height = Height,
-            Price = Price
+            Cost = Cost
         };
     }
 
