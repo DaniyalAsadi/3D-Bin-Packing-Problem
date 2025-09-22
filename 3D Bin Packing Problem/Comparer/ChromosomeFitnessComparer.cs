@@ -1,5 +1,5 @@
 ﻿using _3D_Bin_Packing_Problem.Model;
-using _3D_Bin_Packing_Problem.Services.FitnessCalculator;
+using _3D_Bin_Packing_Problem.Services.OuterLayer.FitnessCalculator;
 
 public class ChromosomeFitnessComparer(IFitness fitness) : IComparer<Chromosome>
 {

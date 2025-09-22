@@ -1,14 +1,14 @@
 ﻿using _3D_Bin_Packing_Problem.Model;
-using _3D_Bin_Packing_Problem.Services.Crossover;
-using _3D_Bin_Packing_Problem.Services.Crossover.Implementation;
-using _3D_Bin_Packing_Problem.Services.FitnessCalculator;
-using _3D_Bin_Packing_Problem.Services.FitnessCalculator.Implementation;
-using _3D_Bin_Packing_Problem.Services.Mutation;
-using _3D_Bin_Packing_Problem.Services.Mutation.Implementation;
-using _3D_Bin_Packing_Problem.Services.PopulationGenerator;
-using _3D_Bin_Packing_Problem.Services.PopulationGenerator.Implementation;
-using _3D_Bin_Packing_Problem.Services.Selection;
-using _3D_Bin_Packing_Problem.Services.Selection.Implementation;
+using _3D_Bin_Packing_Problem.Services.OuterLayer.Crossover;
+using _3D_Bin_Packing_Problem.Services.OuterLayer.Crossover.Implementation;
+using _3D_Bin_Packing_Problem.Services.OuterLayer.FitnessCalculator;
+using _3D_Bin_Packing_Problem.Services.OuterLayer.FitnessCalculator.Implementation;
+using _3D_Bin_Packing_Problem.Services.OuterLayer.Mutation;
+using _3D_Bin_Packing_Problem.Services.OuterLayer.Mutation.Implementation;
+using _3D_Bin_Packing_Problem.Services.OuterLayer.PopulationGenerator;
+using _3D_Bin_Packing_Problem.Services.OuterLayer.PopulationGenerator.Implementation;
+using _3D_Bin_Packing_Problem.Services.OuterLayer.Selection;
+using _3D_Bin_Packing_Problem.Services.OuterLayer.Selection.Implementation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace _3D_Bin_Packing_Problem;
@@ -41,7 +41,7 @@ public static class Program
 
         // اجرای برنامه
         var app = serviceProvider.GetRequiredService<GeneticAlgorithm>();
-        List<Product> products =
+        List<Item> products =
         [
             new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
             new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
@@ -133,14 +133,14 @@ public static class Program
         //chromosome.BoxPlacements.ToList().ForEach(Console.WriteLine);
 
 
-        Product product21312 = new Product()
+        Item product21312 = new Item()
         {
             Id = Guid.NewGuid(),
             Length = 7,
             Width = 1,
             Height = 4
         };
-        Product product21313 = new Product()
+        Item product21313 = new Item()
         {
             Id = Guid.NewGuid(),
             Length = 1,

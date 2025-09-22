@@ -5,18 +5,18 @@ namespace _3D_Bin_Packing_Problem.Extensions
 {
     public static class ProductsExtension
     {
-        public static Vector3[] ToVector3(this Product product, Vector3 middle)
+        public static Vector3[] ToVector3(this Item item, Vector3 middle)
         {
             // نقاط مکعب
             Vector3[] poly = new Vector3[8];
-            poly[0] = new Vector3(middle.X - (float)product.Length / 2, middle.Y - (float)product.Width / 2, middle.Z - (float)product.Height / 2);
-            poly[1] = new Vector3(middle.X + (float)product.Length / 2, middle.Y - (float)product.Width / 2, middle.Z - (float)product.Height / 2);
-            poly[2] = new Vector3(middle.X + (float)product.Length / 2, middle.Y + (float)product.Width / 2, middle.Z - (float)product.Height / 2);
-            poly[3] = new Vector3(middle.X - (float)product.Length / 2, middle.Y + (float)product.Width / 2, middle.Z - (float)product.Height / 2);
-            poly[4] = new Vector3(middle.X - (float)product.Length / 2, middle.Y - (float)product.Width / 2, middle.Z + (float)product.Height / 2);
-            poly[5] = new Vector3(middle.X + (float)product.Length / 2, middle.Y - (float)product.Width / 2, middle.Z + (float)product.Height / 2);
-            poly[6] = new Vector3(middle.X + (float)product.Length / 2, middle.Y + (float)product.Width / 2, middle.Z + (float)product.Height / 2);
-            poly[7] = new Vector3(middle.X - (float)product.Length / 2, middle.Y + (float)product.Width / 2, middle.Z + (float)product.Height / 2);
+            poly[0] = new Vector3(middle.X - (float)item.Length / 2, middle.Y - (float)item.Width / 2, middle.Z - (float)item.Height / 2);
+            poly[1] = new Vector3(middle.X + (float)item.Length / 2, middle.Y - (float)item.Width / 2, middle.Z - (float)item.Height / 2);
+            poly[2] = new Vector3(middle.X + (float)item.Length / 2, middle.Y + (float)item.Width / 2, middle.Z - (float)item.Height / 2);
+            poly[3] = new Vector3(middle.X - (float)item.Length / 2, middle.Y + (float)item.Width / 2, middle.Z - (float)item.Height / 2);
+            poly[4] = new Vector3(middle.X - (float)item.Length / 2, middle.Y - (float)item.Width / 2, middle.Z + (float)item.Height / 2);
+            poly[5] = new Vector3(middle.X + (float)item.Length / 2, middle.Y - (float)item.Width / 2, middle.Z + (float)item.Height / 2);
+            poly[6] = new Vector3(middle.X + (float)item.Length / 2, middle.Y + (float)item.Width / 2, middle.Z + (float)item.Height / 2);
+            poly[7] = new Vector3(middle.X - (float)item.Length / 2, middle.Y + (float)item.Width / 2, middle.Z + (float)item.Height / 2);
 
             // تولید مثلث‌ها برای هر یک از 6 وجه مکعب
             List<Vector3> vertices =
@@ -70,16 +70,16 @@ namespace _3D_Bin_Packing_Problem.Extensions
 
 
         // گرفتن همه حالت‌های چرخش (۶ حالت ممکن)
-        public static List<(int L, int W, int H)> GetOrientations(this Product product)
+        public static List<(int L, int W, int H)> GetOrientations(this Item item)
         {
             return new List<(int, int, int)>
             {
-                (product.Length, product.Width, product.Height),
-                (product.Length, product.Height, product.Width),
-                (product.Width, product.Length, product.Height),
-                (product.Width, product.Height, product.Length),
-                (product.Height, product.Length, product.Width),
-                (product.Height, product.Width, product.Length)
+                (item.Length, item.Width, item.Height),
+                (item.Length, item.Height, item.Width),
+                (item.Width, item.Length, item.Height),
+                (item.Width, item.Height, item.Length),
+                (item.Height, item.Length, item.Width),
+                (item.Height, item.Width, item.Length)
             };
         }
     }

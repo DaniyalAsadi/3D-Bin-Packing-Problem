@@ -1,9 +1,9 @@
 ﻿using _3D_Bin_Packing_Problem.Model;
-using _3D_Bin_Packing_Problem.Services.Crossover;
-using _3D_Bin_Packing_Problem.Services.FitnessCalculator;
-using _3D_Bin_Packing_Problem.Services.Mutation;
-using _3D_Bin_Packing_Problem.Services.PopulationGenerator;
-using _3D_Bin_Packing_Problem.Services.Selection;
+using _3D_Bin_Packing_Problem.Services.OuterLayer.Crossover;
+using _3D_Bin_Packing_Problem.Services.OuterLayer.FitnessCalculator;
+using _3D_Bin_Packing_Problem.Services.OuterLayer.Mutation;
+using _3D_Bin_Packing_Problem.Services.OuterLayer.PopulationGenerator;
+using _3D_Bin_Packing_Problem.Services.OuterLayer.Selection;
 
 namespace _3D_Bin_Packing_Problem;
 public class GeneticAlgorithm(
@@ -22,7 +22,7 @@ public class GeneticAlgorithm(
     private List<Chromosome> _elitismPopulation = [];
 
     public Chromosome Execute(
-            List<Product> itemList)
+            List<Item> itemList)
     {
         var initialPopulation = populationGenerator.Generate(itemList, PopulationSize, 1);
         initialPopulation.Sort(comparer);

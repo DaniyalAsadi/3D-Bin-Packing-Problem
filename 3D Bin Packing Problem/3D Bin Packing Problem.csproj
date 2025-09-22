@@ -9,9 +9,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="Services\FitnessCalculator\NewFolder\**" />
-    <EmbeddedResource Remove="Services\FitnessCalculator\NewFolder\**" />
-    <None Remove="Services\FitnessCalculator\NewFolder\**" />
+    <Compile Remove="Services\OuterLayer\FitnessCalculator\NewFolder\**" />
+    <EmbeddedResource Remove="Services\OuterLayer\FitnessCalculator\NewFolder\**" />
+    <None Remove="Services\OuterLayer\FitnessCalculator\NewFolder\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,7 +19,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Services\SASSManager\Implementation\" />
+    <Folder Include="Services\InnerLayer\" />
   </ItemGroup>
 
 </Project>

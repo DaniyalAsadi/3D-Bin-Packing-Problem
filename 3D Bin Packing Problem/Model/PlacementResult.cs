@@ -2,7 +2,8 @@
 
 public class PlacementResult
 {
-    public Product Product { get; set; }
-    public SubBox SubBox { get; set; }
-    public int OrientationIndex { get; set; } // یکی از 6 حالت چرخش
+    public Item Item { get; set; }
+    public SubBin SubBin { get; set; }
+    public (int L, int W, int H) Orientation { get; set; } // یکی از 6 حالت چرخش
+    public (int L, int W, int H) KeyPoint { get; set; }
 }
