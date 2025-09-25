@@ -70,17 +70,15 @@ namespace _3D_Bin_Packing_Problem.Extensions
 
 
         // گرفتن همه حالت‌های چرخش (۶ حالت ممکن)
-        public static List<(int L, int W, int H)> GetOrientations(this Item item)
+        public static IEnumerable<Vector3> GetOrientations(this Item item)
         {
-            return new List<(int, int, int)>
-            {
-                (item.Length, item.Width, item.Height),
-                (item.Length, item.Height, item.Width),
-                (item.Width, item.Length, item.Height),
-                (item.Width, item.Height, item.Length),
-                (item.Height, item.Length, item.Width),
-                (item.Height, item.Width, item.Length)
-            };
+            yield return new Vector3(item.Length, item.Width, item.Height);
+            yield return new Vector3(item.Length, item.Height, item.Width);
+            yield return new Vector3(item.Width, item.Length, item.Height);
+            yield return new Vector3(item.Width, item.Height, item.Length);
+            yield return new Vector3(item.Height, item.Length, item.Width);
+            yield return new Vector3(item.Height, item.Width, item.Length);
+
         }
     }
 }

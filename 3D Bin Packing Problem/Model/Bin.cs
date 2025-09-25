@@ -12,11 +12,14 @@ public class Bin
     {
         return new Bin()
         {
-            Length = Height,
+            Length = Length,
             Width = Width,
             Height = Height,
             Cost = Cost
         };
     }
-
+    public static implicit operator SubBin(Bin bin)
+    {
+        return new SubBin(bin);
+    }
 }

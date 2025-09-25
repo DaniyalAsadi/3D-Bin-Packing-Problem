@@ -1,21 +1,35 @@
 ﻿namespace _3D_Bin_Packing_Problem.Model;
 
-public class SubBin
+public record SubBin(
+    int X,
+    int Y,
+    int Z,
+    int Length,
+    int Width,
+    int Height,
+    int Back = 0,
+    int Left = 0,
+    int Front = 0,
+    int Right = 0)
 {
-    public int X { get; set; } // موقعیت مکانی در جعبه (گوشه پایین-چپ-پشت)
-    public int Y { get; set; }
-    public int Z { get; set; }
-
-
-    public int Length { get; set; }
-    public int Width { get; set; }
-    public int Height { get; set; }
-
-
-    public int Back { get; set; }
-    public int Left { get; set; }
-    public int Front { get; set; }
-    public int Right { get; set; }
-
     public int Volume => Length * Width * Height;
+
+    public SubBin(Bin bin) : this(
+        0,
+        0,
+        0,
+        bin.Length,
+        bin.Width,
+        bin.Height,
+        0,
+        0,
+        0,
+        0)
+    {
+
+    }
+    // برای خوانایی بیشتر یک ToString
+    public override string ToString()
+        => $"Pos=({X},{Y},{Z}), Size=({Length}×{Width}×{Height}), " +
+           $"Margins [B:{Back}, L:{Left}, F:{Front}, R:{Right}]";
 }
