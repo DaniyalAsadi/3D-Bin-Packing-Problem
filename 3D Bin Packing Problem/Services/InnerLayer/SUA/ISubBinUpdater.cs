@@ -1,4 +1,5 @@
 ﻿using _3D_Bin_Packing_Problem.Model;
+using _3D_Bin_Packing_Problem.Services.InnerLayer.PFCA;
 using _3D_Bin_Packing_Problem.ViewModels;
 
 namespace _3D_Bin_Packing_Problem.Services.InnerLayer.SUA;
@@ -82,89 +83,68 @@ public class SUA(IPlacementFeasibilityChecker pfca) : ISubBinUpdatingAlgorithm
         // Left
         if (ix > sb.X)
         {
-            result.Add(new SubBin
-            (
-                sb.X,
-                sb.Y,
-                sb.Z,
-                ix - sb.X,
-                sb.Width,
-                sb.Height
-            ));
+            result.Add(sb with
+            {
+                Length = ix - sb.X,
+                Right = sb.Right + (sb.Length - (ix - sb.X - sb.X))
+            });
         }
 
         // Right
         if (ix + il < sb.X + sb.Length)
         {
-            result.Add(new SubBin
-            (
-               ix + il,
-               sb.Y,
-               sb.Z,
-               (sb.X + sb.Length) - (ix + il),
-               sb.Width,
-               sb.Height
-            ));
+            result.Add(sb with
+            {
+                X = ix + il,
+                Length = (sb.X + sb.Length) - (ix + il),
+                Left = sb.Left + (ix + il - sb.X)
+            });
         }
 
         // Back
         if (iy > sb.Y)
         {
-            result.Add(new SubBin
-            (
-                sb.X,
-                sb.Y,
-                sb.Z,
-                sb.Length,
-                iy - sb.Y,
-                sb.Height
-            ));
+            result.Add(sb with
+            {
+                Width = iy - sb.Y,
+                Front = sb.Front + (sb.Width - (iy - sb.Y))
+            });
         }
 
         // Front
         if (iy + iw < sb.Y + sb.Width)
         {
-            result.Add(new SubBin
-            (
-                sb.X,
-                iy + iw,
-                sb.Z,
-                sb.Length,
-                (sb.Y + sb.Width) - (iy + iw),
-                sb.Height
-            ));
+            result.Add(sb with
+            {
+                Y = iy + iw,
+                Width = (sb.Y + sb.Width) - (iy + iw),
+                Back = sb.Back + (iy + iw - sb.Y)
+            });
         }
 
         // Bottom
         if (iz > sb.Z)
         {
-            result.Add(new SubBin
-            (
-                sb.X,
-                sb.Y,
-                sb.Z,
-                sb.Length,
-                sb.Width,
-                iz - sb.Z
-            ));
+            result.Add(sb with
+            {
+                Height = iz - sb.Z,
+                Top = sb.Top + (sb.Height - (iz - sb.Z))
+            });
         }
 
         // Top
         if (iz + ih < sb.Z + sb.Height)
         {
-            result.Add(new SubBin
-            (
-                sb.X,
-                sb.Y,
-                iz + ih,
-                sb.Length,
-                sb.Width,
-                (sb.Z + sb.Height) - (iz + ih)
-            ));
+            result.Add(sb with
+            {
+                Z = iz + ih,
+                Height = (sb.Z + sb.Height) - (iz + ih)
+            });
         }
 
         return result;
     }
+
 
     private static bool IsContained(SubBin a, SubBin b)
     {

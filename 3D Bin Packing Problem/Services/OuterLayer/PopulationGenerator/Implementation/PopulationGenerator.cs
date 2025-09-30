@@ -14,7 +14,7 @@ public class PopulationGenerator()
         var width = new Gene(_random.Next(minWidth, maxWidth + 1));
         var height = new Gene(_random.Next(minHeight, maxHeight + 1));
 
-        var box = new Bin
+        var box = new BinType
         {
             Length = length.Value,
             Width = width.Value,

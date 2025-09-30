@@ -1,4 +1,5 @@
 ﻿using _3D_Bin_Packing_Problem.Model;
+using _3D_Bin_Packing_Problem.Services.InnerLayer.PFCA;
 using _3D_Bin_Packing_Problem.Services.InnerLayer.SUA;
 using _3D_Bin_Packing_Problem.ViewModels;
 
@@ -6,7 +7,7 @@ namespace _3D_Bin_Packing_Problem.Services.InnerLayer.SPA;
 
 public interface ISingleBinPackingAlgorithm
 {
-    PackingResultViewModel Execute(List<Item> items, Bin bin);
+    PackingResultViewModel Execute(List<Item> items, BinType binType);
 
 }
 
@@ -16,20 +17,24 @@ internal class SingleBinPackingAlgorithm(
     : ISingleBinPackingAlgorithm
 {
 
-    public PackingResultViewModel Execute(List<Item> items, Bin bin)
+
+    public PackingResultViewModel Execute(List<Item> items, BinType binType)
     {
-        List<Item> itemList = items.ToList();
+        var itemList = items.ToList();
         List<SubBin> subBinList = [];
         List<Item> leftItemList = [];
         List<PlacementResult> packedItemList = [];
-        List<SubBin> validSubBins = new List<SubBin>();
-        subBinList.Add(bin);
+        subBinList.Add(binType);
         foreach (var item in itemList.ToList())
         {
-            validSubBins = ApplySpeedUpStrategy();
+            // Apply the speedup strategies and get valid sub-bins
+            var validSubBins = subBinList
+                .Where(sb => sb.Volume >= item.Volume) // شرط ۱
+                .Where(sb => sb.GetMinimumDimension() >= item.GetMinimumDimension()) // شرط ۲
+                .ToList();
             foreach (var validSubBin in validSubBins)
             {
-                if (feasibilityChecker.Execute(item, validSubBin, out PlacementResult? placementResult))
+                if (feasibilityChecker.Execute(item, validSubBin, out var placementResult))
                 {
                     ArgumentNullException.ThrowIfNull(placementResult);
                     packedItemList.Add(placementResult);
@@ -82,7 +87,7 @@ internal class SingleBinPackingAlgorithm(
 
         foreach (var sb in subBins)
         {
-            bool canHoldAnyItem = items.Any(item =>
+            var canHoldAnyItem = items.Any(item =>
                 sb.Volume >= item.Volume &&
                 Math.Min(sb.Length, Math.Min(sb.Width, sb.Height)) >=
                 Math.Min(item.Length, Math.Min(item.Width, item.Height))

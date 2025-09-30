@@ -1,6 +1,6 @@
 ﻿namespace _3D_Bin_Packing_Problem.Model;
 
-public class Bin
+public class BinType
 {
     public required int Length { get; set; }
     public required int Width { get; set; }
@@ -8,9 +8,9 @@ public class Bin
     public int Volume => Width * Height * Length;
     public required double Cost { get; set; }
     public List<Item> PackedItems { get; set; } = [];
-    public Bin Clone()
+    public BinType Clone()
     {
-        return new Bin()
+        return new BinType()
         {
             Length = Length,
             Width = Width,
@@ -18,8 +18,8 @@ public class Bin
             Cost = Cost
         };
     }
-    public static implicit operator SubBin(Bin bin)
+    public static implicit operator SubBin(BinType binType)
     {
-        return new SubBin(bin);
+        return new SubBin(binType);
     }
 }

@@ -3,7 +3,7 @@ using _3D_Bin_Packing_Problem.Model;
 using _3D_Bin_Packing_Problem.ViewModels;
 using System.Numerics;
 
-namespace _3D_Bin_Packing_Problem.Services.InnerLayer;
+namespace _3D_Bin_Packing_Problem.Services.InnerLayer.PFCA;
 
 public interface IPlacementFeasibilityChecker
 {
@@ -56,11 +56,11 @@ internal class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
                 }
 
                 // --- محاسبه margins ---
-                var marginLeft = (placedBox.X - (subBin.X - subBin.Left));
-                var marginRight = (subBin.X + subBin.Length + subBin.Right) - (placedBox.X + placedBox.L);
-                var marginBack = (placedBox.Y - (subBin.Y - subBin.Back));
-                var marginFront = (subBin.Y + subBin.Width + subBin.Front) - (placedBox.Y + placedBox.W);
-                var marginTop = (subBin.Z + subBin.Height) - (placedBox.Z + placedBox.H);
+                var marginLeft = placedBox.X - (subBin.X - subBin.Left);
+                var marginRight = subBin.X + subBin.Length + subBin.Right - (placedBox.X + placedBox.L);
+                var marginBack = placedBox.Y - (subBin.Y - subBin.Back);
+                var marginFront = subBin.Y + subBin.Width + subBin.Front - (placedBox.Y + placedBox.W);
+                var marginTop = subBin.Z + subBin.Height - (placedBox.Z + placedBox.H);
 
                 var margins = new[] { marginLeft, marginRight, marginBack, marginFront, marginTop };
                 var smallestMargin = margins.Min();

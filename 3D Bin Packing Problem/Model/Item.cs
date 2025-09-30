@@ -12,5 +12,8 @@ public class Item
     {
         return $"Length: {Length}, Width: {Width}, Height: {Height}";
     }
-
+    public int GetMinimumDimension()
+    {
+        return Math.Min(Length, Math.Min(Width, Height));
+    }
 }

@@ -2,12 +2,12 @@
 
 namespace _3D_Bin_Packing_Problem.Model;
 
-public class GeneSequence(Bin bin) : IEnumerable<Gene>, IEquatable<GeneSequence>
+public class GeneSequence(BinType binType) : IEnumerable<Gene>, IEquatable<GeneSequence>
 {
-    public Bin Bin { get; private set; } = bin;
-    public Gene Length { get; private set; } = bin.Length;
-    public Gene Width { get; private set; } = bin.Width;
-    public Gene Height { get; private set; } = bin.Height;
+    public BinType BinType { get; private set; } = binType;
+    public Gene Length { get; private set; } = binType.Length;
+    public Gene Width { get; private set; } = binType.Width;
+    public Gene Height { get; private set; } = binType.Height;
 
     private IEnumerable<Gene> Items
     {

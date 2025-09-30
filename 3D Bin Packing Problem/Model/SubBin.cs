@@ -7,20 +7,22 @@ public record SubBin(
     int Length,
     int Width,
     int Height,
-    int Back = 0,
-    int Left = 0,
-    int Front = 0,
-    int Right = 0)
+    int Back,
+    int Left,
+    int Front,
+    int Right,
+    int Top)
 {
     public int Volume => Length * Width * Height;
 
-    public SubBin(Bin bin) : this(
+    public SubBin(BinType binType) : this(
         0,
         0,
         0,
-        bin.Length,
-        bin.Width,
-        bin.Height,
+        binType.Length,
+        binType.Width,
+        binType.Height,
+        0,
         0,
         0,
         0,
@@ -31,5 +33,12 @@ public record SubBin(
     // برای خوانایی بیشتر یک ToString
     public override string ToString()
         => $"Pos=({X},{Y},{Z}), Size=({Length}×{Width}×{Height}), " +
-           $"Margins [B:{Back}, L:{Left}, F:{Front}, R:{Right}]";
+           $"Margins [B:{Back}, L:{Left}, F:{Front}, R:{Right}] T:{Top}";
+
+
+    public int GetMinimumDimension()
+    {
+        return Math.Min(Length, Math.Min(Width, Height));
+
+    }
 }

@@ -6,6 +6,6 @@ internal class DefaultFitness : IFitness
 {
     public double Evaluate(Chromosome chromosome)
     {
-        return chromosome.GeneSequences.Sum(x => x.Bin.Cost);
+        return chromosome.GeneSequences.Sum(x => x.BinType.Cost);
     }
 }
