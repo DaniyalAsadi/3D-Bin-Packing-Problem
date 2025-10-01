@@ -2,8 +2,10 @@
 
 public class PackingResultsViewModel
 {
+    public bool IsSuccess { get; set; }
+
     /// <summary>
     /// آیتم‌هایی که با موفقیت در Bin قرار گرفتند
     /// </summary>
-    public List<PackedItemViewModel> PackedItems { get; set; } 
+    public List<PackedItemViewModel> PackedItems { get; set; } = [];
 }

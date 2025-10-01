@@ -9,7 +9,7 @@ public interface ISubBinUpdatingAlgorithm
     List<SubBin> Execute(List<SubBin> subBins, Item item);
 }
 
-public class SUA(IPlacementFeasibilityChecker pfca) : ISubBinUpdatingAlgorithm
+public class SubBinUpdatingAlgorithm(IPlacementFeasibilityChecker pfca) : ISubBinUpdatingAlgorithm
 {
     public List<SubBin> Execute(List<SubBin> subBinList, Item item)
     {

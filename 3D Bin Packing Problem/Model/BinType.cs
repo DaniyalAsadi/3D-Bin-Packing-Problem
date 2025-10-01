@@ -7,17 +7,7 @@ public class BinType
     public required int Height { get; set; }
     public int Volume => Width * Height * Length;
     public required double Cost { get; set; }
-    public List<Item> PackedItems { get; set; } = [];
-    public BinType Clone()
-    {
-        return new BinType()
-        {
-            Length = Length,
-            Width = Width,
-            Height = Height,
-            Cost = Cost
-        };
-    }
+
     public static implicit operator SubBin(BinType binType)
     {
         return new SubBin(binType);

@@ -2,7 +2,7 @@
 
 namespace _3D_Bin_Packing_Problem.Services.InnerLayer.SubBinSelectionStrategy;
 
-public class BinSelectionStrategyB3 : ISubBinSelectionStrategy
+public class SubBinSelectionStrategyB3 : ISubBinSelectionStrategy
 {
     public BinType? Execute(IEnumerable<BinType> binTypes, List<Item> items)
     {

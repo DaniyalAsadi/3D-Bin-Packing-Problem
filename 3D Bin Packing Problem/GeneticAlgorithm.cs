@@ -25,6 +25,7 @@ public class GeneticAlgorithm(
             List<Item> itemList)
     {
         var initialPopulation = populationGenerator.Generate(itemList, PopulationSize, 1);
+        initialPopulation.ForEach(x => fitness.Evaluate(x, itemList));
         initialPopulation.Sort(comparer);
         _population = initialPopulation;
 
@@ -38,8 +39,8 @@ public class GeneticAlgorithm(
             bestIndividual = _population[0];
             while (newPopulation.Count < PopulationSize)
             {
-                var parentA = selection.Select(_population, PopulationSize, ElitismPopulationSize).First();
-                var parentB = selection.Select(_population, PopulationSize, ElitismPopulationSize).First();
+                var parentA = selection.Select(_population, itemList, PopulationSize, ElitismPopulationSize).First();
+                var parentB = selection.Select(_population, itemList, PopulationSize, ElitismPopulationSize).First();
 
                 List<Chromosome> crossChildrenList = [];
                 if (crossChildrenList == null) throw new ArgumentNullException(nameof(crossChildrenList));
@@ -75,7 +76,7 @@ public class GeneticAlgorithm(
 
             _elitismPopulation = _population.Take(ElitismPopulationSize).ToList();
 
-            if (fitness.Evaluate(_population.First()) <= fitness.Evaluate(bestIndividual))
+            if (fitness.Evaluate(_population.First(), itemList) <= fitness.Evaluate(bestIndividual, itemList))
             {
                 bestIndividual = _population.First();
             }

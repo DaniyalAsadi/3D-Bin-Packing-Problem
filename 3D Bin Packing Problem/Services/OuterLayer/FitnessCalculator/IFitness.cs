@@ -7,5 +7,5 @@ public interface IFitness
     /// Evaluates the fitness of a chromosome.
     /// Higher is better.
     /// </summary>
-    double Evaluate(Chromosome chromosome);
+    double Evaluate(Chromosome chromosome, List<Item> items);
 }

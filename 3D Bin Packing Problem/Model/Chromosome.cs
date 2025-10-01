@@ -4,6 +4,7 @@ namespace _3D_Bin_Packing_Problem.Model;
 
 public class Chromosome(List<GeneSequence> geneSequences) : IList<GeneSequence>
 {
+    private double _fitness;
     public List<GeneSequence> GeneSequences { get; set; } = geneSequences;
     public IEnumerator<GeneSequence> GetEnumerator()
     {
@@ -53,6 +54,12 @@ public class Chromosome(List<GeneSequence> geneSequences) : IList<GeneSequence>
         set => GeneSequences[index] = value;
     }
 
+    public double Fitness => _fitness;
+
+    public void SetFitness(double fitness)
+    {
+        _fitness = fitness;
+    }
     public Chromosome Clone()
     {
         return new Chromosome(GeneSequences);

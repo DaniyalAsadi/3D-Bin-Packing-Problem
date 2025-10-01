@@ -1,6 +1,5 @@
 ﻿using _3D_Bin_Packing_Problem.Model;
 using _3D_Bin_Packing_Problem.Services.OuterLayer.FitnessCalculator;
-using _3D_Bin_Packing_Problem.Services.OuterLayer.Selection;
 
 namespace _3D_Bin_Packing_Problem.Services.OuterLayer.Selection.Implementation;
 internal class RouletteWheelSelection(IFitness fitnessCalculator, IComparer<Chromosome> comparer) : ISelection
@@ -9,6 +8,7 @@ internal class RouletteWheelSelection(IFitness fitnessCalculator, IComparer<Chro
 
     public List<Chromosome> Select(
         List<Chromosome> population,
+        List<Item> items,
         int nextGenerationSize,
         int elitismPopulationSize)
     {
@@ -20,7 +20,7 @@ internal class RouletteWheelSelection(IFitness fitnessCalculator, IComparer<Chro
 
         // 1. Evaluate fitness for all individuals
         var evaluated = population
-            .Select(c => new { Chromosome = c, Fitness = fitnessCalculator.Evaluate(c) })
+            .Select(c => new { Chromosome = c, Fitness = fitnessCalculator.Evaluate(c, items) })
             .ToList();
 
         // 2. Sort by fitness (descending) and preserve elites

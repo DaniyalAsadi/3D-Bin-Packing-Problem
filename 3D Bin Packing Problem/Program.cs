@@ -1,4 +1,11 @@
 ﻿using _3D_Bin_Packing_Problem.Model;
+using _3D_Bin_Packing_Problem.Services.InnerLayer.ItemOrderingStrategy;
+using _3D_Bin_Packing_Problem.Services.InnerLayer.PA;
+using _3D_Bin_Packing_Problem.Services.InnerLayer.PFCA;
+using _3D_Bin_Packing_Problem.Services.InnerLayer.SPA;
+using _3D_Bin_Packing_Problem.Services.InnerLayer.SUA;
+using _3D_Bin_Packing_Problem.Services.InnerLayer.SubBinOrderingStrategy;
+using _3D_Bin_Packing_Problem.Services.InnerLayer.SubBinSelectionStrategy;
 using _3D_Bin_Packing_Problem.Services.OuterLayer.Crossover;
 using _3D_Bin_Packing_Problem.Services.OuterLayer.Crossover.Implementation;
 using _3D_Bin_Packing_Problem.Services.OuterLayer.FitnessCalculator;
@@ -35,7 +42,18 @@ public static class Program
         services.AddScoped<IMutationOperator, OnePointMutation>();
         services.AddScoped<IMutationOperator, TwoPointMutation>();
 
+
         services.AddScoped<IComparer<Chromosome>, ChromosomeFitnessComparer>();
+
+
+        services.AddScoped<IPlacementAlgorithm, PlacementAlgorithm>();
+        services.AddScoped<IItemOrderingStrategy, ItemOrderingStrategyI1>();
+        services.AddScoped<ISubBinOrderingStrategy, SubBinOrderingStrategyS1>();
+        services.AddScoped<ISubBinSelectionStrategy, SubBinSelectionStrategyB1>();
+        services.AddScoped<ISingleBinPackingAlgorithm, SingleBinPackingAlgorithm>();
+        services.AddScoped<IPlacementFeasibilityChecker, PlacementFeasibilityChecker>();
+        services.AddScoped<ISubBinUpdatingAlgorithm, SubBinUpdatingAlgorithm>();
+
         // ساخت ServiceProvider
         var serviceProvider = services.BuildServiceProvider();
 
@@ -43,14 +61,8 @@ public static class Program
         var app = serviceProvider.GetRequiredService<GeneticAlgorithm>();
         List<Item> products =
         [
-            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
-            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
-            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
-            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
-            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
-            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
-            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
-            new() { Id = Guid.NewGuid(), Length = 2, Width = 2, Height = 2 },
+            new(2, 2, 2 ),
+            new(2, 2, 2),
         ];
         var x = app.Execute(products);
 
@@ -133,20 +145,8 @@ public static class Program
         //chromosome.BoxPlacements.ToList().ForEach(Console.WriteLine);
 
 
-        Item product21312 = new Item()
-        {
-            Id = Guid.NewGuid(),
-            Length = 7,
-            Width = 1,
-            Height = 4
-        };
-        Item product21313 = new Item()
-        {
-            Id = Guid.NewGuid(),
-            Length = 1,
-            Width = 7,
-            Height = 4
-        };
+        Item product21312 = new Item(7, 1, 4);
+        Item product21313 = new Item(1, 7, 4);
 
     }
 }
