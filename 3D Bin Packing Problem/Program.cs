@@ -62,7 +62,13 @@ public static class Program
         List<Item> products =
         [
             new(2, 2, 2 ),
-            new(3, 3 ,5),
+            new(2, 2 ,2),
+            new(2, 2 ,2),
+            new(2, 2 ,2),
+            new(2, 2 ,2),
+            new(2, 2 ,2),
+            new(2, 2 ,2),
+            new(2, 2 ,2),
         ];
         var x = app.Execute(products);
 

@@ -196,4 +196,81 @@ public class SingleBinPackingAlgorithmTests
         Assert.Single(result); // فقط یک sub-bin معتبر باید باقی بماند
         Assert.Equal(validSubBin, result![0]);
     }
+    [Fact]
+    public void Execute_ShouldPackEightSmallItemsIntoBin_WhenFeasible()
+    {
+        // Arrange
+        var items = Enumerable.Range(0, 8)
+            .Select(_ => new Item(1, 1, 1))
+            .ToList();
+
+        var binType = new BinType { Length = 2, Width = 2, Height = 2, Cost = 1 };
+
+        var placements = new Queue<PlacementResult>();
+
+        // Generate expected placements (2×2×2 bin has 8 unit slots)
+        for (int x = 0; x < 2; x++)
+        {
+            for (int y = 0; y < 2; y++)
+            {
+                for (int z = 0; z < 2; z++)
+                {
+                    placements.Enqueue(new PlacementResult(
+                        new Item(1, 1, 1),
+                        new Vector3(x, y, z),   // placement corner
+                        new Vector3(1, 1, 1),   // dimensions
+                        1.0,
+                        0.75
+                    ));
+                }
+            }
+        }
+
+        var feasibilityChecker = new Mock<IPlacementFeasibilityChecker>();
+        feasibilityChecker
+            .Setup(fc => fc.Execute(It.IsAny<Item>(), It.IsAny<SubBin>(), out It.Ref<PlacementResult>.IsAny!))
+            .Returns((Item i, SubBin sb, out PlacementResult result) =>
+            {
+                if (placements.Count > 0)
+                {
+                    result = placements.Dequeue();
+                    return true;
+                }
+
+                result = null!;
+                return false;
+            });
+
+        var subBinUpdatingAlgorithm = new Mock<ISubBinUpdatingAlgorithm>();
+        var subBinOrderStrategy = new Mock<ISubBinOrderingStrategy>();
+        subBinOrderStrategy
+            .Setup(s => s.Apply(It.IsAny<IEnumerable<SubBin>>(), It.IsAny<Item>()))
+            .Returns<IEnumerable<SubBin>, Item>((bins, it) => bins);
+
+        var algorithm = new SingleBinPackingAlgorithm(
+            feasibilityChecker.Object,
+            subBinUpdatingAlgorithm.Object,
+            subBinOrderStrategy.Object
+        );
+
+        // Act
+        var result = algorithm.Execute(items, binType);
+
+        // Assert
+        Assert.Equal(8, result.PackedItems.Count); // همه ۸ آیتم باید بسته شوند
+        Assert.Empty(result.LeftItems);            // آیتمی نباید باقی بماند
+
+        // بررسی اینکه همه نقاط پوشش داده شدند
+        var coords = result.PackedItems.Select(p => (p.X, p.Y, p.Z)).ToHashSet();
+        Assert.Equal(8, coords.Count);
+        Assert.Contains((0, 0, 0), coords);
+        Assert.Contains((1, 0, 0), coords);
+        Assert.Contains((0, 1, 0), coords);
+        Assert.Contains((1, 1, 0), coords);
+        Assert.Contains((0, 0, 1), coords);
+        Assert.Contains((1, 0, 1), coords);
+        Assert.Contains((0, 1, 1), coords);
+        Assert.Contains((1, 1, 1), coords);
+    }
+
 }
