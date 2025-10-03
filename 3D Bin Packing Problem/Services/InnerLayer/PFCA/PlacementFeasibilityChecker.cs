@@ -12,7 +12,7 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
 
     public bool Execute(Item item, SubBin subBin, out PlacementResult? result)
     {
-        if (subBin.Volume <= item.Volume)
+        if (subBin.Volume < item.Volume)
         {
             result = null;
             return false;
@@ -28,7 +28,7 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
             foreach (var orientation in orientations)
             {
                 // موقعیت آیتم بعد از چرخش
-                var placedBox = new
+                var placedBox = new PlacedBox()
                 {
                     X = (int)pos.X,
                     Y = (int)pos.Y,
@@ -56,7 +56,7 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
                 var margins = new[] { marginLeft, marginRight, marginBack, marginFront, marginTop };
                 var smallestMargin = margins.Min();
 
-                if (smallestMargin < EPS)
+                if (smallestMargin < -EPS)
                     continue; // یعنی برخورد کرده
 
                 // --- بررسی نسبت تکیه‌گاه (support ratio) ---
@@ -69,14 +69,8 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
                 // --- انتخاب بهترین ---
                 if (!(smallestMargin < bestMargin)) continue;
                 bestMargin = smallestMargin;
-                bestResult = new PlacementResult
-                {
-                    Item = item,
-                    Position = pos,
-                    Orientation = orientation,
-                    SmallestMargin = smallestMargin,
-                    SupportRatio = supportRatio
-                };
+                bestResult = new PlacementResult(item: item, position: pos, orientation: orientation,
+                    smallestMargin: smallestMargin, supportRatio: supportRatio);
             }
         }
 
@@ -88,7 +82,7 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
     /// محاسبه مساحت تکیه‌گاه آیتم روی کف SubBin
     /// (برای ساده‌سازی اینجا فرض می‌کنیم کف کامل ساپورت هست)
     /// </summary>
-    private static int ComputeSupportArea(SubBin sb, dynamic placedBox)
+    private static int ComputeSupportArea(SubBin sb, PlacedBox placedBox)
     {
         // ساده‌سازی: تقاطع بین کف subBin و قاعده آیتم
         int x1 = Math.Max(sb.X, placedBox.X);
@@ -186,4 +180,13 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
 
         return unique;
     }
+}
+public readonly struct PlacedBox
+{
+    public int X { get; init; }
+    public int Y { get; init; }
+    public int Z { get; init; }
+    public int L { get; init; } // Length
+    public int W { get; init; } // Width
+    public int H { get; init; } // Height
 }

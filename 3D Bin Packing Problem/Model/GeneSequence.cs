@@ -74,4 +74,9 @@ public class GeneSequence(BinType binType) : IEnumerable<Gene>, IEquatable<GeneS
     {
         return HashCode.Combine(Length.GetHashCode(), Width.GetHashCode(), Height.GetHashCode());
     }
+
+    public override string ToString()
+    {
+        return BinType.ToString();
+    }
 }

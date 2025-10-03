@@ -2,7 +2,8 @@
 using _3D_Bin_Packing_Problem.Services.OuterLayer.FitnessCalculator;
 
 namespace _3D_Bin_Packing_Problem.Services.OuterLayer.Selection.Implementation;
-internal class RouletteWheelSelection(IFitness fitnessCalculator, IComparer<Chromosome> comparer) : ISelection
+
+public class RouletteWheelSelection(IFitnessCalculator fitnessCalculatorCalculator, IComparer<Chromosome> comparer) : ISelection
 {
     private readonly Random _random = new Random();
 
@@ -18,20 +19,20 @@ internal class RouletteWheelSelection(IFitness fitnessCalculator, IComparer<Chro
         if (elitismPopulationSize > nextGenerationSize)
             throw new ArgumentException("Elitism size cannot exceed next generation size.");
 
-        // 1. Evaluate fitness for all individuals
-        var evaluated = population
-            .Select(c => new { Chromosome = c, Fitness = fitnessCalculator.Evaluate(c, items) })
-            .ToList();
 
         // 2. Sort by fitness (descending) and preserve elites
-        var elites = evaluated
+        var elites = population
             .OrderByDescending(e => e.Fitness)
             .Take(elitismPopulationSize)
-            .Select(e => e.Chromosome)
             .ToList();
+        var fitnessNotCalculated = population.Any(x => !x.Fitness.HasValue);
+        if (fitnessNotCalculated)
+        {
+            throw new AbandonedMutexException();
+        }
 
         // 3. Compute total fitness for roulette wheel
-        double totalFitness = evaluated.Sum(e => e.Fitness);
+        double totalFitness = population.Sum(e => e.Fitness)!.Value;
         if (totalFitness <= 0)
             totalFitness = 1e-6; // avoid division by zero
 
@@ -43,14 +44,12 @@ internal class RouletteWheelSelection(IFitness fitnessCalculator, IComparer<Chro
             double spin = _random.NextDouble() * totalFitness;
             double cumulative = 0;
 
-            foreach (var e in evaluated)
+            foreach (var e in population)
             {
-                cumulative += e.Fitness;
-                if (cumulative >= spin)
-                {
-                    selected.Add(e.Chromosome);
-                    break;
-                }
+                cumulative += e.Fitness!.Value;
+                if (!(cumulative >= spin)) continue;
+                selected.Add(e);
+                break;
             }
         }
 

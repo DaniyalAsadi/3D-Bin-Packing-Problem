@@ -1,14 +1,25 @@
 ﻿using _3D_Bin_Packing_Problem.Model;
-using _3D_Bin_Packing_Problem.Services.OuterLayer.PopulationGenerator;
 
 namespace _3D_Bin_Packing_Problem.Services.OuterLayer.PopulationGenerator.Implementation;
-public class PopulationGenerator()
-    : IPopulationGenerator
+public class PopulationGenerator() : IPopulationGenerator
 {
     private readonly Random _random = new Random();
 
+    // قیمت پایه برای هر واحد حجم (می‌تونی از مقاله یا دیتاست واقعی بگیری)
+    private const double UnitPrice = 0.1;
+
+    // محاسبه هزینه جعبه
+    private double CalculateBinCost(BinType bin)
+    {
+        // قیمت = حجم × ضریب
+        return bin.Volume * UnitPrice;
+    }
+
     // تولید یک GeneSequence (یک جعبه تصادفی)
-    private GeneSequence CreateRandomGeneSequence(int minLength, int maxLength, int minWidth, int maxWidth, int minHeight, int maxHeight)
+    private GeneSequence CreateRandomGeneSequence(
+        int minLength, int maxLength,
+        int minWidth, int maxWidth,
+        int minHeight, int maxHeight)
     {
         var length = new Gene(_random.Next(minLength, maxLength + 1));
         var width = new Gene(_random.Next(minWidth, maxWidth + 1));
@@ -18,21 +29,28 @@ public class PopulationGenerator()
         {
             Length = length.Value,
             Width = width.Value,
-            Height = height.Value,
-            Cost = 0 // قیمت می‌تونه بعداً بر اساس فرمول مقاله محاسبه بشه
+            Height = height.Value
         };
+
+        box.SetCost(CalculateBinCost(box));
+        // قیمت جعبه بر اساس حجم
 
         return new GeneSequence(box);
     }
 
     // تولید یک کروموزوم
-    private Chromosome CreateRandomChromosome(int binTypeCount, int minLength, int maxLength, int minWidth, int maxWidth, int minHeight, int maxHeight)
+    private Chromosome CreateRandomChromosome(
+        int binTypeCount,
+        int minLength, int maxLength,
+        int minWidth, int maxWidth,
+        int minHeight, int maxHeight)
     {
         var geneSequences = new List<GeneSequence>();
 
         for (int i = 0; i < binTypeCount; i++)
         {
-            geneSequences.Add(CreateRandomGeneSequence(minLength, maxLength, minWidth, maxWidth, minHeight, maxHeight));
+            geneSequences.Add(CreateRandomGeneSequence(
+                minLength, maxLength, minWidth, maxWidth, minHeight, maxHeight));
         }
 
         return new Chromosome(geneSequences);
@@ -41,28 +59,32 @@ public class PopulationGenerator()
     // تولید جمعیت اولیه
     public List<Chromosome> Generate(List<Item> itemList, int populationSize, int binTypeCount)
     {
-        // محاسبه کمترین و بیشترین طول، عرض و ارتفاع بین محصولات
-        int minLength = itemList.Min(e => e.Length);
-        int maxLength = itemList.Max(e => e.Length);
+        // حداقل جعبه باید بزرگ‌ترین آیتم رو جا بده
+        int minLength = itemList.Max(e => e.Length);
+        int minWidth = itemList.Max(e => e.Width);
+        int minHeight = itemList.Max(e => e.Height);
 
-        int minWidth = itemList.Min(e => e.Width);
-        int maxWidth = itemList.Max(e => e.Width);
-
-        int minHeight = itemList.Min(e => e.Height);
-        int maxHeight = itemList.Max(e => e.Height);
+        // حداکثر رو می‌تونیم مجموع آیتم‌ها در نظر بگیریم (یا یک ضریب)
+        int maxLength = itemList.Sum(e => e.Length);
+        int maxWidth = itemList.Sum(e => e.Width);
+        int maxHeight = itemList.Sum(e => e.Height);
 
         var population = new List<Chromosome>();
 
-        // طبق مقاله: 2 × PopulationSize ساخته می‌شود و بعد بهترین‌ها انتخاب می‌شوند
         for (int i = 0; i < 2 * populationSize; i++)
         {
             var chromosome = CreateRandomChromosome(binTypeCount, minLength, maxLength, minWidth, maxWidth, minHeight, maxHeight);
             population.Add(chromosome);
         }
 
-        // در اینجا باید Fitness محاسبه شود و بعد بهترین PopulationSize انتخاب شوند
-        // فعلاً به صورت ساده همه را برمی‌گردانیم
-        return population.Take(populationSize).ToList();
+        // 🔹 اینجا باید Fitness واقعی هر کروموزوم محاسبه بشه
+        // فعلا ساده: جمع هزینه جعبه‌های هر کروموزوم
+        population = population
+            .OrderBy(c => c.GeneSequences.Sum(g => g.BinType.Cost))
+            .Take(populationSize)
+            .ToList();
+
+        return population;
     }
 }
 

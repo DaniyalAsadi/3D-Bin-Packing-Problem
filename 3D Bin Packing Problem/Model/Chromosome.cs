@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using _3D_Bin_Packing_Problem.ViewModels;
+using System.Collections;
 
 namespace _3D_Bin_Packing_Problem.Model;
 
 public class Chromosome(List<GeneSequence> geneSequences) : IList<GeneSequence>
 {
-    private double _fitness;
+    private double? _fitness;
+    private PackingResultsViewModel? _packingResults;
     public List<GeneSequence> GeneSequences { get; set; } = geneSequences;
     public IEnumerator<GeneSequence> GetEnumerator()
     {
@@ -54,11 +56,12 @@ public class Chromosome(List<GeneSequence> geneSequences) : IList<GeneSequence>
         set => GeneSequences[index] = value;
     }
 
-    public double Fitness => _fitness;
-
-    public void SetFitness(double fitness)
+    public double? Fitness => _fitness;
+    public PackingResultsViewModel? PackingResults => _packingResults;
+    public void SetFitness(FitnessResultViewModel fitnessResultViewModel)
     {
-        _fitness = fitness;
+        _fitness = fitnessResultViewModel.Fitness;
+        _packingResults = fitnessResultViewModel.PackingResults;
     }
     public Chromosome Clone()
     {
@@ -66,4 +69,9 @@ public class Chromosome(List<GeneSequence> geneSequences) : IList<GeneSequence>
 
     }
 
+
+    public override string ToString()
+    {
+        return $"Count : {Count}, Fitness :{Fitness}";
+    }
 }

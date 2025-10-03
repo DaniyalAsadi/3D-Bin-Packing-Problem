@@ -20,7 +20,7 @@ public class PackingResultViewModel
 /// <summary>
 /// نمایش یک آیتم که در Bin بسته‌بندی شده
 /// </summary>
-public class PackedItemViewModel
+public record PackedItemViewModel
 {
     public Guid ItemId { get; set; }
 

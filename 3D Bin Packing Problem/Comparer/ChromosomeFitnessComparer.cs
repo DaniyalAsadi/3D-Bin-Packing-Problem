@@ -4,11 +4,14 @@ public class ChromosomeFitnessComparer : IComparer<Chromosome>
 {
     public int Compare(Chromosome? x, Chromosome? y)
     {
-        if (x == null || y == null) return 0;
+        if (x == null && y == null) return 0;
+        if (x == null) return -1;
+        if (y == null) return 1;
 
-        var fx = x.Fitness;
-        var fy = y.Fitness;
+        var fx = x.Fitness ?? double.MinValue;
+        var fy = y.Fitness ?? double.MinValue;
 
-        return fx.CompareTo(fy);
+        // Descending: higher fitness first
+        return fy.CompareTo(fx);
     }
 }

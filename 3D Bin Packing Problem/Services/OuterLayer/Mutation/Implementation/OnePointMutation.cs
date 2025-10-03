@@ -1,9 +1,8 @@
 ﻿using _3D_Bin_Packing_Problem.Model;
-using _3D_Bin_Packing_Problem.Services.OuterLayer.Mutation;
 
 namespace _3D_Bin_Packing_Problem.Services.OuterLayer.Mutation.Implementation;
 
-internal class OnePointMutation : IMutationOperator
+public class OnePointMutation : IMutationOperator
 {
 
     private static readonly Random Random = new Random();

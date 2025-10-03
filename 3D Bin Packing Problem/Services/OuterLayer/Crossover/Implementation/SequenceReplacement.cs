@@ -1,8 +1,8 @@
 ﻿using _3D_Bin_Packing_Problem.Model;
-using _3D_Bin_Packing_Problem.Services.OuterLayer.Crossover;
 
 namespace _3D_Bin_Packing_Problem.Services.OuterLayer.Crossover.Implementation;
-internal class SequenceReplacement : ICrossoverOperator
+
+public class SequenceReplacement : ICrossoverOperator
 {
     private static readonly Random Random = new Random();
 

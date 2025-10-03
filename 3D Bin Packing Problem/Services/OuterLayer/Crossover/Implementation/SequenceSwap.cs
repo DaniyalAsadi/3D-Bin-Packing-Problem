@@ -1,8 +1,8 @@
 ﻿using _3D_Bin_Packing_Problem.Model;
-using _3D_Bin_Packing_Problem.Services.OuterLayer.Crossover;
 
 namespace _3D_Bin_Packing_Problem.Services.OuterLayer.Crossover.Implementation;
-internal class SequenceSwap : ICrossoverOperator
+
+public class SequenceSwap : ICrossoverOperator
 {
     private static readonly Random Random = new Random();
     public (Chromosome, Chromosome) Crossover(Chromosome c1, Chromosome c2)

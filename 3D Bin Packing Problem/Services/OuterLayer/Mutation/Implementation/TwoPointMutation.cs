@@ -1,9 +1,8 @@
 ﻿using _3D_Bin_Packing_Problem.Model;
-using _3D_Bin_Packing_Problem.Services.OuterLayer.Mutation;
 
 namespace _3D_Bin_Packing_Problem.Services.OuterLayer.Mutation.Implementation;
 
-internal class TwoPointMutation : IMutationOperator
+public class TwoPointMutation : IMutationOperator
 {
     private static readonly Random Random = new Random();
     public Chromosome Mutate(Chromosome chromosome)

@@ -6,24 +6,22 @@ public class SubBinSelectionStrategyB3 : ISubBinSelectionStrategy
 {
     public BinType? Execute(IEnumerable<BinType> binTypes, List<Item> items)
     {
-        if (items.Count == 0)
-            return null;
+        var feasibleBins = FilterFeasibleBins(binTypes, items);
 
-        var firstItem = items.First();
-
-        var fitBins = binTypes
-            .Where(bt =>
-                firstItem.Length <= bt.Length &&
-                firstItem.Width <= bt.Width &&
-                firstItem.Height <= bt.Height)
-            .ToList();
-
-        return fitBins
-            .OrderBy(bt => bt.Cost / bt.Volume)
-            .ThenByDescending(bt => bt.Volume)
-            .ThenByDescending(bt => bt.Length)
-            .ThenByDescending(bt => bt.Width)
-            .ThenByDescending(bt => bt.Height)
+        return feasibleBins
+            .OrderBy(bt => bt.Cost)
             .FirstOrDefault();
+    }
+
+    private IEnumerable<BinType> FilterFeasibleBins(IEnumerable<BinType> binTypes, List<Item> items)
+    {
+        int maxLength = items.Max(i => i.Length);
+        int maxWidth = items.Max(i => i.Width);
+        int maxHeight = items.Max(i => i.Height);
+
+        return binTypes.Where(bt =>
+            bt.Length >= maxLength &&
+            bt.Width >= maxWidth &&
+            bt.Height >= maxHeight);
     }
 }

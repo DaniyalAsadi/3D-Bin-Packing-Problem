@@ -31,7 +31,7 @@ public static class Program
         services.AddScoped<GeneticAlgorithm>();
         services.AddScoped<IPopulationGenerator, PopulationGenerator>();
         services.AddScoped<ISelection, RouletteWheelSelection>();
-        services.AddScoped<IFitness, DefaultFitness>();
+        services.AddScoped<IFitnessCalculator, DefaultFitnessCalculator>();
 
         services.AddScoped<ICrossoverOperator, OnePointSwap>();
         services.AddScoped<ICrossoverOperator, TwoPointSwap>();
@@ -62,12 +62,12 @@ public static class Program
         List<Item> products =
         [
             new(2, 2, 2 ),
-            new(2, 2, 2),
+            new(3, 3 ,5),
         ];
         var x = app.Execute(products);
 
 
-        Console.WriteLine(x);
+        Console.WriteLine(x.PackingResults);
 
 
         //Test.Execute(args);
