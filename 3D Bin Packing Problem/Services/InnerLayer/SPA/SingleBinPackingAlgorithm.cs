@@ -87,8 +87,8 @@ public class SingleBinPackingAlgorithm(
                 Height = x.Height,
                 Length = x.Length,
                 Width = x.Width,
-                Y = x.Y,
                 X = x.X,
+                Y = x.Y,
                 Z = x.Z
             }).ToList()
         };

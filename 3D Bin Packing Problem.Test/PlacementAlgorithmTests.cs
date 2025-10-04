@@ -18,7 +18,7 @@ public class PlacementAlgorithmTests
             new Item(4, 4, 4)
         };
 
-        var binType = new BinType { Length = 10, Width = 10, Height = 10, Cost = 1 };
+        var binType = new BinType { Length = 10, Width = 10, Height = 10 };
 
         var itemOrdering = new Mock<IItemOrderingStrategy>();
         itemOrdering.Setup(x => x.Apply(It.IsAny<IEnumerable<Item>>()))
@@ -56,7 +56,7 @@ public class PlacementAlgorithmTests
         new Item(20, 20, 20) // بزرگ‌تر از Bin → جا نمی‌شود
     };
 
-        var binType = new BinType { Length = 10, Width = 10, Height = 10, Cost = 1 };
+        var binType = new BinType { Length = 10, Width = 10, Height = 10 };
 
         var itemOrdering = new Mock<IItemOrderingStrategy>();
         itemOrdering.Setup(x => x.Apply(It.IsAny<IEnumerable<Item>>()))

@@ -5,15 +5,7 @@ public class PopulationGenerator() : IPopulationGenerator
 {
     private readonly Random _random = new Random();
 
-    // قیمت پایه برای هر واحد حجم (می‌تونی از مقاله یا دیتاست واقعی بگیری)
-    private const double UnitPrice = 0.1;
 
-    // محاسبه هزینه جعبه
-    private double CalculateBinCost(BinType bin)
-    {
-        // قیمت = حجم × ضریب
-        return bin.Volume * UnitPrice;
-    }
 
     // تولید یک GeneSequence (یک جعبه تصادفی)
     private GeneSequence CreateRandomGeneSequence(
@@ -32,7 +24,7 @@ public class PopulationGenerator() : IPopulationGenerator
             Height = height.Value
         };
 
-        box.SetCost(CalculateBinCost(box));
+
         // قیمت جعبه بر اساس حجم
 
         return new GeneSequence(box);

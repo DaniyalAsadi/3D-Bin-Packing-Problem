@@ -16,7 +16,7 @@ public class SingleBinPackingAlgorithmTests
     {
         // Arrange
         var item = new Item(2, 2, 2);
-        var binType = new BinType { Length = 10, Width = 10, Height = 10, Cost = 1 };
+        var binType = new BinType { Length = 10, Width = 10, Height = 10 };
 
         var expectedPlacement = new PlacementResult(
             item,
@@ -73,7 +73,7 @@ public class SingleBinPackingAlgorithmTests
     {
         // Arrange
         var item = new Item(20, 20, 20); // بزرگ‌تر از Bin
-        var binType = new BinType { Length = 10, Width = 10, Height = 10, Cost = 1 };
+        var binType = new BinType { Length = 10, Width = 10, Height = 10 };
 
         var feasibilityChecker = new Mock<IPlacementFeasibilityChecker>();
         PlacementResult? dummy = null;
@@ -105,7 +105,7 @@ public class SingleBinPackingAlgorithmTests
         new Item(20, 20, 20) // ❌ جا نمیشه
     };
 
-        var binType = new BinType { Length = 10, Width = 10, Height = 10, Cost = 1 };
+        var binType = new BinType { Length = 10, Width = 10, Height = 10 };
 
         var placementResult = new PlacementResult(
             items[0],
@@ -204,7 +204,7 @@ public class SingleBinPackingAlgorithmTests
             .Select(_ => new Item(1, 1, 1))
             .ToList();
 
-        var binType = new BinType { Length = 2, Width = 2, Height = 2, Cost = 1 };
+        var binType = new BinType { Length = 2, Width = 2, Height = 2 };
 
         var placements = new Queue<PlacementResult>();
 

@@ -17,9 +17,9 @@ public class SubBinSelectionStrategyB1Tests
 
         var bins = new List<BinType>
         {
-            new BinType { Length = 2, Width = 3, Height = 4, Cost = 15 }, // فقط آیتم 2x2x2 جا میشه → Feasible
-            new BinType { Length = 3, Width = 3, Height = 5, Cost = 20 }, // هر دو آیتم جا میشن → Feasible
-            new BinType { Length = 5, Width = 5, Height = 5, Cost = 200 } // همه جا میشن → Feasible
+            new BinType { Length = 2, Width = 3, Height = 4}, // فقط آیتم 2x2x2 جا میشه → Feasible
+            new BinType { Length = 3, Width = 3, Height = 5}, // هر دو آیتم جا میشن → Feasible
+            new BinType { Length = 5, Width = 5, Height = 5} // همه جا میشن → Feasible
         };
 
         var strategy = new SubBinSelectionStrategyB1();
@@ -31,7 +31,7 @@ public class SubBinSelectionStrategyB1Tests
         Assert.NotNull(selectedBin);
         // Bin با کمترین Cost/Volume باید انتخاب بشه
         // 15/24 = 0.625 , 20/45 = 0.444 , 200/125 = 1.6 → بهترین = Bin با Cost = 20
-        Assert.Equal(20, selectedBin.Cost);
+        Assert.Equal(125, selectedBin.Cost);
     }
 
     [Fact]
@@ -46,8 +46,8 @@ public class SubBinSelectionStrategyB1Tests
 
         var bins = new List<BinType>
         {
-            new BinType { Length = 1, Width = 2, Height = 2, Cost = 10 }, // هیچ آیتمی جا نمیشه
-            new BinType { Length = 2, Width = 2, Height = 2, Cost = 12 }  // آیتم بزرگ‌تر جا نمیشه، آیتم کوچک هم جا نمیشه چون height=2 < 2 → کلاً رد
+            new BinType { Length = 1, Width = 2, Height = 2}, // هیچ آیتمی جا نمیشه
+            new BinType { Length = 2, Width = 2, Height = 2}  // آیتم بزرگ‌تر جا نمیشه، آیتم کوچک هم جا نمیشه چون height=2 < 2 → کلاً رد
         };
 
         var strategy = new SubBinSelectionStrategyB1();
@@ -60,7 +60,7 @@ public class SubBinSelectionStrategyB1Tests
         Assert.NotNull(selectedBin);
         // Bin با کمترین Cost/Volume باید انتخاب بشه
         // 15/24 = 0.625 , 20/45 = 0.444 , 200/125 = 1.6 → بهترین = Bin با Cost = 20
-        Assert.Equal(12, selectedBin.Cost);
+        Assert.Equal(8, selectedBin.Cost);
     }
     [Fact]
     public void Execute_ShouldReturnNull_WhenNoBinIsFeasible()
@@ -74,8 +74,8 @@ public class SubBinSelectionStrategyB1Tests
 
         var bins = new List<BinType>
         {
-            new BinType { Length = 1, Width = 1, Height = 1, Cost = 10 }, // آیتم 2x2x2 هم جا نمیشه
-            new BinType { Length = 2, Width = 2, Height = 1, Cost = 12 }  // Height=1 → هیچ آیتمی جا نمیشه
+            new BinType { Length = 1, Width = 1, Height = 1 }, // آیتم 2x2x2 هم جا نمیشه
+            new BinType { Length = 2, Width = 2, Height = 1 }  // Height=1 → هیچ آیتمی جا نمیشه
         };
 
         var strategy = new SubBinSelectionStrategyB1();
