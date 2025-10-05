@@ -72,7 +72,6 @@ public class GeneticAlgorithm(
                 }
                 crossChildrenList.ForEach(x =>
                 {
-                    if (x.Fitness.HasValue) return;
                     var fitnessResultViewModel = fitnessCalculator.Evaluate(x, itemList);
                     x.SetFitness(fitnessResultViewModel);
                 });
@@ -99,7 +98,6 @@ public class GeneticAlgorithm(
                 }
                 muteChildrenList.ForEach(x =>
                 {
-                    if (x.Fitness.HasValue) return;
                     var fitnessResultViewModel = fitnessCalculator.Evaluate(x, itemList);
                     x.SetFitness(fitnessResultViewModel);
                 });

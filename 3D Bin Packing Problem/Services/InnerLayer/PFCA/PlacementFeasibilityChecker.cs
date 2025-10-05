@@ -8,6 +8,7 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
 {
     private const float EPS = 1e-5f;
     private const double Lambda = 0.75;
+    public static PlacementResult? LastPlacement { get; set; }
 
 
     public bool Execute(Item item, SubBin subBin, out PlacementResult? result)
@@ -69,12 +70,17 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
                 // --- انتخاب بهترین ---
                 if (!(smallestMargin < bestMargin)) continue;
                 bestMargin = smallestMargin;
-                bestResult = new PlacementResult(item: item, position: pos, orientation: orientation,
-                    smallestMargin: smallestMargin, supportRatio: supportRatio);
+                bestResult = new PlacementResult(
+                    Item: item,
+                    Position: pos,
+                    Orientation: orientation,
+                    SmallestMargin: smallestMargin,
+                    SupportRatio: supportRatio);
             }
         }
 
         result = bestResult;
+        LastPlacement = bestResult;
         return bestResult != null;
     }
 

@@ -1,4 +1,5 @@
-﻿using _3D_Bin_Packing_Problem.Model;
+﻿using _3D_Bin_Packing_Problem.Helpers;
+using _3D_Bin_Packing_Problem.Model;
 
 namespace _3D_Bin_Packing_Problem.Services.OuterLayer.PopulationGenerator.Implementation;
 public class PopulationGenerator() : IPopulationGenerator
@@ -39,7 +40,7 @@ public class PopulationGenerator() : IPopulationGenerator
     {
         var geneSequences = new List<GeneSequence>();
 
-        for (int i = 0; i < binTypeCount; i++)
+        for (var i = 0; i < binTypeCount; i++)
         {
             geneSequences.Add(CreateRandomGeneSequence(
                 minLength, maxLength, minWidth, maxWidth, minHeight, maxHeight));
@@ -51,19 +52,21 @@ public class PopulationGenerator() : IPopulationGenerator
     // تولید جمعیت اولیه
     public List<Chromosome> Generate(List<Item> itemList, int populationSize, int binTypeCount)
     {
-        // حداقل جعبه باید بزرگ‌ترین آیتم رو جا بده
-        int minLength = itemList.Max(e => e.Length);
-        int minWidth = itemList.Max(e => e.Width);
-        int minHeight = itemList.Max(e => e.Height);
+        var b = BinDimensionBounds.Compute(itemList);
 
-        // حداکثر رو می‌تونیم مجموع آیتم‌ها در نظر بگیریم (یا یک ضریب)
-        int maxLength = itemList.Sum(e => e.Length);
-        int maxWidth = itemList.Sum(e => e.Width);
-        int maxHeight = itemList.Sum(e => e.Height);
+        // حالا می‌تونی بازهٔ تصادفی‌سازی رو از این‌ها بگیری
+        var minLength = b.MinLength;
+        var minWidth = b.MinWidth;
+        var minHeight = b.MinHeight;
+
+        var maxLength = b.MaxLength;
+        var maxWidth = b.MaxWidth;
+        var maxHeight = b.MaxHeight;
+
 
         var population = new List<Chromosome>();
 
-        for (int i = 0; i < 2 * populationSize; i++)
+        for (var i = 0; i < 2 * populationSize; i++)
         {
             var chromosome = CreateRandomChromosome(binTypeCount, minLength, maxLength, minWidth, maxWidth, minHeight, maxHeight);
             population.Add(chromosome);

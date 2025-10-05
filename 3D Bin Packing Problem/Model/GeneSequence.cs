@@ -1,13 +1,20 @@
 ﻿using System.Collections;
 
 namespace _3D_Bin_Packing_Problem.Model;
-
-public class GeneSequence(BinType binType) : IEnumerable<Gene>, IEquatable<GeneSequence>
+public class GeneSequence : IEnumerable<Gene>, IEquatable<GeneSequence>
 {
-    public BinType BinType { get; private set; } = binType;
-    public Gene Length { get; private set; } = binType.Length;
-    public Gene Width { get; private set; } = binType.Width;
-    public Gene Height { get; private set; } = binType.Height;
+    public BinType BinType { get; private set; }
+    public Gene Length { get; private set; }
+    public Gene Width { get; private set; }
+    public Gene Height { get; private set; }
+
+    public GeneSequence(BinType binType)
+    {
+        BinType = binType;
+        Length = new Gene(binType.Length);
+        Width = new Gene(binType.Width);
+        Height = new Gene(binType.Height);
+    }
 
     private IEnumerable<Gene> Items
     {
@@ -19,7 +26,6 @@ public class GeneSequence(BinType binType) : IEnumerable<Gene>, IEquatable<GeneS
         }
     }
 
-    // --- IList implementation ---
     public Gene this[int index]
     {
         get => index switch
@@ -57,26 +63,25 @@ public class GeneSequence(BinType binType) : IEnumerable<Gene>, IEquatable<GeneS
 
     public bool Equals(GeneSequence? other)
     {
-        return other != null && Length.Equals(other.Length) && Width.Equals(other.Width) && Height.Equals(other.Height);
+        return other is not null &&
+               Length.Equals(other.Length) &&
+               Width.Equals(other.Width) &&
+               Height.Equals(other.Height);
     }
 
-    public override bool Equals(object? obj)
-    {
-        return obj switch
-        {
-            null => false,
-            GeneSequence geneSequence => Equals(geneSequence),
-            _ => false
-        };
-    }
+    public override bool Equals(object? obj) => obj is GeneSequence seq && Equals(seq);
 
-    public override int GetHashCode()
-    {
-        return HashCode.Combine(Length.GetHashCode(), Width.GetHashCode(), Height.GetHashCode());
-    }
+    public override int GetHashCode() =>
+        HashCode.Combine(Length.GetHashCode(), Width.GetHashCode(), Height.GetHashCode());
 
-    public override string ToString()
+    public override string ToString() => BinType.ToString();
+
+    /// <summary>
+    /// Deep clone for GeneSequence including BinType
+    /// </summary>
+    public GeneSequence Clone()
     {
-        return BinType.ToString();
+        var clonedBin = BinType.Clone();
+        return new GeneSequence(clonedBin);
     }
 }

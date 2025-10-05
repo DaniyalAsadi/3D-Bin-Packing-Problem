@@ -25,14 +25,10 @@ public class RouletteWheelSelection(IFitnessCalculator fitnessCalculatorCalculat
             .OrderByDescending(e => e.Fitness)
             .Take(elitismPopulationSize)
             .ToList();
-        var fitnessNotCalculated = population.Any(x => !x.Fitness.HasValue);
-        if (fitnessNotCalculated)
-        {
-            throw new AbandonedMutexException();
-        }
+
 
         // 3. Compute total fitness for roulette wheel
-        double totalFitness = population.Sum(e => e.Fitness)!.Value;
+        double totalFitness = population.Sum(e => e.Fitness);
         if (totalFitness <= 0)
             totalFitness = 1e-6; // avoid division by zero
 
@@ -46,7 +42,7 @@ public class RouletteWheelSelection(IFitnessCalculator fitnessCalculatorCalculat
 
             foreach (var e in population)
             {
-                cumulative += e.Fitness!.Value;
+                cumulative += e.Fitness;
                 if (!(cumulative >= spin)) continue;
                 selected.Add(e);
                 break;

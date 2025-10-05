@@ -53,6 +53,7 @@ public class SubBinUpdatingAlgorithm(IPlacementFeasibilityChecker placementFeasi
         var ix = (int)placement.Position.X;
         var iy = (int)placement.Position.Y;
         var iz = (int)placement.Position.Z;
+
         var il = (int)placement.Orientation.X;
         var iw = (int)placement.Orientation.Y;
         var ih = (int)placement.Orientation.Z;
