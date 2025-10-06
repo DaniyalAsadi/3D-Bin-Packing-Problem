@@ -32,7 +32,7 @@ public class SubBinSelectionStrategyB1Tests
         Assert.Equal(selectedBin, bins[2]);
         // Bin با کمترین Cost/Volume باید انتخاب بشه
         // 15/24 = 0.625 , 20/45 = 0.444 , 200/125 = 1.6 → بهترین = Bin با Cost = 20
-        Assert.Equal(10000, selectedBin.Cost);
+        Assert.Equal(125, selectedBin.Cost);
     }
 
     [Fact]
@@ -60,7 +60,7 @@ public class SubBinSelectionStrategyB1Tests
         // Assert
         Assert.NotNull(selectedBin);
         Assert.Equal(selectedBin, bins[1]);
-        Assert.Equal(10000, selectedBin.Cost);
+        Assert.Equal(8, selectedBin.Cost);
     }
     [Fact]
     public void Execute_ShouldReturnNull_WhenNoBinIsFeasible()

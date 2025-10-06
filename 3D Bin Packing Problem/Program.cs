@@ -54,14 +54,14 @@ var serviceProvider = services.BuildServiceProvider();
 var app = serviceProvider.GetRequiredService<GeneticAlgorithm>();
 List<Item> products =
 [
-    new(1,1,1),
-    new(1,1,1),
-    new(1,1,1),
-    new(1,1,1),
-    new(1,1,1),
-    new(1,1,1),
-    new(1,1,1),
-    new(1,1,1),
+    new(2,2,2),
+    new(2,2,2),
+    new(2,2,2),
+    new(2,2,2),
+    new(2,2,2),
+    new(2,2,2),
+    new(2,2,2),
+    new(2,2,2),
 ];
 var x = app.Execute(products);
 

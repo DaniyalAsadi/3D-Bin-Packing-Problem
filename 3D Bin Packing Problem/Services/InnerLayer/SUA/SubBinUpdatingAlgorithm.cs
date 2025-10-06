@@ -1,20 +1,17 @@
 ﻿using _3D_Bin_Packing_Problem.Model;
-using _3D_Bin_Packing_Problem.Services.InnerLayer.PFCA;
 using _3D_Bin_Packing_Problem.ViewModels;
 
 namespace _3D_Bin_Packing_Problem.Services.InnerLayer.SUA;
 
-public class SubBinUpdatingAlgorithm(IPlacementFeasibilityChecker placementFeasibilityChecker) : ISubBinUpdatingAlgorithm
+public class SubBinUpdatingAlgorithm : ISubBinUpdatingAlgorithm
 {
-    public List<SubBin> Execute(List<SubBin> subBinList, Item item)
+    public List<SubBin> Execute(List<SubBin> subBinList, PlacementResult? placement)
     {
         var newSubBinList = new List<SubBin>();
 
         // --- خط 2: فراخوانی PFCA ---
-        PlacementResult? placement = null;
-        var targetSubBin = subBinList.FirstOrDefault(sb => placementFeasibilityChecker.Execute(item, sb, out placement));
 
-        if (targetSubBin == null || placement == null)
+        if (placement == null)
             return subBinList; // آیتم جا نشد → بدون تغییر
 
         // --- خط 3: تقسیم ---

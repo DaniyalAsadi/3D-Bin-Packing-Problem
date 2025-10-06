@@ -10,12 +10,7 @@ namespace BinPacking.Tests;
 public class SubBinUpdatingAlgorithmExtendedTests
 {
     private readonly IPlacementFeasibilityChecker _checker = new PlacementFeasibilityChecker();
-    private readonly ISubBinUpdatingAlgorithm _algorithm;
-
-    public SubBinUpdatingAlgorithmExtendedTests()
-    {
-        _algorithm = new SubBinUpdatingAlgorithm(_checker);
-    }
+    private readonly ISubBinUpdatingAlgorithm _algorithm = new SubBinUpdatingAlgorithm();
 
     // ---------------- تقسیم (Divide) ----------------
 
@@ -24,8 +19,9 @@ public class SubBinUpdatingAlgorithmExtendedTests
     {
         var item = new Item(2, 5, 5);
         var subBinList = new List<SubBin> { new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0, 0) };
-
-        var result = _algorithm.Execute(subBinList, item);
+        var checkResult = _checker.Execute(item, subBinList[0], out var placementResult);
+        Assert.NotNull(placementResult);
+        var result = _algorithm.Execute(subBinList, placementResult);
 
         Assert.Single(result);
         Assert.Contains(result, sb => sb is { X: 2, Length: 3 });
@@ -37,7 +33,10 @@ public class SubBinUpdatingAlgorithmExtendedTests
         var item = new Item(5, 2, 5);
         var subBinList = new List<SubBin> { new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0, 0) };
 
-        var result = _algorithm.Execute(subBinList, item);
+        var checkResult = _checker.Execute(item, subBinList[0], out var placementResult);
+        Assert.NotNull(placementResult);
+        var result = _algorithm.Execute(subBinList, placementResult);
+
 
         Assert.Single(result);
         Assert.Contains(result, sb => sb is { Y: 2, Width: 3 });
@@ -49,7 +48,10 @@ public class SubBinUpdatingAlgorithmExtendedTests
         var item = new Item(5, 5, 2);
         var subBinList = new List<SubBin> { new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0, 0) };
 
-        var result = _algorithm.Execute(subBinList, item);
+        var checkResult = _checker.Execute(item, subBinList[0], out var placementResult);
+        Assert.NotNull(placementResult);
+        var result = _algorithm.Execute(subBinList, placementResult);
+
 
         Assert.Single(result);
         Assert.Contains(result, sb => sb is { Z: 2, Height: 3 });
@@ -61,7 +63,10 @@ public class SubBinUpdatingAlgorithmExtendedTests
         var item = new Item(5, 5, 5);
         var subBinList = new List<SubBin> { new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0, 0) };
 
-        var result = _algorithm.Execute(subBinList, item);
+        var checkResult = _checker.Execute(item, subBinList[0], out var placementResult);
+        Assert.NotNull(placementResult);
+        var result = _algorithm.Execute(subBinList, placementResult);
+
 
         Assert.Empty(result);
     }
@@ -76,18 +81,12 @@ public class SubBinUpdatingAlgorithmExtendedTests
             new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0, 0)
         };
 
-        // چون ما PFCA را واقعی صدا نمی‌زنیم، باید فقط رفتار تقسیم را تست کنیم
-        // اینجا فرض می‌کنیم آیتم دقیقاً در مبدأ قرار گرفته
-        var placement = new PlacementResult(
-            item,
-            new Vector3(0, 0, 0),
-            new Vector3(2, 2, 2),
-            SmallestMargin: 1.0,
-            SupportRatio: 0.75);
 
 
         // Act
-        var result = _algorithm.Execute(subBinList, item);
+        var checkResult = _checker.Execute(item, subBinList[0], out var placementResult);
+        Assert.NotNull(placementResult);
+        var result = _algorithm.Execute(subBinList, placementResult);
 
         // Assert
         Assert.NotNull(result);
@@ -117,7 +116,10 @@ public class SubBinUpdatingAlgorithmExtendedTests
         var item2 = new Item(3, 3, 3);
 
         // --- مرحله ۱ ---
-        var resultAfterFirst = _algorithm.Execute(subBinList, item1);
+        var checkResult = _checker.Execute(item1, subBinList[0], out var placementResult);
+        Assert.NotNull(placementResult);
+        var resultAfterFirst = _algorithm.Execute(subBinList, placementResult);
+
 
         // بررسی مرحله اول
         Assert.Equal(3, resultAfterFirst.Count);
@@ -125,8 +127,12 @@ public class SubBinUpdatingAlgorithmExtendedTests
         Assert.Contains(resultAfterFirst, sb => sb is { Y: 2, Width: 3 });
         Assert.Contains(resultAfterFirst, sb => sb is { Z: 2, Height: 3 });
 
+
         // --- مرحله ۲ ---
-        var resultAfterSecond = _algorithm.Execute(resultAfterFirst, item2);
+        var checkResult2 = _checker.Execute(item2, subBinList[0], out var placementResult2);
+        Assert.NotNull(placementResult);
+        var resultAfterSecond = _algorithm.Execute(subBinList, placementResult2);
+
 
         // ✅ بررسی منطقی خروجی مرحله دوم
         Assert.NotNull(resultAfterSecond);
@@ -168,7 +174,10 @@ public class SubBinUpdatingAlgorithmExtendedTests
         // Act
         foreach (var item in items)
         {
-            var result = _algorithm.Execute(currentSubBins, item);
+
+            var checkResult = _checker.Execute(item, subBinList[0], out var placementResult);
+            Assert.NotNull(placementResult);
+            var result = _algorithm.Execute(subBinList, placementResult);
             currentSubBins = result;
 
             // برای بررسی موقعیت آیتم، باید placement در الگوریتم ذخیره یا برگردانده شود.
@@ -274,7 +283,9 @@ public class SubBinUpdatingAlgorithmExtendedTests
             new(0, 0, 0, 10, 10, 10,0,0,0,0,0)
         };
 
-        var result = _algorithm.Execute(subBinList, item);
+        var checkResult = _checker.Execute(item, subBinList[0], out var placementResult);
+        Assert.NotNull(placementResult);
+        var result = _algorithm.Execute(subBinList, placementResult);
 
         foreach (var sb1 in result)
         {
@@ -356,7 +367,12 @@ public class SubBinUpdatingAlgorithmExtendedTests
         };
 
         foreach (var item in items)
-            subBinList = _algorithm.Execute(subBinList, item);
+        {
+
+            var checkResult = _checker.Execute(item, subBinList[0], out var placementResult);
+            Assert.NotNull(placementResult);
+            var result = _algorithm.Execute(subBinList, placementResult);
+        }
 
         Assert.NotEmpty(subBinList);
         Assert.True(subBinList.Count > 1);

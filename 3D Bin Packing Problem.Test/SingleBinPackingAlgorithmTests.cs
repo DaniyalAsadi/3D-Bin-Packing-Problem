@@ -4,7 +4,6 @@ using _3D_Bin_Packing_Problem.Services.InnerLayer.SPA;
 using _3D_Bin_Packing_Problem.Services.InnerLayer.SUA;
 using _3D_Bin_Packing_Problem.Services.InnerLayer.SubBinOrderingStrategy;
 using _3D_Bin_Packing_Problem.ViewModels;
-using Moq;
 using System.Numerics;
 
 namespace BinPacking.Tests;
@@ -26,27 +25,16 @@ public class SingleBinPackingAlgorithmTests
             0.75
         );
 
-        var feasibilityChecker = new Mock<IPlacementFeasibilityChecker>();
-        feasibilityChecker
-            .Setup(fc => fc.Execute(item, It.IsAny<SubBin>(), out It.Ref<PlacementResult>.IsAny!))
-            .Returns((Item i, SubBin sb, out PlacementResult result) =>
-            {
-                result = expectedPlacement; // مقداردهی به out
-                return true; // آیتم قابل جاگذاری است
-            });
+        var feasibilityChecker = new PlacementFeasibilityChecker();
 
-        var subBinUpdatingAlgorithm = new Mock<ISubBinUpdatingAlgorithm>();
-        var subBinOrderStrategy = new Mock<ISubBinOrderingStrategy>();
 
-        // اینجا مثلا بدون تغییر SubBin لیست را برمی‌گردونیم
-        subBinOrderStrategy
-            .Setup(s => s.Apply(It.IsAny<IEnumerable<SubBin>>(), It.IsAny<Item>()))
-            .Returns<IEnumerable<SubBin>, Item>((bins, it) => bins);
+        var subBinUpdatingAlgorithm = new SubBinUpdatingAlgorithm();
+        var subBinOrderStrategy = new SubBinOrderingStrategyS1();
 
         var algorithm = new SingleBinPackingAlgorithm(
-            feasibilityChecker.Object,
-            subBinUpdatingAlgorithm.Object,
-            subBinOrderStrategy.Object
+            feasibilityChecker,
+            subBinUpdatingAlgorithm,
+            subBinOrderStrategy
         );
 
         // Act
@@ -64,7 +52,7 @@ public class SingleBinPackingAlgorithmTests
         Assert.Equal(2, packed.Length);
         Assert.Equal(2, packed.Width);
         Assert.Equal(2, packed.Height);
-        Assert.Equal(0.75, packed.SupportRatio);
+        Assert.Equal(1, packed.SupportRatio);
     }
 
     // تست: آیتم بزرگ‌تر از Bin است → باید در LeftItems قرار گیرد
@@ -75,16 +63,13 @@ public class SingleBinPackingAlgorithmTests
         var item = new Item(20, 20, 20); // بزرگ‌تر از Bin
         var binType = new BinType { Length = 10, Width = 10, Height = 10 };
 
-        var feasibilityChecker = new Mock<IPlacementFeasibilityChecker>();
-        PlacementResult? dummy = null;
-        feasibilityChecker
-            .Setup(fc => fc.Execute(item, It.IsAny<SubBin>(), out dummy))
-            .Returns(false);
+        var feasibilityChecker = new PlacementFeasibilityChecker();
 
-        var subBinUpdatingAlgorithm = new Mock<ISubBinUpdatingAlgorithm>();
-        var subBinOrderStrategy = new Mock<ISubBinOrderingStrategy>();
 
-        var algorithm = new SingleBinPackingAlgorithm(feasibilityChecker.Object, subBinUpdatingAlgorithm.Object, subBinOrderStrategy.Object);
+        var subBinUpdatingAlgorithm = new SubBinUpdatingAlgorithm();
+        var subBinOrderStrategy = new SubBinOrderingStrategyS1();
+
+        var algorithm = new SingleBinPackingAlgorithm(feasibilityChecker, subBinUpdatingAlgorithm, subBinOrderStrategy);
 
         // Act
         var result = algorithm.Execute(new List<Item> { item }, binType);
@@ -115,38 +100,17 @@ public class SingleBinPackingAlgorithmTests
             0.75
         );
 
-        var feasibilityChecker = new Mock<IPlacementFeasibilityChecker>();
 
-        // آیتم اول جا میشه
-        feasibilityChecker
-            .Setup(fc => fc.Execute(items[0], It.IsAny<SubBin>(), out It.Ref<PlacementResult>.IsAny!))
-            .Returns((Item i, SubBin sb, out PlacementResult result) =>
-            {
-                result = placementResult;
-                return true;
-            });
+        var feasibilityChecker = new PlacementFeasibilityChecker();
 
-        // آیتم دوم جا نمیشه
-        feasibilityChecker
-            .Setup(fc => fc.Execute(items[1], It.IsAny<SubBin>(), out It.Ref<PlacementResult>.IsAny!))
-            .Returns((Item i, SubBin sb, out PlacementResult result) =>
-            {
-                result = null!;
-                return false;
-            });
 
-        var subBinUpdatingAlgorithm = new Mock<ISubBinUpdatingAlgorithm>();
-        var subBinOrderStrategy = new Mock<ISubBinOrderingStrategy>();
-
-        // پاس‌ترو برای استراتژی مرتب‌سازی
-        subBinOrderStrategy
-            .Setup(s => s.Apply(It.IsAny<IEnumerable<SubBin>>(), It.IsAny<Item>()))
-            .Returns<IEnumerable<SubBin>, Item>((bins, it) => bins);
+        var subBinUpdatingAlgorithm = new SubBinUpdatingAlgorithm();
+        var subBinOrderStrategy = new SubBinOrderingStrategyS1();
 
         var algorithm = new SingleBinPackingAlgorithm(
-            feasibilityChecker.Object,
-            subBinUpdatingAlgorithm.Object,
-            subBinOrderStrategy.Object
+            feasibilityChecker,
+            subBinUpdatingAlgorithm,
+            subBinOrderStrategy
         );
 
         // Act
@@ -179,11 +143,13 @@ public class SingleBinPackingAlgorithmTests
 
         var subBins = new List<SubBin> { validSubBin, tooSmallSubBin };
 
-        var feasibilityChecker = new Mock<IPlacementFeasibilityChecker>();
-        var subBinUpdatingAlgorithm = new Mock<ISubBinUpdatingAlgorithm>();
-        var subBinOrderStrategy = new Mock<ISubBinOrderingStrategy>();
+        var feasibilityChecker = new PlacementFeasibilityChecker();
 
-        var algorithm = new SingleBinPackingAlgorithm(feasibilityChecker.Object, subBinUpdatingAlgorithm.Object, subBinOrderStrategy.Object);
+
+        var subBinUpdatingAlgorithm = new SubBinUpdatingAlgorithm();
+        var subBinOrderStrategy = new SubBinOrderingStrategyS1();
+
+        var algorithm = new SingleBinPackingAlgorithm(feasibilityChecker, subBinUpdatingAlgorithm, subBinOrderStrategy);
 
         // Act (استفاده از متد Private با Reflection یا تغییر دسترسی)
         var method = typeof(SingleBinPackingAlgorithm)
@@ -210,7 +176,7 @@ public class SingleBinPackingAlgorithmTests
         var feasibilityChecker = new PlacementFeasibilityChecker();
 
 
-        var subBinUpdatingAlgorithm = new SubBinUpdatingAlgorithm(feasibilityChecker);
+        var subBinUpdatingAlgorithm = new SubBinUpdatingAlgorithm();
         var subBinOrderStrategy = new SubBinOrderingStrategyS1();
 
         var algorithm = new SingleBinPackingAlgorithm(

@@ -7,30 +7,31 @@ public class BinType
     public required int Height { get; set; }
     public int Volume => Width * Height * Length;
     // میزان تأثیر شکل بر هزینه (۰.۰۵ = تأثیر کم، ۰.۲ = تأثیر متوسط)
-    private const double ShapePenaltyFactor = 10;
+    private const double ShapePenaltyFactor = 1000;
 
     public double Cost
     {
         get
         {
-            double L = Length;
-            double W = Width;
-            double H = Height;
-            double Vt = Volume;
+            // میانگین و انحراف معیار اضلاع
+            var mean = (Length + Width + Height) / 3.0;
+            var variance =
+                Math.Pow(Length - mean, 2) +
+                Math.Pow(Width - mean, 2) +
+                Math.Pow(Height - mean, 2);
+            var stdDev = Math.Sqrt(variance / 3.0);
 
-            // فرمول مقاله:
-            // Ct = 10000 * (1.2 * Vt - 0.2 * L * W * H) / (L * W * H)
-            var cost = 10000 * ((1.2 * Vt - 0.2 * L * W * H) / (L * W * H));
-            return cost;
+            // مقدار نرمال‌شده انحراف شکل
+            var shapePenalty = stdDev / mean; // 0 برای مکعب کامل، ~0.3 برای خیلی کشیده
+
+            // هزینه نهایی: حجم با وزن بسیار بالا + پاداش جزئی برای مکعب بودن
+            return Volume * (1 + ShapePenaltyFactor * shapePenalty);
         }
     }
-
-
     public static implicit operator SubBin(BinType binType)
     {
         return new SubBin(binType);
     }
-
     public BinType Clone()
     {
         return new BinType()

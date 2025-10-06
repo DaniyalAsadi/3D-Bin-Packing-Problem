@@ -45,7 +45,7 @@ public class SingleBinPackingAlgorithm(
                     packedItemList.Add(placementResult);
 
                     // 🔹 آپدیت SubBin باید بر اساس placementResult انجام شود، نه فقط item
-                    subBinUpdatingAlgorithm.Execute(subBinList, item);
+                    subBinUpdatingAlgorithm.Execute(subBinList, placementResult);
 
                     placed = true;
                     break; // اولین SubBin معتبر انتخاب می‌شود
