@@ -2,6 +2,10 @@
 using System.Collections;
 
 namespace _3D_Bin_Packing_Problem.Model;
+
+/// <summary>
+/// Represents a candidate solution composed of gene sequences with associated fitness results.
+/// </summary>
 public class Chromosome : IList<GeneSequence>
 {
     public Guid Id { get; } = Guid.NewGuid();

@@ -1,8 +1,11 @@
-﻿using _3D_Bin_Packing_Problem.Model;
+using _3D_Bin_Packing_Problem.Model;
 using System.Numerics;
 
 namespace _3D_Bin_Packing_Problem.ViewModels;
 
+/// <summary>
+/// Describes the placement characteristics of an item within a bin, including position, orientation, and support.
+/// </summary>
 public record PlacementResult(
     Item Item,
     Vector3 Position,

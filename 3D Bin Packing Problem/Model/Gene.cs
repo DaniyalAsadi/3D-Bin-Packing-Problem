@@ -1,5 +1,8 @@
-﻿namespace _3D_Bin_Packing_Problem.Model;
+namespace _3D_Bin_Packing_Problem.Model;
 
+/// <summary>
+/// Encapsulates a mutable integer gene value used within chromosomes.
+/// </summary>
 public class Gene(int value) : IEquatable<Gene>
 {
     public int Value { get; private set; } = value;

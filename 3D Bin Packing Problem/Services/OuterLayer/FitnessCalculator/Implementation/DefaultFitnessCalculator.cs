@@ -4,6 +4,9 @@ using _3D_Bin_Packing_Problem.ViewModels;
 
 namespace _3D_Bin_Packing_Problem.Services.OuterLayer.FitnessCalculator.Implementation;
 
+/// <summary>
+/// Calculates chromosome fitness by combining bin costs with penalties for unplaced items.
+/// </summary>
 public class DefaultFitnessCalculator(IPlacementAlgorithm placementAlgorithm) : IFitnessCalculator
 {
     private const int PenaltyCoefficient = 1000;

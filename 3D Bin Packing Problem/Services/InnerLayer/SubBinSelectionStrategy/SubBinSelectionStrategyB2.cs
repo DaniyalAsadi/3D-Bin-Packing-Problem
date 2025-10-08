@@ -1,7 +1,10 @@
-﻿using _3D_Bin_Packing_Problem.Model;
+using _3D_Bin_Packing_Problem.Model;
 
 namespace _3D_Bin_Packing_Problem.Services.InnerLayer.SubBinSelectionStrategy;
 
+/// <summary>
+/// Selects the smallest volume bin capable of containing the largest remaining dimensions.
+/// </summary>
 public class SubBinSelectionStrategyB2 : ISubBinSelectionStrategy
 {
     public BinType? Execute(IEnumerable<BinType> binTypes, List<Item> items)

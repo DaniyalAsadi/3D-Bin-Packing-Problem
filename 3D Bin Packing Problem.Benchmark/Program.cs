@@ -23,6 +23,9 @@ using BenchmarkDotNet.Running;
 using Microsoft.Extensions.DependencyInjection;
 using System.Collections.Generic;
 
+/// <summary>
+/// Benchmarks the genetic algorithm execution using BenchmarkDotNet.
+/// </summary>
 public class GeneticAlgorithmBenchmark
 {
     private ServiceProvider _serviceProvider = null!;
@@ -77,6 +80,9 @@ public class GeneticAlgorithmBenchmark
     }
 }
 
+/// <summary>
+/// Entry point for running the genetic algorithm benchmarks.
+/// </summary>
 public class Program
 {
     public static void Main(string[] args)

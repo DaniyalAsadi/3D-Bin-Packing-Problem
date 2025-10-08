@@ -1,9 +1,13 @@
-﻿using _3D_Bin_Packing_Problem.Extensions;
+using _3D_Bin_Packing_Problem.Extensions;
 using _3D_Bin_Packing_Problem.Model;
 using _3D_Bin_Packing_Problem.ViewModels;
 using System.Numerics;
+
 namespace _3D_Bin_Packing_Problem.Services.InnerLayer.PFCA;
 
+/// <summary>
+/// Evaluates whether an item can be feasibly placed within a sub-bin while respecting margins and support constraints.
+/// </summary>
 public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
 {
     private const float EPS = 1e-5f;
@@ -187,6 +191,10 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
         return unique;
     }
 }
+
+/// <summary>
+/// Represents the dimensions and coordinates of a placed item for feasibility checks.
+/// </summary>
 public readonly struct PlacedBox
 {
     public int X { get; init; }

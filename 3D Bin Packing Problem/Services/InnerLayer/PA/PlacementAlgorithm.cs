@@ -1,4 +1,4 @@
-﻿using _3D_Bin_Packing_Problem.Model;
+using _3D_Bin_Packing_Problem.Model;
 using _3D_Bin_Packing_Problem.Services.InnerLayer.ItemOrderingStrategy;
 using _3D_Bin_Packing_Problem.Services.InnerLayer.SPA;
 using _3D_Bin_Packing_Problem.Services.InnerLayer.SubBinSelectionStrategy;
@@ -6,6 +6,9 @@ using _3D_Bin_Packing_Problem.ViewModels;
 
 namespace _3D_Bin_Packing_Problem.Services.InnerLayer.PA;
 
+/// <summary>
+/// Implements the placement algorithm that orchestrates item ordering, bin selection, and single-bin packing.
+/// </summary>
 public class PlacementAlgorithm(
     IItemOrderingStrategy itemOrderingStrategy,
     ISubBinSelectionStrategy subBinSelectionStrategy,

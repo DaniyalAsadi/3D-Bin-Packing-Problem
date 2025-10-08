@@ -2,6 +2,9 @@
 
 namespace _3D_Bin_Packing_Problem.Services.OuterLayer.Crossover.Implementation;
 
+/// <summary>
+/// Swaps entire gene sequences between chromosomes at randomly chosen boundaries.
+/// </summary>
 public class SequenceSwap : ICrossoverOperator
 {
     private static readonly Random Random = new Random();

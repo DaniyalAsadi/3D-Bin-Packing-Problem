@@ -1,7 +1,10 @@
-﻿using _3D_Bin_Packing_Problem.Model;
+using _3D_Bin_Packing_Problem.Model;
 
 namespace _3D_Bin_Packing_Problem.ViewModels;
 
+/// <summary>
+/// Aggregates the full packing outcome including packed items, remaining items, and utilized bin types.
+/// </summary>
 public class PackingResultsViewModel
 {
 

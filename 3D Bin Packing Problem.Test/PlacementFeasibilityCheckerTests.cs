@@ -4,6 +4,10 @@ using _3D_Bin_Packing_Problem.Services.InnerLayer.PFCA;
 using System.Numerics;
 
 namespace BinPacking.Tests;
+
+/// <summary>
+/// Provides unit tests for validating the placement feasibility checker logic.
+/// </summary>
 public class PlacementFeasibilityCheckerTests
 {
     private readonly PlacementFeasibilityChecker _checker = new();

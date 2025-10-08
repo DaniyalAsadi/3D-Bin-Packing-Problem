@@ -1,7 +1,10 @@
-﻿using _3D_Bin_Packing_Problem.Model;
+using _3D_Bin_Packing_Problem.Model;
 
 namespace _3D_Bin_Packing_Problem.Services.InnerLayer.SubBinOrderingStrategy;
 
+/// <summary>
+/// Orders sub-bins by their distance from the origin to prefer placements near the bin's corner.
+/// </summary>
 public class SubBinOrderingStrategyS5 : ISubBinOrderingStrategy
 {
     private double ComputeCornerDistance(SubBin sb)

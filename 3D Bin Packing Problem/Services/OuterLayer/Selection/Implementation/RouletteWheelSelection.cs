@@ -3,6 +3,9 @@ using _3D_Bin_Packing_Problem.Services.OuterLayer.FitnessCalculator;
 
 namespace _3D_Bin_Packing_Problem.Services.OuterLayer.Selection.Implementation;
 
+/// <summary>
+/// Selects chromosomes for the next generation using roulette wheel probability while preserving elites.
+/// </summary>
 public class RouletteWheelSelection(IFitnessCalculator fitnessCalculatorCalculator, IComparer<Chromosome> comparer) : ISelection
 {
     private readonly Random _random = new Random();

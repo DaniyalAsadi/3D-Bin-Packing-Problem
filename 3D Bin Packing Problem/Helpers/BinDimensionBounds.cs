@@ -1,8 +1,15 @@
 ﻿using _3D_Bin_Packing_Problem.Model;
 
 namespace _3D_Bin_Packing_Problem.Helpers;
+
+/// <summary>
+/// Provides helper functionality for computing bounds on bin dimensions based on a collection of items.
+/// </summary>
 public static class BinDimensionBounds
 {
+    /// <summary>
+    /// Represents the minimum and maximum extents for each dimension of the bin.
+    /// </summary>
     public sealed record Bounds(
         int MinLength, int MinWidth, int MinHeight,
         int MaxLength, int MaxWidth, int MaxHeight);

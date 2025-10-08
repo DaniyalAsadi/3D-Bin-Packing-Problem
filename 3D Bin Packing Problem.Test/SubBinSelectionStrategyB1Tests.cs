@@ -3,6 +3,9 @@ using _3D_Bin_Packing_Problem.Services.InnerLayer.SubBinSelectionStrategy;
 
 namespace BinPacking.Tests;
 
+/// <summary>
+/// Verifies the selection logic for the B1 sub-bin selection strategy.
+/// </summary>
 public class SubBinSelectionStrategyB1Tests
 {
     [Fact]

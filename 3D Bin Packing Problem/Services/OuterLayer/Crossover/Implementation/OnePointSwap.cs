@@ -1,7 +1,10 @@
-﻿using _3D_Bin_Packing_Problem.Model;
+using _3D_Bin_Packing_Problem.Model;
 
 namespace _3D_Bin_Packing_Problem.Services.OuterLayer.Crossover.Implementation;
 
+/// <summary>
+/// Performs a one-point swap crossover by exchanging a single gene between two chromosomes.
+/// </summary>
 public class OnePointSwap : ICrossoverOperator
 {
     private static readonly Random Random = new Random();
@@ -18,21 +21,15 @@ public class OnePointSwap : ICrossoverOperator
         var crossoverPoint1 = Random.Next(0, c1.Count);
         var crossoverPoint2 = Random.Next(0, c2.Count);
 
-
-
         // map crossover point -> seqIndex and geneIndex
         var seqIndex1 = crossoverPoint1 / 3;
         var geneIndex1 = crossoverPoint1 % 3;
 
-
         var seqIndex2 = crossoverPoint2 / 3;
         var geneIndex2 = crossoverPoint2 % 3;
 
-
         var chromosome1 = c1.Clone();
         var chromosome2 = c2.Clone();
-
-
 
         // swap single gene between children
         (chromosome1[seqIndex1][geneIndex1], chromosome2[seqIndex2][geneIndex2]) = (chromosome2[seqIndex2][geneIndex2], chromosome1[seqIndex1][geneIndex1]);

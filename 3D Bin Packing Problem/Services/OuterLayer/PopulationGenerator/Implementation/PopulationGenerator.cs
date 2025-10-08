@@ -2,6 +2,10 @@
 using _3D_Bin_Packing_Problem.Model;
 
 namespace _3D_Bin_Packing_Problem.Services.OuterLayer.PopulationGenerator.Implementation;
+
+/// <summary>
+/// Generates initial populations of chromosomes using randomly sampled bin dimensions within computed bounds.
+/// </summary>
 public class PopulationGenerator() : IPopulationGenerator
 {
     private readonly Random _random = new Random();

@@ -1,7 +1,10 @@
-﻿using _3D_Bin_Packing_Problem.Model;
+using _3D_Bin_Packing_Problem.Model;
 
 namespace _3D_Bin_Packing_Problem.Services.InnerLayer.SubBinOrderingStrategy;
 
+/// <summary>
+/// Orders sub-bins based on their contact area with existing surfaces to promote stable placements.
+/// </summary>
 public class SubBinOrderingStrategyS2 : ISubBinOrderingStrategy
 {
     private int ComputeTouchArea(Item item, SubBin sb)
@@ -27,7 +30,6 @@ public class SubBinOrderingStrategyS2 : ISubBinOrderingStrategy
         // تماس با دیوار راست (Right = 0)
         if (sb.Right == 0)
             touchArea += item.Length * item.Height;
-
 
         return touchArea;
     }

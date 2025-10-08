@@ -1,6 +1,10 @@
 ﻿using System.Collections;
 
 namespace _3D_Bin_Packing_Problem.Model;
+
+/// <summary>
+/// Represents a collection of genes describing a single bin type's dimensions.
+/// </summary>
 public class GeneSequence : IEnumerable<Gene>, IEquatable<GeneSequence>
 {
     public BinType BinType { get; private set; }

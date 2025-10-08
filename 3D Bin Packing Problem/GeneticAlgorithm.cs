@@ -6,6 +6,10 @@ using _3D_Bin_Packing_Problem.Services.OuterLayer.PopulationGenerator;
 using _3D_Bin_Packing_Problem.Services.OuterLayer.Selection;
 
 namespace _3D_Bin_Packing_Problem;
+
+/// <summary>
+/// Coordinates the genetic algorithm workflow including population generation, selection, crossover, and mutation.
+/// </summary>
 public class GeneticAlgorithm(
     IPopulationGenerator populationGenerator,
     IEnumerable<ICrossoverOperator> crossoverOperators,

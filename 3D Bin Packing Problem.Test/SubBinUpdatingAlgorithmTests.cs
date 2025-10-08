@@ -7,6 +7,9 @@ using System.Reflection;
 
 namespace BinPacking.Tests;
 
+/// <summary>
+/// Validates that the sub-bin updating algorithm correctly divides and merges sub-bin regions.
+/// </summary>
 public class SubBinUpdatingAlgorithmExtendedTests
 {
     private readonly IPlacementFeasibilityChecker _checker = new PlacementFeasibilityChecker();

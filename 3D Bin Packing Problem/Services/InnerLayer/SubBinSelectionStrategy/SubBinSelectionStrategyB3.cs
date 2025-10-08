@@ -1,7 +1,10 @@
-﻿using _3D_Bin_Packing_Problem.Model;
+using _3D_Bin_Packing_Problem.Model;
 
 namespace _3D_Bin_Packing_Problem.Services.InnerLayer.SubBinSelectionStrategy;
 
+/// <summary>
+/// Chooses the lowest-cost bin that satisfies the size requirements of the remaining items.
+/// </summary>
 public class SubBinSelectionStrategyB3 : ISubBinSelectionStrategy
 {
     public BinType? Execute(IEnumerable<BinType> binTypes, List<Item> items)

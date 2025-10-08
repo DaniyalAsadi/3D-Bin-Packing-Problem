@@ -1,4 +1,8 @@
-﻿namespace _3D_Bin_Packing_Problem.ViewModels;
+namespace _3D_Bin_Packing_Problem.ViewModels;
+
+/// <summary>
+/// Collects the detailed results of packing a single bin, including packed items and remaining sub-bins.
+/// </summary>
 public class PackingResultViewModel
 {
     /// <summary>
@@ -61,4 +65,3 @@ public class ItemViewModel
     public int Width { get; set; }
     public int Height { get; set; }
 }
-
