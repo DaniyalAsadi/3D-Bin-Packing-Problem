@@ -1,7 +1,10 @@
-﻿using _3D_Bin_Packing_Problem.Model;
+using _3D_Bin_Packing_Problem.Model;
 
 namespace _3D_Bin_Packing_Problem.Services.InnerLayer.ItemOrderingStrategy;
 
+/// <summary>
+/// Orders items by bin type availability and cost to better align items with economical bin choices.
+/// </summary>
 public class ItemOrderingStrategyI3(IEnumerable<BinType> binTypes) : IItemOrderingStrategy
 {
     private int ComputeBTN(Item item)

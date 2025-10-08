@@ -1,5 +1,8 @@
-﻿namespace _3D_Bin_Packing_Problem.Model;
+namespace _3D_Bin_Packing_Problem.Model;
 
+/// <summary>
+/// Describes a bin's dimensional properties and derived cost used within packing evaluations.
+/// </summary>
 public class BinType
 {
     public required int Length { get; set; }

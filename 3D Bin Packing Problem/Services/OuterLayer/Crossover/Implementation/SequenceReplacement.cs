@@ -2,6 +2,9 @@
 
 namespace _3D_Bin_Packing_Problem.Services.OuterLayer.Crossover.Implementation;
 
+/// <summary>
+/// Replaces a randomly selected sequence in one chromosome with the corresponding sequence from another.
+/// </summary>
 public class SequenceReplacement : ICrossoverOperator
 {
     private static readonly Random Random = new Random();

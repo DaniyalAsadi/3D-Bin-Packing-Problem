@@ -1,5 +1,8 @@
-﻿namespace _3D_Bin_Packing_Problem.Model;
+namespace _3D_Bin_Packing_Problem.Model;
 
+/// <summary>
+/// Represents a sub-region within a bin along with its dimensions and boundary margins.
+/// </summary>
 public record SubBin(
     int X,
     int Y,
@@ -28,17 +31,15 @@ public record SubBin(
         0,
         0)
     {
-
     }
+
     // برای خوانایی بیشتر یک ToString
     public override string ToString()
         => $"Pos=({X},{Y},{Z}), Size=({Length}×{Width}×{Height}), " +
            $"Margins [B:{Back}, L:{Left}, F:{Front}, R:{Right}] T:{Top}";
 
-
     public int GetMinimumDimension()
     {
         return Math.Min(Length, Math.Min(Width, Height));
-
     }
 }

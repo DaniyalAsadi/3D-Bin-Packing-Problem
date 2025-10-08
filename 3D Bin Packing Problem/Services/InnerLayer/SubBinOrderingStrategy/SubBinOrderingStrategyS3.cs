@@ -1,7 +1,10 @@
-﻿using _3D_Bin_Packing_Problem.Model;
+using _3D_Bin_Packing_Problem.Model;
 
 namespace _3D_Bin_Packing_Problem.Services.InnerLayer.SubBinOrderingStrategy;
 
+/// <summary>
+/// Orders sub-bins using a fit rate metric to prioritize the most proportionally compatible spaces.
+/// </summary>
 public class SubBinOrderingStrategyS3 : ISubBinOrderingStrategy
 {
     private double ComputeFitRate(Item item, SubBin sb)

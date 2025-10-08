@@ -1,7 +1,10 @@
-﻿using _3D_Bin_Packing_Problem.Model;
+using _3D_Bin_Packing_Problem.Model;
 
 namespace _3D_Bin_Packing_Problem.Services.InnerLayer.ItemOrderingStrategy;
 
+/// <summary>
+/// Orders items by descending volume and dimensions to prioritize larger items first.
+/// </summary>
 public class ItemOrderingStrategyI1 : IItemOrderingStrategy
 {
     public IEnumerable<Item> Apply(IEnumerable<Item> items)

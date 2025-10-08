@@ -2,6 +2,9 @@
 
 namespace _3D_Bin_Packing_Problem.Comparer
 {
+    /// <summary>
+    /// Compares <see cref="Vector3"/> instances using an epsilon-based tolerance.
+    /// </summary>
     public class Vector3EqualityComparer : IEqualityComparer<Vector3>
     {
         private const float Epsilon = 1e-5f;

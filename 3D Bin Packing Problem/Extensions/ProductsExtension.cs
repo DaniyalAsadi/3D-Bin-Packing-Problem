@@ -3,6 +3,9 @@ using System.Numerics;
 
 namespace _3D_Bin_Packing_Problem.Extensions
 {
+    /// <summary>
+    /// Provides helper extensions for working with product items.
+    /// </summary>
     public static class ProductsExtension
     {
         // گرفتن همه حالت‌های چرخش (۶ حالت ممکن)

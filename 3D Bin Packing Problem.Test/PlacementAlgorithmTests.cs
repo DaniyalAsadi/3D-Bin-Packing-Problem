@@ -6,6 +6,9 @@ using _3D_Bin_Packing_Problem.Services.InnerLayer.SubBinSelectionStrategy;
 using _3D_Bin_Packing_Problem.ViewModels;
 using Moq;
 
+/// <summary>
+/// Validates the placement algorithm behavior under various bin availability scenarios.
+/// </summary>
 public class PlacementAlgorithmTests
 {
     [Fact]

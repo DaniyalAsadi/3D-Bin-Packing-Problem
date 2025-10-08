@@ -2,6 +2,9 @@
 
 namespace _3D_Bin_Packing_Problem.Services.OuterLayer.Crossover.Implementation;
 
+/// <summary>
+/// Performs crossover by swapping two independently chosen genes between parent chromosomes.
+/// </summary>
 public class TwoPointSwap : ICrossoverOperator
 {
     private static readonly Random Random = new Random();

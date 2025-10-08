@@ -8,6 +8,9 @@ using System.Numerics;
 
 namespace BinPacking.Tests;
 
+/// <summary>
+/// Exercises the single bin packing algorithm across placement and leftover item scenarios.
+/// </summary>
 public class SingleBinPackingAlgorithmTests
 {
     [Fact]

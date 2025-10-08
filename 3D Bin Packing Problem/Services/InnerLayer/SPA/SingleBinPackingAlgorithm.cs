@@ -1,4 +1,4 @@
-﻿using _3D_Bin_Packing_Problem.Model;
+using _3D_Bin_Packing_Problem.Model;
 using _3D_Bin_Packing_Problem.Services.InnerLayer.PFCA;
 using _3D_Bin_Packing_Problem.Services.InnerLayer.SUA;
 using _3D_Bin_Packing_Problem.Services.InnerLayer.SubBinOrderingStrategy;
@@ -6,6 +6,9 @@ using _3D_Bin_Packing_Problem.ViewModels;
 
 namespace _3D_Bin_Packing_Problem.Services.InnerLayer.SPA;
 
+/// <summary>
+/// Executes the single-bin packing process by evaluating feasible placements and updating sub-bins accordingly.
+/// </summary>
 public class SingleBinPackingAlgorithm(
     IPlacementFeasibilityChecker feasibilityChecker,
     ISubBinUpdatingAlgorithm subBinUpdatingAlgorithm,

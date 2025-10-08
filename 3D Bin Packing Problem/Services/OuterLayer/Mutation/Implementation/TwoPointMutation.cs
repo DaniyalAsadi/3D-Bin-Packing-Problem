@@ -2,6 +2,9 @@
 
 namespace _3D_Bin_Packing_Problem.Services.OuterLayer.Mutation.Implementation;
 
+/// <summary>
+/// Applies mutation by swapping two randomly selected genes within a chromosome clone.
+/// </summary>
 public class TwoPointMutation : IMutationOperator
 {
     private static readonly Random Random = new Random();

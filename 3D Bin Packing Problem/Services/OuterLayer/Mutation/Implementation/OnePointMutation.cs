@@ -2,6 +2,9 @@
 
 namespace _3D_Bin_Packing_Problem.Services.OuterLayer.Mutation.Implementation;
 
+/// <summary>
+/// Applies mutation by randomly altering a single gene within a chromosome.
+/// </summary>
 public class OnePointMutation : IMutationOperator
 {
 

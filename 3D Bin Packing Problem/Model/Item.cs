@@ -1,5 +1,8 @@
-﻿namespace _3D_Bin_Packing_Problem.Model;
+namespace _3D_Bin_Packing_Problem.Model;
 
+/// <summary>
+/// Represents an item with dimensions and volume information for packing.
+/// </summary>
 public class Item(int length, int width, int height)
 {
     public Guid Id { get; internal set; } = Guid.NewGuid();

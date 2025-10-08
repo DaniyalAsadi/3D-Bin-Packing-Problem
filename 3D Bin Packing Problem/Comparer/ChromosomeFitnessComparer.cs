@@ -1,5 +1,8 @@
-﻿using _3D_Bin_Packing_Problem.Model;
+using _3D_Bin_Packing_Problem.Model;
 
+/// <summary>
+/// Compares chromosomes based on fitness values in descending order.
+/// </summary>
 public class ChromosomeFitnessComparer : IComparer<Chromosome>
 {
     public int Compare(Chromosome? x, Chromosome? y)

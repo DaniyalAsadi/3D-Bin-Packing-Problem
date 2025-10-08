@@ -1,7 +1,10 @@
-﻿using _3D_Bin_Packing_Problem.Model;
+using _3D_Bin_Packing_Problem.Model;
 
 namespace _3D_Bin_Packing_Problem.Services.InnerLayer.ItemOrderingStrategy;
 
+/// <summary>
+/// Orders items by their maximum face area to favor pieces with larger placement surfaces.
+/// </summary>
 public class ItemOrderingStrategyI2 : IItemOrderingStrategy
 {
     public IEnumerable<Item> Apply(IEnumerable<Item> items)
