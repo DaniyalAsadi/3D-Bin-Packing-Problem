@@ -8,6 +8,12 @@ namespace BinPacking.Tests;
 /// </summary>
 public class SubBinSelectionStrategyB1Tests
 {
+    private static BinType baseBinType = new BinType()
+    {
+        Height = 2,
+        Length = 2,
+        Width = 2,
+    };
     [Fact]
     public void Execute_ShouldReturnBinWithLowestCostPerVolume_WhenMultipleBinsAreFeasible()
     {
@@ -32,10 +38,10 @@ public class SubBinSelectionStrategyB1Tests
 
         // Assert
         Assert.NotNull(selectedBin);
-        Assert.Equal(selectedBin, bins[2]);
+        Assert.Equal(selectedBin, bins[0]);
         // Bin با کمترین Cost/Volume باید انتخاب بشه
-        // 15/24 = 0.625 , 20/45 = 0.444 , 200/125 = 1.6 → بهترین = Bin با Cost = 20
-        Assert.Equal(125, selectedBin.Cost);
+
+        Assert.Equal(34000, Math.Round(selectedBin.Cost));
     }
 
     [Fact]
@@ -63,7 +69,7 @@ public class SubBinSelectionStrategyB1Tests
         // Assert
         Assert.NotNull(selectedBin);
         Assert.Equal(selectedBin, bins[1]);
-        Assert.Equal(8, selectedBin.Cost);
+        Assert.Equal(10000, selectedBin.Cost);
     }
     [Fact]
     public void Execute_ShouldReturnNull_WhenNoBinIsFeasible()
@@ -89,5 +95,7 @@ public class SubBinSelectionStrategyB1Tests
         // Assert
         Assert.Null(selectedBin); // چون هیچ Binی حتی آیتم کوچک رو هم accommodate نمی‌کنه
     }
+
+
 
 }

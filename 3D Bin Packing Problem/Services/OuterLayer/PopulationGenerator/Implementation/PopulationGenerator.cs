@@ -10,8 +10,6 @@ public class PopulationGenerator() : IPopulationGenerator
 {
     private readonly Random _random = new Random();
 
-
-
     // تولید یک GeneSequence (یک جعبه تصادفی)
     private GeneSequence CreateRandomGeneSequence(
         int minLength, int maxLength,

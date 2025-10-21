@@ -1,3 +1,4 @@
+using _3D_Bin_Packing_Problem.Model;
 using _3D_Bin_Packing_Problem.ViewModels;
 
 namespace _3D_Bin_Packing_Problem.Services.InnerLayer.SUA;
@@ -10,9 +11,6 @@ public class SubBinUpdatingAlgorithm : ISubBinUpdatingAlgorithm
     public List<SubBin> Execute(List<SubBin> subBinList, PlacementResult? placement)
     {
         var newSubBinList = new List<SubBin>();
-
-        // --- خط 2: فراخوانی PFCA ---
-
         if (placement == null)
             return subBinList; // آیتم جا نشد → بدون تغییر
 
