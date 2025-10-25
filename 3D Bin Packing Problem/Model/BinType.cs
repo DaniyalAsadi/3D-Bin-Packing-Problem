@@ -12,6 +12,7 @@ public class BinType
         Width = 2,
         Height = 2
     };
+    private Func<double>? _valueFunc;
 
     public required int Length { get; set; }
     public required int Width { get; set; }
@@ -22,29 +23,20 @@ public class BinType
     /// </summary>
     public int Volume => Length * Width * Height;
 
-    /// <summary>
-    /// ضریب جریمه برای شکل‌های غیرمکعبی (فرم غیربهینه)
-    /// Shape Penalty Factor = میزان انحراف از شکل مکعب
-    /// </summary>
-    private const double ShapePenaltyFactor = 0.05; // بر اساس توضیح مقاله: ۰.۰۵ تا ۰.۲
-
+    
     /// <summary>
     /// هزینه Bin بر اساس فرمول مقاله Alvarez-Valdés et al. (2013)
     /// Ct = 10000 × (1.2Vt − 0.2LWH) / (LWH)
     /// </summary>
     public double Cost
     {
-        get
-        {
-            var baseVolume = (double)(BaseBinType.Length * BaseBinType.Width * BaseBinType.Height);
-            var currentVolume = (double)Volume;
-
-            // Cost formula from the paper
-            double cost = 10000.0 * ((1.2 * currentVolume - 0.2 * baseVolume) / baseVolume);
+        get => _valueFunc != null ? _valueFunc() : 0.0;
+    }
 
 
-            return cost;
-        }
+    public Func<double> CostFunc
+    {
+        set => _valueFunc = value;
     }
 
 
