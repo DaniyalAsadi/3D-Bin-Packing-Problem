@@ -7,6 +7,8 @@ namespace _3D_Bin_Packing_Problem.Model;
 /// </summary>
 public class GeneSequence : IEnumerable<Gene>, IEquatable<GeneSequence>
 {
+    private static readonly Random Random = new();
+
     public BinType BinType { get; private set; }
     public Gene Length { get; private set; }
     public Gene Width { get; private set; }
@@ -87,5 +89,38 @@ public class GeneSequence : IEnumerable<Gene>, IEquatable<GeneSequence>
     {
         var clonedBin = BinType.Clone();
         return new GeneSequence(clonedBin);
+    }
+
+    /// <summary>
+    /// Apply a random rotation (permutes L, W, H)
+    /// </summary>
+    public void ApplyRandomRotation()
+    {
+        var orientation = Random.Next(6);
+        var l = Length.Clone();
+        var w = Width.Clone();
+        var h = Height.Clone();
+
+        switch (orientation)
+        {
+            case 0: // (L, W, H)
+                (Length, Width, Height) = (l, w, h);
+                break;
+            case 1: // (L, H, W)
+                (Length, Width, Height) = (l, h, w);
+                break;
+            case 2: // (W, L, H)
+                (Length, Width, Height) = (w, l, h);
+                break;
+            case 3: // (W, H, L)
+                (Length, Width, Height) = (w, h, l);
+                break;
+            case 4: // (H, L, W)
+                (Length, Width, Height) = (h, l, w);
+                break;
+            case 5: // (H, W, L)
+                (Length, Width, Height) = (h, w, l);
+                break;
+        }
     }
 }

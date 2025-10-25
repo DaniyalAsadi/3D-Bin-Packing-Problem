@@ -19,14 +19,13 @@ public class TwoPointMutation : IMutationOperator
             var crossoverPoint1 = Random.Next(0, chromosome.Count);
             // map crossover point -> seqIndex and geneIndex
             var seqIndex1 = crossoverPoint1 / 3;
-            var geneIndex1 = crossoverPoint1 % 3;
 
 
             var seqIndex2 = crossoverPoint1 / 3;
-            var geneIndex2 = crossoverPoint % 3;
 
             // swap single gene between children
-            (crm[seqIndex1][geneIndex1], crm[seqIndex2][geneIndex2]) = (crm[seqIndex2][geneIndex2], crm[seqIndex1][geneIndex1]);
+            crm[seqIndex1].ApplyRandomRotation();
+            crm[seqIndex2].ApplyRandomRotation();
         }
         return mutated;
     }

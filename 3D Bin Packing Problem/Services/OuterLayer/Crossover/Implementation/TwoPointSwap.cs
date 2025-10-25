@@ -28,14 +28,12 @@ public class TwoPointSwap : ICrossoverOperator
             var crossoverPoint2 = Random.Next(0, c2.Count);
             // map crossover point -> seqIndex and geneIndex
             var seqIndex1 = crossoverPoint1 / 3;
-            var geneIndex1 = crossoverPoint1 % 3;
 
 
             var seqIndex2 = crossoverPoint2 / 3;
-            var geneIndex2 = crossoverPoint2 % 3;
 
             // swap single gene between children
-            (chromosome1[seqIndex1][geneIndex1], chromosome2[seqIndex2][geneIndex2]) = (chromosome2[seqIndex2][geneIndex2], chromosome1[seqIndex1][geneIndex1]);
+            (chromosome1[seqIndex1], chromosome2[seqIndex2]) = (chromosome2[seqIndex2], chromosome1[seqIndex1]);
         }
         return (chromosome1, chromosome2);
     }

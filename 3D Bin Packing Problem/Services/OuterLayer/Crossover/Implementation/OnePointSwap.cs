@@ -23,16 +23,14 @@ public class OnePointSwap : ICrossoverOperator
 
         // map crossover point -> seqIndex and geneIndex
         var seqIndex1 = crossoverPoint1 / 3;
-        var geneIndex1 = crossoverPoint1 % 3;
 
         var seqIndex2 = crossoverPoint2 / 3;
-        var geneIndex2 = crossoverPoint2 % 3;
 
         var chromosome1 = c1.Clone();
         var chromosome2 = c2.Clone();
 
         // swap single gene between children
-        (chromosome1[seqIndex1][geneIndex1], chromosome2[seqIndex2][geneIndex2]) = (chromosome2[seqIndex2][geneIndex2], chromosome1[seqIndex1][geneIndex1]);
+        (chromosome1[seqIndex1], chromosome2[seqIndex2]) = (chromosome2[seqIndex2], chromosome1[seqIndex1]);
 
         return (chromosome1, chromosome2);
     }

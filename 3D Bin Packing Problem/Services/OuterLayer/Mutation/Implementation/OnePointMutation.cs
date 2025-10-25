@@ -16,9 +16,8 @@ public class OnePointMutation : IMutationOperator
         var crossoverPoint1 = Random.Next(0, chromosome.Count);
         // map crossover point -> seqIndex and geneIndex
         var seqIndex1 = crossoverPoint1 / 3;
-        var geneIndex1 = crossoverPoint1 % 3;
 
-        mutated[seqIndex1][geneIndex1].SetValue(Random.Next());
+        mutated[seqIndex1].ApplyRandomRotation();
 
         return mutated;
     }
