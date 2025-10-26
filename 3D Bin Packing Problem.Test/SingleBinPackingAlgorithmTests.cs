@@ -1,9 +1,9 @@
-﻿using _3D_Bin_Packing_Problem.Model;
-using _3D_Bin_Packing_Problem.Services.InnerLayer.PFCA;
-using _3D_Bin_Packing_Problem.Services.InnerLayer.SPA;
-using _3D_Bin_Packing_Problem.Services.InnerLayer.SUA;
-using _3D_Bin_Packing_Problem.Services.InnerLayer.SubBinOrderingStrategy;
-using _3D_Bin_Packing_Problem.ViewModels;
+﻿using _3D_Bin_Packing_Problem.Core.Model;
+using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.PFCA;
+using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SPA;
+using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SUA;
+using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SubBinOrderingStrategy;
+using _3D_Bin_Packing_Problem.Core.ViewModels;
 using System.Numerics;
 
 namespace BinPacking.Tests;
@@ -22,6 +22,7 @@ public class SingleBinPackingAlgorithmTests
 
         var expectedPlacement = new PlacementResult(
             item,
+            binType,
             new Vector3(0, 0, 0),
             new Vector3(2, 2, 2),
             1.0,
@@ -97,6 +98,7 @@ public class SingleBinPackingAlgorithmTests
 
         var placementResult = new PlacementResult(
             items[0],
+            binType,
             new Vector3(0, 0, 0),
             new Vector3(5, 5, 5),
             1.0,

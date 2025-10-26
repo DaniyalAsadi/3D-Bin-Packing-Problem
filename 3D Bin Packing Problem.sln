@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "3D Bin Packing Problem", "3
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "3D Bin Packing Problem.Test", "3D Bin Packing Problem.Test\3D Bin Packing Problem.Test.csproj", "{6B75A04E-2EC2-409B-A4D5-FA3DA0BECFAE}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "3D Bin Packing Problem.Core", "3D Bin Packing Problem.Core\3D Bin Packing Problem.Core.csproj", "{9D35369E-915C-4807-A8BC-CDD546394596}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{6B75A04E-2EC2-409B-A4D5-FA3DA0BECFAE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6B75A04E-2EC2-409B-A4D5-FA3DA0BECFAE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6B75A04E-2EC2-409B-A4D5-FA3DA0BECFAE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9D35369E-915C-4807-A8BC-CDD546394596}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D35369E-915C-4807-A8BC-CDD546394596}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D35369E-915C-4807-A8BC-CDD546394596}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D35369E-915C-4807-A8BC-CDD546394596}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

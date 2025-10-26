@@ -1,9 +1,9 @@
-﻿using _3D_Bin_Packing_Problem.Model;
-using _3D_Bin_Packing_Problem.Services.InnerLayer.ItemOrderingStrategy;
-using _3D_Bin_Packing_Problem.Services.InnerLayer.PA;
-using _3D_Bin_Packing_Problem.Services.InnerLayer.SPA;
-using _3D_Bin_Packing_Problem.Services.InnerLayer.SubBinSelectionStrategy;
-using _3D_Bin_Packing_Problem.ViewModels;
+﻿using _3D_Bin_Packing_Problem.Core.Model;
+using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.ItemOrderingStrategy;
+using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.PA;
+using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SPA;
+using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SubBinSelectionStrategy;
+using _3D_Bin_Packing_Problem.Core.ViewModels;
 using Moq;
 
 /// <summary>

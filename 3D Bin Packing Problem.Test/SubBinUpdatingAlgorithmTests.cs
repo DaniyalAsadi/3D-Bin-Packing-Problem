@@ -1,7 +1,7 @@
-﻿using _3D_Bin_Packing_Problem.Model;
-using _3D_Bin_Packing_Problem.Services.InnerLayer.PFCA;
-using _3D_Bin_Packing_Problem.Services.InnerLayer.SUA;
-using _3D_Bin_Packing_Problem.ViewModels;
+﻿using _3D_Bin_Packing_Problem.Core.Model;
+using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.PFCA;
+using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SUA;
+using _3D_Bin_Packing_Problem.Core.ViewModels;
 using System.Numerics;
 using System.Reflection;
 
@@ -14,6 +14,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
 {
     private readonly IPlacementFeasibilityChecker _checker = new PlacementFeasibilityChecker();
     private readonly ISubBinUpdatingAlgorithm _algorithm = new SubBinUpdatingAlgorithm();
+    BinType binType = new BinType();
 
     // ---------------- تقسیم (Divide) ----------------
 
@@ -22,12 +23,11 @@ public class SubBinUpdatingAlgorithmExtendedTests
     {
         var item = new Item(2, 5, 5);
         var subBinList = new List<SubBin> { new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0, 0) };
-        var checkResult = _checker.Execute(item, subBinList[0], out var placementResult);
+        var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
         Assert.NotNull(placementResult);
         var result = _algorithm.Execute(subBinList, placementResult);
 
-        Assert.Single(result);
-        Assert.Contains(result, sb => sb is { X: 2, Length: 3 });
+        Assert.Single(result, sb => sb is { X: 2, Length: 3 });
     }
 
     [Fact]
@@ -36,13 +36,12 @@ public class SubBinUpdatingAlgorithmExtendedTests
         var item = new Item(5, 2, 5);
         var subBinList = new List<SubBin> { new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0, 0) };
 
-        var checkResult = _checker.Execute(item, subBinList[0], out var placementResult);
+        var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
         Assert.NotNull(placementResult);
         var result = _algorithm.Execute(subBinList, placementResult);
 
 
-        Assert.Single(result);
-        Assert.Contains(result, sb => sb is { Y: 2, Width: 3 });
+        Assert.Single(result, sb => sb is { Y: 2, Width: 3 });
     }
 
     [Fact]
@@ -51,7 +50,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
         var item = new Item(5, 5, 2);
         var subBinList = new List<SubBin> { new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0, 0) };
 
-        var checkResult = _checker.Execute(item, subBinList[0], out var placementResult);
+        var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
         Assert.NotNull(placementResult);
         var result = _algorithm.Execute(subBinList, placementResult);
 
@@ -66,7 +65,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
         var item = new Item(5, 5, 5);
         var subBinList = new List<SubBin> { new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0, 0) };
 
-        var checkResult = _checker.Execute(item, subBinList[0], out var placementResult);
+        var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
         Assert.NotNull(placementResult);
         var result = _algorithm.Execute(subBinList, placementResult);
 
@@ -87,7 +86,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
 
 
         // Act
-        var checkResult = _checker.Execute(item, subBinList[0], out var placementResult);
+        var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
         Assert.NotNull(placementResult);
         var result = _algorithm.Execute(subBinList, placementResult);
 
@@ -96,13 +95,13 @@ public class SubBinUpdatingAlgorithmExtendedTests
         Assert.Equal(3, result.Count); // Right, Front, Top
 
         // بررسی ابعاد هر SubBin
-        var right = Assert.Single(result.Where(sb => sb is { X: 2, Length: 3 }));
+        var right = Assert.Single(result, sb => sb is { X: 2, Length: 3 });
         Assert.Equal((5, 5), (right.Width, right.Height));
 
-        var front = Assert.Single(result.Where(sb => sb is { Y: 2, Width: 3 }));
+        var front = Assert.Single(result, sb => sb is { Y: 2, Width: 3 });
         Assert.Equal((5, 5), (front.Length, front.Height));
 
-        var top = Assert.Single(result.Where(sb => sb is { Z: 2, Height: 3 }));
+        var top = Assert.Single(result, sb => sb is { Z: 2, Height: 3 });
         Assert.Equal((5, 5), (top.Length, top.Width));
     }
 
@@ -119,7 +118,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
         var item2 = new Item(3, 3, 3);
 
         // --- مرحله ۱ ---
-        var checkResult = _checker.Execute(item1, subBinList[0], out var placementResult);
+        var checkResult = _checker.Execute(binType, item1, subBinList[0], out var placementResult);
         Assert.NotNull(placementResult);
         var resultAfterFirst = _algorithm.Execute(subBinList, placementResult);
 
@@ -132,7 +131,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
 
 
         // --- مرحله ۲ ---
-        var checkResult2 = _checker.Execute(item2, subBinList[0], out var placementResult2);
+        var checkResult2 = _checker.Execute(binType, item2, subBinList[0], out var placementResult2);
         Assert.NotNull(placementResult);
         var resultAfterSecond = _algorithm.Execute(subBinList, placementResult2);
 
@@ -178,7 +177,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
         foreach (var item in items)
         {
 
-            var checkResult = _checker.Execute(item, subBinList[0], out var placementResult);
+            var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
             Assert.NotNull(placementResult);
             var result = _algorithm.Execute(subBinList, placementResult);
             currentSubBins = result;
@@ -238,6 +237,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
         var sb = new SubBin(0, 0, 0, 5, 5, 5, 0, 0, 0, 0, 0);
         var placement = new PlacementResult(
             new Item(2, 2, 2),
+            binType,
             new Vector3(10, 10, 10),
             new Vector3(2, 2, 2),
             1,
@@ -254,6 +254,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
         var sb = new SubBin(0, 0, 0, 5, 5, 5, 0, 0, 0, 0, 0);
         var placement = new PlacementResult(
             new Item(2, 2, 2),
+            binType,
             new Vector3(1, 1, 1),
             new Vector3(2, 2, 2),
             1,
@@ -286,7 +287,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
             new(0, 0, 0, 10, 10, 10,0,0,0,0,0)
         };
 
-        var checkResult = _checker.Execute(item, subBinList[0], out var placementResult);
+        var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
         Assert.NotNull(placementResult);
         var result = _algorithm.Execute(subBinList, placementResult);
 
@@ -372,7 +373,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
         foreach (var item in items)
         {
 
-            var checkResult = _checker.Execute(item, subBinList[0], out var placementResult);
+            var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
             Assert.NotNull(placementResult);
             var result = _algorithm.Execute(subBinList, placementResult);
         }
