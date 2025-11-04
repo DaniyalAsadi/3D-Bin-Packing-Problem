@@ -12,6 +12,20 @@ namespace _3D_Bin_Packing_Problem.Core.Services.OuterLayer.FitnessCalculator.Imp
 public class DefaultFitnessCalculator(IPlacementAlgorithm placementAlgorithm) : IFitnessCalculator
 {
     private const int PenaltyCoefficient = 200000;
+    private double _alpha; // ضریب وزن‌دهی پرشدگی
+    private double _beta;  // ضریب وزن‌دهی هزینه
+    public void SetAlpha(double alpha)
+    {
+        // تنظیم ضریب وزن‌دهی پرشدگی
+        _alpha = alpha;
+    }
+    public void SetBeta(double beta)
+    {
+        // تنظیم ضریب وزن‌دهی هزینه
+        _beta = beta;
+    }
+
+
 
     public FitnessResultViewModel Evaluate(Chromosome chromosome, List<Item> items)
     {
@@ -24,9 +38,19 @@ public class DefaultFitnessCalculator(IPlacementAlgorithm placementAlgorithm) : 
                 Description = e.BinType.Description,
                 CostFunc = () => e.BinType.Cost
             }).ToList());
-        double cost = results.UsedBinTypes.Sum(b => b.Cost);
-        double penalty = results.LeftItems.Count * PenaltyCoefficient;
-        var fitness = cost + penalty;
+        var totalCost = results.UsedBinTypes.Sum(b => b.Cost);
+
+        // محاسبه FillRate
+        var totalPackedVolume = items.Sum(item => item.Length * item.Width * item.Height); // حجم اقلام بسته‌بندی شده
+        var totalBinVolume = results.UsedBinTypes.Sum(bin => bin.Length * bin.Width * bin.Height); // حجم کل جعبه‌ها
+        var fillRate = totalPackedVolume / totalBinVolume;
+
+        // محاسبه جریمه
+        var penalty = results.LeftItems.Count * PenaltyCoefficient;
+
+        // محاسبه Fitness
+        var fitness = _alpha * fillRate - _beta * totalCost + penalty;
+
         return new FitnessResultViewModel()
         {
             PackingResults = results,

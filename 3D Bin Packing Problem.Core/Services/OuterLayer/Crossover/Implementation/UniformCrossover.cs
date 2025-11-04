@@ -4,11 +4,12 @@ using System;
 namespace _3D_Bin_Packing_Problem.Core.Services.OuterLayer.Crossover.Implementation;
 
 /// <summary>
-/// Swaps entire gene sequences between chromosomes at randomly chosen boundaries.
+/// Replaces a randomly selected sequence in one chromosome with the corresponding sequence from another.
 /// </summary>
-public class SequenceSwap : ICrossoverOperator
+public class UniformCrossover : ICrossoverOperator
 {
     private static readonly Random Random = new Random();
+
     public (Chromosome, Chromosome) Crossover(Chromosome c1, Chromosome c2)
     {
         if (c1 == null || c2 == null)
@@ -20,20 +21,13 @@ public class SequenceSwap : ICrossoverOperator
         var chromosome1 = c1.Clone();
         var chromosome2 = c2.Clone();
 
-        // pick a crossover point in gene-space
-        var crossoverPoint1 = Random.Next(0, c1.Count);
-        var crossoverPoint2 = Random.Next(0, c2.Count);
-
-
-
-        // map crossover point -> seqIndex and geneIndex
-        var seqIndex1 = crossoverPoint1 / 3;
-
-
-        var seqIndex2 = crossoverPoint2 / 3;
-
-        // swap single gene between children
-        (chromosome1[seqIndex1], chromosome2[seqIndex2]) = (chromosome2[seqIndex2], chromosome1[seqIndex1]);
+        for (int i = 0; i < c1.Count; i++)
+        {
+            if (!(Random.NextDouble() < 0.5)) continue;
+            // Randomly decide which parent to take the gene from
+            chromosome1[i] = c2[i];
+            chromosome2[i] = c1[i];
+        }
 
         return (chromosome1, chromosome2);
     }

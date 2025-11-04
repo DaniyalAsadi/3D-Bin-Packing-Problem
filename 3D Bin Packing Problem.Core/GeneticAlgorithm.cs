@@ -47,7 +47,7 @@ public class GeneticAlgorithm(
     {
         return new GeneticAlgorithm(
             new PopulationGenerator(),
-            [new OnePointSwap(), new TwoPointSwap(), new SequenceReplacement(), new SequenceSwap()],
+            [new OnePointCrossover(), new TwoPointCrossover(), new UniformCrossover(), new MultiPointCrossover()],
             [new OnePointMutation(), new TwoPointMutation()],
             new RouletteWheelSelection(new ChromosomeFitnessComparer()),
             new DefaultFitnessCalculator(
@@ -66,6 +66,10 @@ public class GeneticAlgorithm(
     {
         // Step 1: Initial population
         populationGenerator.SetAvailableBins(availableBinTypes);
+        fitnessCalculator.SetAlpha(5000);
+        fitnessCalculator.SetBeta(1);
+
+
         int binTypeCount = Math.Max(1, (int)(availableBinTypes.Count * 0.4));
         var initialPopulation = populationGenerator.Generate(itemList, PopulationSize, binTypeCount);
         initialPopulation.ForEach(x =>
