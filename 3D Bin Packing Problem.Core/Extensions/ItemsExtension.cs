@@ -7,7 +7,7 @@ namespace _3D_Bin_Packing_Problem.Core.Extensions
     /// <summary>
     /// Provides helper extensions for working with product items.
     /// </summary>
-    public static class ProductsExtension
+    public static class ItemsExtension
     {
         // گرفتن همه حالت‌های چرخش (۶ حالت ممکن)
         public static IEnumerable<Vector3> GetOrientations(this Item item)
