@@ -9,7 +9,7 @@ namespace _3D_Bin_Packing_Problem.Core.Services.InnerLayer.ItemOrderingStrategy;
 /// </summary>
 public class ItemOrderingStrategyI3(IEnumerable<BinType> binTypes) : IItemOrderingStrategy
 {
-    private int ComputeBTN(Item item)
+    private int ComputeBtn(Item item)
     {
         return binTypes.Count(bt =>
             item.Length <= bt.Length &&
@@ -32,7 +32,7 @@ public class ItemOrderingStrategyI3(IEnumerable<BinType> binTypes) : IItemOrderi
     public IEnumerable<Item> Apply(IEnumerable<Item> items)
     {
         return items
-            .OrderBy(ComputeBTN)
+            .OrderBy(ComputeBtn)
             .ThenBy(ComputeMinCost)
             .ThenByDescending(i => i.Volume)
             .ThenByDescending(i => i.Length)

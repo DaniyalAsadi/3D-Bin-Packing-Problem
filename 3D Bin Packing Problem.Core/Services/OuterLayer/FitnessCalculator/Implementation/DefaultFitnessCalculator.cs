@@ -1,4 +1,5 @@
-﻿using _3D_Bin_Packing_Problem.Core.Model;
+﻿using _3D_Bin_Packing_Problem.Core.Configuration;
+using _3D_Bin_Packing_Problem.Core.Model;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.PA;
 using _3D_Bin_Packing_Problem.Core.ViewModels;
 using System.Collections.Generic;
@@ -12,18 +13,10 @@ namespace _3D_Bin_Packing_Problem.Core.Services.OuterLayer.FitnessCalculator.Imp
 public class DefaultFitnessCalculator(IPlacementAlgorithm placementAlgorithm) : IFitnessCalculator
 {
     private const int PenaltyCoefficient = 200000;
-    private double _alpha; // ضریب وزن‌دهی پرشدگی
-    private double _beta;  // ضریب وزن‌دهی هزینه
-    public void SetAlpha(double alpha)
-    {
-        // تنظیم ضریب وزن‌دهی پرشدگی
-        _alpha = alpha;
-    }
-    public void SetBeta(double beta)
-    {
-        // تنظیم ضریب وزن‌دهی هزینه
-        _beta = beta;
-    }
+
+    private readonly double _alpha = SettingsManager.Current.Genetic.AlphaWeight; // ضریب وزن‌دهی پرشدگی
+    private readonly double _beta = SettingsManager.Current.Genetic.BetaWeight;  // ضریب وزن‌دهی هزینه
+
 
 
 

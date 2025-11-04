@@ -1,4 +1,5 @@
-﻿using _3D_Bin_Packing_Problem.Core.Model;
+﻿using _3D_Bin_Packing_Problem.Core.Configuration;
+using _3D_Bin_Packing_Problem.Core.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +36,7 @@ public class RouletteWheelSelection(IComparer<Chromosome> comparer) : ISelection
         // 3. Compute total fitness for roulette wheel
         double totalFitness = population.Sum(e => e.Fitness);
         if (totalFitness <= 0)
-            totalFitness = 1e-6; // avoid division by zero
+            totalFitness = AppConstants.Tolerance; // avoid division by zero
 
         var selected = new List<Chromosome>(elites);
 

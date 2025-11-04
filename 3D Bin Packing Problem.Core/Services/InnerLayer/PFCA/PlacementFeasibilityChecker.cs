@@ -1,3 +1,4 @@
+using _3D_Bin_Packing_Problem.Core.Configuration;
 using _3D_Bin_Packing_Problem.Core.Extensions;
 using _3D_Bin_Packing_Problem.Core.Model;
 using _3D_Bin_Packing_Problem.Core.ViewModels;
@@ -13,9 +14,10 @@ namespace _3D_Bin_Packing_Problem.Core.Services.InnerLayer.PFCA;
 /// </summary>
 public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
 {
-    private const float EPS = 1e-5f;
-    private const double Lambda = 0.75;
-    public static PlacementResult? LastPlacement { get; set; }
+    private const float Eps = AppConstants.Tolerance;
+    private readonly double _lambda = SettingsManager.Current.Genetic.SupportThreshold;
+
+    public static PlacementResult? LastPlacement { get; private set; }
 
 
     public bool Execute(BinType binType, Item item, SubBin subBin, out PlacementResult? result)
@@ -28,7 +30,7 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
         var bestMargin = double.PositiveInfinity;
         PlacementResult? bestResult = null;
 
-        var keyPoints = GetPoints(subBin, item, Lambda);
+        var keyPoints = GetPoints(subBin, item, _lambda);
         var orientations = item.GetOrientations().ToList();
 
         foreach (var pos in keyPoints)
@@ -62,7 +64,7 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
                 var margins = new[] { marginLeft, marginRight, marginBack, marginFront, marginTop };
                 var smallestMargin = margins.Min();
 
-                if (smallestMargin < -EPS)
+                if (smallestMargin < -Eps)
                     continue; // یعنی برخورد کرده
 
                 // --- بررسی نسبت تکیه‌گاه (support ratio) ---
@@ -70,7 +72,7 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
                 var itemArea = placedBox.L * placedBox.W;
                 var supportRatio = (double)supportArea / itemArea;
 
-                if (supportRatio < Lambda) continue; // شرط ساپورت برقرار نیست
+                if (supportRatio < _lambda) continue; // شرط ساپورت برقرار نیست
 
                 // --- انتخاب بهترین ---
                 if (!(smallestMargin < bestMargin)) continue;
@@ -183,9 +185,9 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
         var unique = new List<Vector3>(5);
         foreach (var kp in ordered)
             if (!unique.Any(q =>
-                    Math.Abs(q.X - kp.X) < EPS &&
-                    Math.Abs(q.Y - kp.Y) < EPS &&
-                    Math.Abs(q.Z - kp.Z) < EPS))
+                    Math.Abs(q.X - kp.X) < Eps &&
+                    Math.Abs(q.Y - kp.Y) < Eps &&
+                    Math.Abs(q.Z - kp.Z) < Eps))
             {
                 unique.Add(kp);
             }

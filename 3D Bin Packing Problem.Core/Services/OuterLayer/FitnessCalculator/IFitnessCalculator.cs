@@ -5,9 +5,6 @@ using System.Collections.Generic;
 namespace _3D_Bin_Packing_Problem.Core.Services.OuterLayer.FitnessCalculator;
 public interface IFitnessCalculator
 {
-    void SetAlpha(double alpha);
-    void SetBeta(double beta);
-
     /// <summary>
     /// Evaluates the fitness of a chromosome.
     /// Higher is better.
