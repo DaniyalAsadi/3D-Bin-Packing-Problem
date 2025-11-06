@@ -52,7 +52,7 @@ public class SubBinOrderingStrategyS4 : ISubBinOrderingStrategy
         // چک کردن اینکه هر دو از سه بعد L,W,H برابر باشند
         var subDims = new[] { sub.Length, sub.Width, sub.Height };
         var itemDims = new[] { item.Length, item.Width, item.Height };
-        int matchCount = subDims.Count(d => itemDims.Contains(d));
+        var matchCount = subDims.Count(d => itemDims.Contains(d));
         return matchCount == 2;
     }
 

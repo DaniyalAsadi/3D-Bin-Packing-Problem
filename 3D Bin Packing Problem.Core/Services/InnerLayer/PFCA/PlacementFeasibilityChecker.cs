@@ -96,13 +96,13 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
     /// محاسبه مساحت تکیه‌گاه آیتم روی کف SubBin
     /// (برای ساده‌سازی اینجا فرض می‌کنیم کف کامل ساپورت هست)
     /// </summary>
-    private static int ComputeSupportArea(SubBin sb, PlacedBox placedBox)
+    private static float ComputeSupportArea(SubBin sb, PlacedBox placedBox)
     {
         // ساده‌سازی: تقاطع بین کف subBin و قاعده آیتم
-        int x1 = Math.Max(sb.X, placedBox.X);
-        int y1 = Math.Max(sb.Y, placedBox.Y);
-        int x2 = Math.Min(sb.X + sb.Length, placedBox.X + placedBox.L);
-        int y2 = Math.Min(sb.Y + sb.Width, placedBox.Y + placedBox.W);
+        var x1 = Math.Max(sb.X, placedBox.X);
+        var y1 = Math.Max(sb.Y, placedBox.Y);
+        var x2 = Math.Min(sb.X + sb.Length, placedBox.X + placedBox.L);
+        var y2 = Math.Min(sb.Y + sb.Width, placedBox.Y + placedBox.W);
 
         if (x2 <= x1 || y2 <= y1)
             return 0;
@@ -138,7 +138,7 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
         var maxYOverlap = Math.Min(item.Width, sb.Width);
 
         var y1 = yMin; // "تا حد امکان به سمت پشت"
-        int y2;
+        float y2;
         if (supportX == 0 || needArea > (long)supportX * maxYOverlap)
         {
             // Point 2 وجود ندارد؛ همان Point 1
@@ -161,7 +161,7 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
         var maxXOverlap = Math.Min(item.Length, sb.Length);
 
         var x3 = xMin; // "تا حد امکان به سمت چپ"
-        int x4;
+        float x4;
         if (supportY == 0 || needArea > (long)maxXOverlap * supportY)
         {
             // Point 4 وجود ندارد؛ همان Point 3

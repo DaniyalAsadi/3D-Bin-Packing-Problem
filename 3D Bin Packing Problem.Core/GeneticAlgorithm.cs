@@ -8,11 +8,9 @@ using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SUA;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SubBinOrderingStrategy;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SubBinSelectionStrategy;
 using _3D_Bin_Packing_Problem.Core.Services.OuterLayer.Crossover;
-using _3D_Bin_Packing_Problem.Core.Services.OuterLayer.Crossover.Implementation;
 using _3D_Bin_Packing_Problem.Core.Services.OuterLayer.FitnessCalculator;
 using _3D_Bin_Packing_Problem.Core.Services.OuterLayer.FitnessCalculator.Implementation;
 using _3D_Bin_Packing_Problem.Core.Services.OuterLayer.Mutation;
-using _3D_Bin_Packing_Problem.Core.Services.OuterLayer.Mutation.Implementation;
 using _3D_Bin_Packing_Problem.Core.Services.OuterLayer.PopulationGenerator;
 using _3D_Bin_Packing_Problem.Core.Services.OuterLayer.PopulationGenerator.Implementation;
 using _3D_Bin_Packing_Problem.Core.Services.OuterLayer.Selection;
@@ -28,11 +26,11 @@ namespace _3D_Bin_Packing_Problem.Core;
 /// </summary>
 public class GeneticAlgorithm(
     IPopulationGenerator populationGenerator,
-    IEnumerable<ICrossoverOperator> crossoverOperators,
-    IEnumerable<IMutationOperator> mutationOperators,
     ISelection selection,
     IFitnessCalculator fitnessCalculator,
-    IComparer<Chromosome> comparer)
+    IComparer<Chromosome> comparer,
+    CrossoverFactory crossoverFactory,
+    MutationFactory mutationFactory)
 {
     // Configurable constants
     private readonly int _maxIteration = SettingsManager.Current.Genetic.MaxIteration;
@@ -42,6 +40,12 @@ public class GeneticAlgorithm(
     private readonly int _tournamentGroupSize = SettingsManager.Current.Genetic.TournamentGroupSize;         // اندازه گروه انتخاب تورنمنتی
     private readonly int _elitismPopulationSize = SettingsManager.Current.Genetic.ElitismPopulationSize;
 
+    private readonly IEnumerable<ICrossoverOperator> _crossoverOperators =
+        crossoverFactory.Create(SettingsManager.Current.Crossover);
+
+    private readonly IEnumerable<IMutationOperator> _mutationOperators =
+        mutationFactory.Create(SettingsManager.Current.Mutation);
+
     private readonly Random _random = new();
     private List<Chromosome> _population = [];
     private List<Chromosome> _elitismPopulation = [];
@@ -49,26 +53,28 @@ public class GeneticAlgorithm(
     {
         return new GeneticAlgorithm(
             new PopulationGenerator(),
-            [new OnePointCrossover(), new TwoPointCrossover(), new UniformCrossover(), new MultiPointCrossover()],
-            [new OnePointMutation(), new TwoPointMutation()],
             new RouletteWheelSelection(new ChromosomeFitnessComparer()),
             new DefaultFitnessCalculator(
                 new PlacementAlgorithm(
-                    new ItemOrderingStrategyI1(),
-                    new SubBinSelectionStrategyB1(),
+                    new ItemOrderingStrategyFactory(),
+                    new SubBinSelectionStrategyFactory(),
                     new SingleBinPackingAlgorithm(
                         new PlacementFeasibilityChecker(),
                         new SubBinUpdatingAlgorithm(),
-                        new SubBinOrderingStrategyS1()))),
-            new ChromosomeFitnessComparer()
+                        new SubBinOrderingStrategyFactory()))),
+            new ChromosomeFitnessComparer(),
+            new CrossoverFactory(),
+            new MutationFactory()
         );
     }
 
     public Chromosome Execute(List<BinType> availableBinTypes, List<Item> itemList)
     {
+
+
         // Step 1: Initial population
         populationGenerator.SetAvailableBins(availableBinTypes);
-        int binTypeCount = Math.Max(1, (int)(availableBinTypes.Count * 0.4));
+        var binTypeCount = Math.Max(1, (int)(availableBinTypes.Count * 0.4));
         var initialPopulation = populationGenerator.Generate(itemList, _populationSize, binTypeCount);
         initialPopulation.ForEach(x =>
         {
@@ -97,7 +103,7 @@ public class GeneticAlgorithm(
                 var crossChildrenList = new List<Chromosome>();
                 if (_random.NextDouble() < _crossoverProbability)
                 {
-                    foreach (var crossoverOperator in crossoverOperators)
+                    foreach (var crossoverOperator in _crossoverOperators)
                     {
                         var (crossChildA, crossChildB) = crossoverOperator.Crossover(parentA, parentB);
                         crossChildrenList.Add(crossChildA);
@@ -122,7 +128,7 @@ public class GeneticAlgorithm(
                 var muteChildrenList = new List<Chromosome>();
                 if (_random.NextDouble() < _mutationProbability)
                 {
-                    foreach (var mutationOperator in mutationOperators)
+                    foreach (var mutationOperator in _mutationOperators)
                     {
                         var muteChildA = mutationOperator.Mutate(childA);
                         var muteChildB = mutationOperator.Mutate(childB);

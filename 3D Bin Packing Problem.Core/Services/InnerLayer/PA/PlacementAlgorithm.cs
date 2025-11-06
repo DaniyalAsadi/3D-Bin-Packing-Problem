@@ -1,3 +1,4 @@
+using _3D_Bin_Packing_Problem.Core.Configuration;
 using _3D_Bin_Packing_Problem.Core.Model;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.ItemOrderingStrategy;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SPA;
@@ -12,12 +13,14 @@ namespace _3D_Bin_Packing_Problem.Core.Services.InnerLayer.PA;
 /// Implements the placement algorithm that orchestrates item ordering, bin selection, and single-bin packing.
 /// </summary>
 public class PlacementAlgorithm(
-    IItemOrderingStrategy itemOrderingStrategy,
-    ISubBinSelectionStrategy subBinSelectionStrategy,
+    ItemOrderingStrategyFactory itemOrderingStrategyFactory,
+    SubBinSelectionStrategyFactory subBinSelectionStrategyFactory,
     ISingleBinPackingAlgorithm singleBinPackingAlgorithm) : IPlacementAlgorithm
 {
     public PackingResultsViewModel Execute(List<Item> items, List<BinType> bins)
     {
+        var itemOrderingStrategy = itemOrderingStrategyFactory.Create(SettingsManager.Current.ItemOrdering, bins);
+        var subBinSelectionStrategy = subBinSelectionStrategyFactory.Create(SettingsManager.Current.SubBinSelection);
         items = itemOrderingStrategy.Apply(items).ToList();
         var leftItemList = items;
         var packingResultsViewModel = new PackingResultsViewModel();
@@ -36,12 +39,13 @@ public class PlacementAlgorithm(
                 break;
             }
 
+            var binInstance = new BinInstance(binType);
             // اجرای الگوریتم Single Bin Packing
-            var packingResultViewModel = singleBinPackingAlgorithm.Execute(leftItemList, binType);
+            var packingResultViewModel = singleBinPackingAlgorithm.Execute(leftItemList, binInstance);
 
             // اضافه کردن آیتم‌های بسته‌بندی شده
             packingResultsViewModel.PackedItems.AddRange(packingResultViewModel.PackedItems);
-            packingResultsViewModel.UsedBinTypes.Add(binType);
+            packingResultsViewModel.UsedBinTypes.Add(binInstance);
             // به‌روزرسانی لیست آیتم‌های باقی‌مانده
             leftItemList = leftItemList
                 .Where(item => packingResultViewModel.LeftItems.Any(ivm => ivm.Id == item.Id))

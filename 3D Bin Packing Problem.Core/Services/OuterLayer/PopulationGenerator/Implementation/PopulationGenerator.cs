@@ -36,7 +36,7 @@ public class PopulationGenerator : IPopulationGenerator
     {
         var geneSequences = new List<GeneSequence>();
 
-        for (int i = 0; i < binTypeCount; i++)
+        for (var i = 0; i < binTypeCount; i++)
             geneSequences.Add(CreateRandomGeneSequence());
 
         return new Chromosome(geneSequences);
@@ -51,7 +51,7 @@ public class PopulationGenerator : IPopulationGenerator
         var population = new List<Chromosome>();
 
         // ۲ برابر تولید برای تنوع بیشتر
-        for (int i = 0; i < 2 * populationSize; i++)
+        for (var i = 0; i < 2 * populationSize; i++)
         {
             var chromosome = CreateRandomChromosome(binTypeCount);
             population.Add(chromosome);

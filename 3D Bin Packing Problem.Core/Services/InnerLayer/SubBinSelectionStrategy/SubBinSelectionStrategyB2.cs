@@ -20,9 +20,9 @@ public class SubBinSelectionStrategyB2 : ISubBinSelectionStrategy
 
     private IEnumerable<BinType> FilterFeasibleBins(IEnumerable<BinType> binTypes, List<Item> items)
     {
-        int maxLength = items.Max(i => i.Length);
-        int maxWidth = items.Max(i => i.Width);
-        int maxHeight = items.Max(i => i.Height);
+        float maxLength = items.Max(i => i.Length);
+        float maxWidth = items.Max(i => i.Width);
+        float maxHeight = items.Max(i => i.Height);
 
         return binTypes.Where(bt =>
             bt.Length >= maxLength &&

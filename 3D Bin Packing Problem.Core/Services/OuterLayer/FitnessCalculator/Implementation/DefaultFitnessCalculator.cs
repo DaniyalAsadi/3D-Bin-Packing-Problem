@@ -12,7 +12,7 @@ namespace _3D_Bin_Packing_Problem.Core.Services.OuterLayer.FitnessCalculator.Imp
 /// </summary>
 public class DefaultFitnessCalculator(IPlacementAlgorithm placementAlgorithm) : IFitnessCalculator
 {
-    private const int PenaltyCoefficient = 200000;
+    private readonly int _penaltyCoefficient = SettingsManager.Current.Genetic.PenaltyCoefficient;
 
     private readonly double _alpha = SettingsManager.Current.Genetic.AlphaWeight; // ضریب وزن‌دهی پرشدگی
     private readonly double _beta = SettingsManager.Current.Genetic.BetaWeight;  // ضریب وزن‌دهی هزینه
@@ -31,15 +31,22 @@ public class DefaultFitnessCalculator(IPlacementAlgorithm placementAlgorithm) : 
                 Description = e.BinType.Description,
                 CostFunc = () => e.BinType.Cost
             }).ToList());
-        var totalCost = results.UsedBinTypes.Sum(b => b.Cost);
+        var totalCost = results.UsedBinTypes.Sum(b => b.BinType.Cost);
 
         // محاسبه FillRate
         var totalPackedVolume = items.Sum(item => item.Length * item.Width * item.Height); // حجم اقلام بسته‌بندی شده
-        var totalBinVolume = results.UsedBinTypes.Sum(bin => bin.Length * bin.Width * bin.Height); // حجم کل جعبه‌ها
-        var fillRate = totalPackedVolume / totalBinVolume;
-
+        var totalBinVolume = results.UsedBinTypes.Sum(bin => bin.BinType.Length * bin.BinType.Width * bin.BinType.Height); // حجم کل جعبه‌ها
+        int fillRate;
+        if (totalBinVolume > 0)
+        {
+            fillRate = totalPackedVolume / totalBinVolume;
+        }
+        else
+        {
+            fillRate = 0; // یا مقدار مناسب دیگر
+        }
         // محاسبه جریمه
-        var penalty = results.LeftItems.Count * PenaltyCoefficient;
+        var penalty = results.LeftItems.Count * _penaltyCoefficient;
 
         // محاسبه Fitness
         var fitness = _alpha * fillRate - _beta * totalCost + penalty;

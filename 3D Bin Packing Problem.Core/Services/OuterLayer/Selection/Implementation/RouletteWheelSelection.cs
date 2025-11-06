@@ -34,16 +34,16 @@ public class RouletteWheelSelection(IComparer<Chromosome> comparer) : ISelection
 
 
         // 3. Compute total fitness for roulette wheel
-        double totalFitness = population.Sum(e => e.Fitness);
+        var totalFitness = population.Sum(e => e.Fitness);
         if (totalFitness <= 0)
             totalFitness = AppConstants.Tolerance; // avoid division by zero
 
         var selected = new List<Chromosome>(elites);
 
         // 4. Roulette wheel selection for the rest
-        for (int i = elites.Count; i < nextGenerationSize; i++)
+        for (var i = elites.Count; i < nextGenerationSize; i++)
         {
-            double spin = _random.NextDouble() * totalFitness;
+            var spin = _random.NextDouble() * totalFitness;
             double cumulative = 0;
 
             foreach (var e in population)

@@ -1,4 +1,11 @@
-﻿namespace _3D_Bin_Packing_Problem.Core.Configuration;
+﻿using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.ItemOrderingStrategy;
+using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SubBinOrderingStrategy;
+using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SubBinSelectionStrategy;
+using _3D_Bin_Packing_Problem.Core.Services.OuterLayer.Crossover;
+using _3D_Bin_Packing_Problem.Core.Services.OuterLayer.Mutation;
+using System;
+
+namespace _3D_Bin_Packing_Problem.Core.Configuration;
 public static class AppConstants
 {
     public const string AlgorithmName = "Two-Layer Genetic Packing";
@@ -32,7 +39,11 @@ public class GeneticAlgorithmSettings
 }
 public class PackingSettings
 {
-
+    public ItemOrderingStrategyType ItemOrdering { get; set; } = ItemOrderingStrategyType.I1;
+    public SubBinOrderingStrategyType SubBinOrdering { get; set; } = SubBinOrderingStrategyType.S1;
+    public SubBinSelectionStrategyType SubBinSelection { get; set; } = SubBinSelectionStrategyType.B1;
+    public CrossoverType Crossover { get; set; } = CrossoverType.All;
+    public MutationType Mutation { get; set; } = MutationType.All;
     // اتصال تنظیمات الگوریتم ژنتیک
     public GeneticAlgorithmSettings Genetic { get; set; } = new GeneticAlgorithmSettings();
 }
@@ -41,8 +52,18 @@ public static class SettingsManager
     private static PackingSettings _settings = new PackingSettings();
     public static PackingSettings Current => _settings;
 
-    public static void Initialize(PackingSettings settings)
+    public static void Initialize()
     {
-        _settings = settings ?? new PackingSettings();
+        _settings = new PackingSettings();
+    }
+    public static void Initialize(Action<PackingSettings> configure)
+    {
+        _settings = new PackingSettings();
+        configure(_settings);
+    }
+
+    public static void Update(Action<PackingSettings> action)
+    {
+        action(_settings);
     }
 }

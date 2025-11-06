@@ -20,7 +20,7 @@ public class TwoPointCrossover : ICrossoverOperator
         var chromosome1 = c1.Clone();
         var chromosome2 = c2.Clone();
 
-        for (int i = 0; i < 2; i++)
+        for (var i = 0; i < 2; i++)
         {
             var crossoverPoint1 = Random.Next(0, c1.Count);
             var crossoverPoint2 = Random.Next(0, c2.Count);

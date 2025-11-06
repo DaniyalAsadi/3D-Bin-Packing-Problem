@@ -19,7 +19,7 @@ public class ItemOrderingStrategyI2 : IItemOrderingStrategy
             .ThenByDescending(i => i.Height)
             .ThenBy(i => i.Id);
     }
-    private static int GetMaxArea(Item item)
+    private static double GetMaxArea(Item item)
     {
         var area1 = item.Length * item.Width;
         var area2 = item.Length * item.Height;

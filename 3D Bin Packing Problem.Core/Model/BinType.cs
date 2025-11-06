@@ -22,11 +22,9 @@ public class BinType
         get => _length;
         set
         {
-            if (_length != value)
-            {
-                _length = value;
-                _cachedCost = null; // invalidate cache automatically
-            }
+            if (_length == value) return;
+            _length = value;
+            _cachedCost = null; // invalidate cache automatically
         }
     }
 
@@ -35,11 +33,9 @@ public class BinType
         get => _width;
         set
         {
-            if (_width != value)
-            {
-                _width = value;
-                _cachedCost = null;
-            }
+            if (_width == value) return;
+            _width = value;
+            _cachedCost = null;
         }
     }
 
@@ -48,11 +44,9 @@ public class BinType
         get => _height;
         set
         {
-            if (_height != value)
-            {
-                _height = value;
-                _cachedCost = null;
-            }
+            if (_height == value) return;
+            _height = value;
+            _cachedCost = null;
         }
     }
 

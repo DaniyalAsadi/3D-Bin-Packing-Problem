@@ -1,5 +1,5 @@
-﻿using System.Collections.Generic;
-using _3D_Bin_Packing_Problem.Core.Model;
+﻿using _3D_Bin_Packing_Problem.Core.Model;
+using System.Collections.Generic;
 
 namespace _3D_Bin_Packing_Problem.Core.Services.InnerLayer.ItemOrderingStrategy;
 

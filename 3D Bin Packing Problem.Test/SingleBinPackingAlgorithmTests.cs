@@ -33,13 +33,14 @@ public class SingleBinPackingAlgorithmTests
 
 
         var subBinUpdatingAlgorithm = new SubBinUpdatingAlgorithm();
-        var subBinOrderStrategy = new SubBinOrderingStrategyS1();
+        var subBinOrderStrategyFactory = new SubBinOrderingStrategyFactory();
 
         var algorithm = new SingleBinPackingAlgorithm(
             feasibilityChecker,
             subBinUpdatingAlgorithm,
-            subBinOrderStrategy
+            subBinOrderStrategyFactory
         );
+
 
         // Act
         var result = algorithm.Execute(new List<Item> { item }, binType);
@@ -71,9 +72,9 @@ public class SingleBinPackingAlgorithmTests
 
 
         var subBinUpdatingAlgorithm = new SubBinUpdatingAlgorithm();
-        var subBinOrderStrategy = new SubBinOrderingStrategyS1();
+        var subBinOrderStrategyFactory = new SubBinOrderingStrategyFactory();
 
-        var algorithm = new SingleBinPackingAlgorithm(feasibilityChecker, subBinUpdatingAlgorithm, subBinOrderStrategy);
+        var algorithm = new SingleBinPackingAlgorithm(feasibilityChecker, subBinUpdatingAlgorithm, subBinOrderStrategyFactory);
 
         // Act
         var result = algorithm.Execute(new List<Item> { item }, binType);
@@ -110,12 +111,13 @@ public class SingleBinPackingAlgorithmTests
 
 
         var subBinUpdatingAlgorithm = new SubBinUpdatingAlgorithm();
-        var subBinOrderStrategy = new SubBinOrderingStrategyS1();
+        var subBinOrderStrategyFactory = new SubBinOrderingStrategyFactory();
+
 
         var algorithm = new SingleBinPackingAlgorithm(
             feasibilityChecker,
             subBinUpdatingAlgorithm,
-            subBinOrderStrategy
+            subBinOrderStrategyFactory
         );
 
         // Act
@@ -152,9 +154,9 @@ public class SingleBinPackingAlgorithmTests
 
 
         var subBinUpdatingAlgorithm = new SubBinUpdatingAlgorithm();
-        var subBinOrderStrategy = new SubBinOrderingStrategyS1();
+        var subBinOrderStrategyFactory = new SubBinOrderingStrategyFactory();
 
-        var algorithm = new SingleBinPackingAlgorithm(feasibilityChecker, subBinUpdatingAlgorithm, subBinOrderStrategy);
+        var algorithm = new SingleBinPackingAlgorithm(feasibilityChecker, subBinUpdatingAlgorithm, subBinOrderStrategyFactory);
 
         // Act (استفاده از متد Private با Reflection یا تغییر دسترسی)
         var method = typeof(SingleBinPackingAlgorithm)
@@ -182,12 +184,12 @@ public class SingleBinPackingAlgorithmTests
 
 
         var subBinUpdatingAlgorithm = new SubBinUpdatingAlgorithm();
-        var subBinOrderStrategy = new SubBinOrderingStrategyS1();
+        var subBinOrderStrategyFactory = new SubBinOrderingStrategyFactory();
 
         var algorithm = new SingleBinPackingAlgorithm(
             feasibilityChecker,
             subBinUpdatingAlgorithm,
-            subBinOrderStrategy
+            subBinOrderStrategyFactory
         );
 
         // Act

@@ -29,12 +29,10 @@ public class PackingResultViewModel
 /// </summary>
 public record PackedItemViewModel
 {
-    public PackedItemViewModel()
-    {
-
-    }
     public Guid ItemId { get; set; }
     public Guid BinTypeId { get; set; }
+
+    public Guid InstanceId { get; set; }
     // موقعیت قرارگیری (گوشه پایین-چپ-پشت)
     public int X { get; set; }
     public int Y { get; set; }
@@ -44,9 +42,14 @@ public record PackedItemViewModel
     public int Length { get; set; }
     public int Width { get; set; }
     public int Height { get; set; }
-
+    public int Volume => Length * Width * Height;
     // نسبت تکیه‌گاه
     public double SupportRatio { get; set; }
+
+    public override string ToString()
+    {
+        return $"Item ID: {ItemId}, Bin Type ID: {BinTypeId}, InstanceId: {InstanceId}, Position: ({X}, {Y}, {Z}), Dimensions: {Length} x {Width} x {Height}, Support Ratio: {SupportRatio:P2}";
+    }
 }
 
 /// <summary>
@@ -57,9 +60,13 @@ public class SubBinViewModel
     public int X { get; set; }
     public int Y { get; set; }
     public int Z { get; set; }
-    public int Length { get; set; }
-    public int Width { get; set; }
-    public int Height { get; set; }
+    public double Length { get; set; }
+    public double Width { get; set; }
+    public double Height { get; set; }
+    public override string ToString()
+    {
+        return $"SubBin Position: ({X}, {Y}, {Z}), Dimensions: {Length} x {Width} x {Height}";
+    }
 }
 
 /// <summary>
@@ -68,7 +75,12 @@ public class SubBinViewModel
 public class ItemViewModel
 {
     public Guid Id { get; set; }
-    public int Length { get; set; }
-    public int Width { get; set; }
-    public int Height { get; set; }
+    public double Length { get; set; }
+    public double Width { get; set; }
+    public double Height { get; set; }
+
+    public override string ToString()
+    {
+        return $"Item ID: {Id}, Dimensions: {Length} x {Width} x {Height}";
+    }
 }

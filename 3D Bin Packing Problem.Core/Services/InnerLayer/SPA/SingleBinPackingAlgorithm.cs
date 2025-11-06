@@ -1,4 +1,6 @@
+using _3D_Bin_Packing_Problem.Core.Configuration;
 using _3D_Bin_Packing_Problem.Core.Model;
+using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.PA;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.PFCA;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SUA;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SubBinOrderingStrategy;
@@ -15,12 +17,14 @@ namespace _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SPA;
 public class SingleBinPackingAlgorithm(
     IPlacementFeasibilityChecker feasibilityChecker,
     ISubBinUpdatingAlgorithm subBinUpdatingAlgorithm,
-    ISubBinOrderingStrategy subBinOrderingStrategy // 🔹 استراتژی مرتب‌سازی SubBin
+    SubBinOrderingStrategyFactory subBinOrderingStrategyFactory // 🔹 استراتژی مرتب‌سازی SubBin
 ) : ISingleBinPackingAlgorithm
 {
-    public PackingResultViewModel Execute(List<Item> items, BinType binType)
+    public PackingResultViewModel Execute(List<Item> items, BinInstance binInstance)
     {
+        var subBinOrderingStrategy = subBinOrderingStrategyFactory.Create(SettingsManager.Current.SubBinOrdering);
         var itemList = items.ToList();
+        var binType = binInstance.BinType;
         var subBinList = new List<SubBin> { binType };
         var leftItemList = new List<Item>();
         var packedItemList = new List<PlacementResult>();
@@ -40,7 +44,7 @@ public class SingleBinPackingAlgorithm(
             // 🔹 مرتب‌سازی SubBinها بر اساس استراتژی انتخابی (S1..S5)
             validSubBins = subBinOrderingStrategy.Apply(validSubBins, item).ToList();
 
-            bool placed = false;
+            var placed = false;
 
             foreach (var validSubBin in validSubBins)
             {
@@ -82,6 +86,7 @@ public class SingleBinPackingAlgorithm(
             {
                 ItemId = x.Item.Id,
                 BinTypeId = x.BinType.Id,
+                InstanceId = binInstance.ClonedInstance,
                 X = (int)x.Position.X,
                 Y = (int)x.Position.Y,
                 Z = (int)x.Position.Z,

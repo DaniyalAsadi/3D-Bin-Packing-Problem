@@ -21,7 +21,7 @@ public class UniformCrossover : ICrossoverOperator
         var chromosome1 = c1.Clone();
         var chromosome2 = c2.Clone();
 
-        for (int i = 0; i < c1.Count; i++)
+        for (var i = 0; i < c1.Count; i++)
         {
             if (!(Random.NextDouble() < 0.5)) continue;
             // Randomly decide which parent to take the gene from
