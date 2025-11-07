@@ -1,4 +1,4 @@
-﻿using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.PA;
+﻿using _3D_Bin_Packing_Problem.Core.Model;
 using System.Collections.Generic;
 using System.Linq;
 

@@ -23,36 +23,18 @@ public class BenchmarkGenerator
 
     public static List<BinType> GenerateBenchmarkBins(ItemClass itemClass)
     {
-        var bins = new List<BinType>();
-        var classInfo = GetClassInfo(itemClass);
-
-        // 5 نوع بن اضافی برای 3D-MBSBPP (بر اساس مقاله)
-        for (int i = 0; i < 5; i++)
+        var bins = new List<BinType>
         {
-            int length = _random.Next(classInfo.BinLength / 2, classInfo.BinLength + 1);
-            int width = _random.Next(classInfo.BinWidth / 2, classInfo.BinWidth + 1);
-            int height = _random.Next(classInfo.BinHeight / 2, classInfo.BinHeight + 1);
-
-            var bin = new BinType
-            {
-                Description = $"Class_{(int)itemClass + 1}_Bin_{i + 1}",
-                Length = length,
-                Width = width,
-                Height = height
-            };
-
-            // محاسبه هزینه بر اساس فرمول مقاله: Ct = [10000(1.2Vt - 0.2LWH)/(LWH)]
-            bin.CostFunc = () =>
-            {
-                double Vt = bin.Volume;
-                double L = classInfo.BinLength;
-                double W = classInfo.BinWidth;
-                double H = classInfo.BinHeight;
-                return 10000 * (1.2 * Vt - 0.2 * L * W * H) / (L * W * H);
-            };
-
-            bins.Add(bin);
-        }
+            new() { Description = "Size 1", Length = 150, Width = 100, Height = 100, CostFunc = () => 63800 },
+            new() { Description = "Size 2", Length = 200, Width = 150, Height = 100, CostFunc = () => 115500 },
+            new() { Description = "Size 3", Length = 200, Width = 200, Height = 150, CostFunc = () => 172700 },
+            new() { Description = "Size 4", Length = 300, Width = 200, Height = 200, CostFunc = () => 247500 },
+            new() { Description = "Size 5", Length = 350, Width = 250, Height = 200, CostFunc = () => 446600 },
+            new() { Description = "Size 6", Length = 450, Width = 250, Height = 200, CostFunc = () => 559900 },
+            new() { Description = "Size 7", Length = 400, Width = 300, Height = 250, CostFunc = () => 686400 },
+            new() { Description = "Size 8", Length = 450, Width = 400, Height = 300, CostFunc = () => 1043900 },
+            new() { Description = "Size 9", Length = 550, Width = 450, Height = 350, CostFunc = () => 1375000 },
+        };
 
         return bins;
     }

@@ -1,8 +1,8 @@
 ﻿public class ClassBenchmark
 {
     public ItemClass ItemClass { get; set; }
-    public ClassInfo ClassInfo { get; set; }
-    public List<BenchmarkInstance> Instances { get; set; } = new List<BenchmarkInstance>();
+    public ClassInfo ClassInfo { get; set; } = new();
+    public List<BenchmarkInstance> Instances { get; set; } = [];
 
     public void PrintSummary()
     {

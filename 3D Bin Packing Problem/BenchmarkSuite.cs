@@ -16,7 +16,7 @@
         }
     }
 
-    public BenchmarkInstance GetInstance(string instanceName)
+    public BenchmarkInstance? GetInstance(string instanceName)
     {
         return Classes
             .SelectMany(c => c.Instances)

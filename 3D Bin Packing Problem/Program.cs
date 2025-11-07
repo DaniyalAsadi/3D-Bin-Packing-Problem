@@ -88,21 +88,21 @@ var app = serviceProvider.GetRequiredService<GeneticAlgorithm>();
 //};
 var PresetBinTypes = new List<BinType>
 {
-    new() { Description = "Size 1", Length = 2, Width = 2, Height = 2, CostFunc = () => 63800 },
+    new() { Description = "Size 1", Length = 20, Width = 20, Height = 20, CostFunc = () => 63800 },
 
 };
 
 List<Item> products =
 [
-    new(1,1,1),
-    new(1,1,1),
-    new(1,1,1),
-    new(1,1,1),
-    new(1,1,1),
-    new(1,1,1),
-    new(1,1,1),
-    new(1,1,1),
-    new(1,1,1),
+    new(10,10,10),
+    new(10,10,10),
+    new(10,10,10),
+    new(10,10,10),
+    new(10,10,10),
+    new(10,10,10),
+    new(10,10,10),
+    new(10,10,10),
+    new(10,10,10),
 ];
 
 var x = app.Execute(PresetBinTypes, products);
