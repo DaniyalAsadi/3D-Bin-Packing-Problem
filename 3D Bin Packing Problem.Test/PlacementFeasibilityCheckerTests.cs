@@ -2,6 +2,7 @@
 using _3D_Bin_Packing_Problem.Core.Extensions;
 using _3D_Bin_Packing_Problem.Core.Model;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.PFCA;
+using _3D_Bin_Packing_Problem.Core.ViewModels;
 using System.Numerics;
 
 namespace _3D_Bin_Packing_Problem.Test;

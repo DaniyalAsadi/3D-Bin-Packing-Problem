@@ -7,6 +7,7 @@ using _3D_Bin_Packing_Problem.Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 
 namespace _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SPA;
 
@@ -79,11 +80,10 @@ public class SingleBinPackingAlgorithm(
             PackedItems = packedItemList.Select(x => new PackedItemViewModel
             {
                 ItemId = x.Item.Id,
+                Item = x.Item,
                 BinTypeId = x.BinType.Id,
                 InstanceId = binInstance.ClonedInstance,
-                X = (int)x.Position.X,
-                Y = (int)x.Position.Y,
-                Z = (int)x.Position.Z,
+                Position = new Vector3(x.Position.X, x.Position.Y, x.Position.Z),
                 Length = x.Orientation.X,
                 Width = x.Orientation.Y,
                 Height = x.Orientation.Z,

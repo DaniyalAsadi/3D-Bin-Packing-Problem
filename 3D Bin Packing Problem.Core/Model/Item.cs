@@ -32,11 +32,11 @@ public class Item
     /// <summary>
     /// طول، عرض، ارتفاع (Length, Width, Height) در واحد میلی‌متر
     /// </summary>
-    public Dimensions Dimensions { get; private set; }
+    public Dimensions Dimensions { get; }
     /// <summary>
     /// وزن قلم (kg)
     /// </summary>
-    public float Weight { get; private set; }
+    public decimal Weight { get; private set; }
     /// <summary>
     /// حجم محاسبه‌شده (Dimensions.Volume) – read-only
     /// </summary>
@@ -82,7 +82,7 @@ public class Item
         float length,
         float width,
         float height,
-        float weight,
+        decimal weight,
         Guid orderId,
         List<Orientation>? orientations = null,
         bool isFragile = false,

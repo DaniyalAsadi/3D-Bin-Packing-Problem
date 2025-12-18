@@ -73,7 +73,6 @@ var serviceProvider = services.BuildServiceProvider();
 
 // اجرای برنامه
 var geneticAlgorithm = serviceProvider.GetRequiredService<GeneticAlgorithm>();
-var placementAlgorithm = serviceProvider.GetRequiredService<IPlacementAlgorithm>();
 
 //var PresetBinTypes = new List<BinType>
 //{
@@ -198,6 +197,7 @@ var bins = new List<BinType>
     )
 };
 
+List<Item> items = ItemDatasets.GeneticStressTest();
 
 //var bins = new List<BinType>
 //{
@@ -205,24 +205,12 @@ var bins = new List<BinType>
 //    new() { Description = "Size 0", Length = 100, Width = 100, Height = 100, CostFunc = () => 60000 },
 
 //};
-//List<Item> items =
-//[
-//    new(10,10,10),
-//    new(10,10,10),
-//    new(10,10,10),
-//    new(10,10,10),
-//    new(10,10,10),
-//    new(10,10,10),
-//    new(10,10,10),
-//    new(10,10,10),
-//    new(10,10,10),
-//];
 
-//var startTime = DateTime.Now;
-//var chromosome = app.Execute(items, bins);
-//var executionTime = (DateTime.Now - startTime).TotalSeconds;
+var startTime = DateTime.Now;
+var chromosome = geneticAlgorithm.Execute(bins, items);
+var executionTime = (DateTime.Now - startTime).TotalSeconds;
 
-//var packingResults = chromosome.PackingResults;
-//Console.WriteLine(packingResults);
-//Console.WriteLine("----------------------");
-
+var packingResults = chromosome.PackingResults;
+Console.WriteLine(packingResults);
+Console.WriteLine("----------------------");
+Console.WriteLine(executionTime);

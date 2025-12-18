@@ -1,5 +1,6 @@
 ﻿using _3D_Bin_Packing_Problem.Core.Model;
 using System;
+using System.Collections.Generic;
 
 namespace _3D_Bin_Packing_Problem.Core.Services.OuterLayer.Crossover.Implementation;
 
@@ -9,7 +10,7 @@ namespace _3D_Bin_Packing_Problem.Core.Services.OuterLayer.Crossover.Implementat
 public class TwoPointCrossover : ICrossoverOperator
 {
     private static readonly Random Random = new Random();
-    public (Chromosome, Chromosome) Crossover(Chromosome c1, Chromosome c2)
+    public IEnumerable<Chromosome> Crossover(Chromosome c1, Chromosome c2)
     {
         if (c1 == null || c2 == null)
             throw new ArgumentNullException(nameof(c1));
@@ -29,6 +30,6 @@ public class TwoPointCrossover : ICrossoverOperator
 
         }
 
-        return (chromosome1, chromosome2);
+        return [chromosome1, chromosome2];
     }
 }

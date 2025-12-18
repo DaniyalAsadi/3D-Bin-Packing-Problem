@@ -1,5 +1,7 @@
+using _3D_Bin_Packing_Problem.Core.Model;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 namespace _3D_Bin_Packing_Problem.Core.ViewModels;
 
@@ -30,13 +32,12 @@ public class PackingResultViewModel
 public record PackedItemViewModel
 {
     public Guid ItemId { get; set; }
+    public Item Item { get; set; }
     public Guid BinTypeId { get; set; }
 
     public Guid InstanceId { get; set; }
     // موقعیت قرارگیری (گوشه پایین-چپ-پشت)
-    public int X { get; set; }
-    public int Y { get; set; }
-    public int Z { get; set; }
+    public Vector3 Position { get; set; }
 
     // اورینتیشن آیتم در لحظه قرارگیری
     public float Length { get; set; }
@@ -48,7 +49,7 @@ public record PackedItemViewModel
 
     public override string ToString()
     {
-        return $"Item ID: {ItemId}, Bin Type ID: {BinTypeId}, InstanceId: {InstanceId}, Position: ({X}, {Y}, {Z}), Dimensions: {Length} x {Width} x {Height}, Support Ratio: {SupportRatio:P2}";
+        return $"Item ID: {ItemId}, Bin Type ID: {BinTypeId}, InstanceId: {InstanceId}, Position: ({Position.X}, {Position.Y}, {Position.Z}), Dimensions: {Length} x {Width} x {Height}, Support Ratio: {SupportRatio:P2}";
     }
 }
 

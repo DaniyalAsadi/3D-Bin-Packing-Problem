@@ -50,9 +50,9 @@ public class SingleBinPackingAlgorithmTests
 
         var packed = result.PackedItems.First();
         Assert.Equal(item.Id, packed.ItemId);
-        Assert.Equal(0, packed.X);
-        Assert.Equal(0, packed.Y);
-        Assert.Equal(0, packed.Z);
+        Assert.Equal(0, packed.Position.X);
+        Assert.Equal(0, packed.Position.Y);
+        Assert.Equal(0, packed.Position.Z);
         Assert.Equal(2, packed.Length);
         Assert.Equal(2, packed.Width);
         Assert.Equal(2, packed.Height);
@@ -199,7 +199,7 @@ public class SingleBinPackingAlgorithmTests
         Assert.Empty(result.LeftItems);            // آیتمی نباید باقی بماند
 
         // بررسی اینکه همه نقاط پوشش داده شدند
-        var cords = result.PackedItems.Select(p => (p.X, p.Y, p.Z)).ToHashSet();
+        var cords = result.PackedItems.Select(p => (p.Position.X, p.Position.Y, p.Position.Z)).ToHashSet();
         Assert.Equal(8, cords.Count);
         Assert.Contains((0, 0, 0), cords);
         Assert.Contains((1, 0, 0), cords);

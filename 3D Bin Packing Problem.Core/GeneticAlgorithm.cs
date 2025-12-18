@@ -18,6 +18,7 @@ using _3D_Bin_Packing_Problem.Core.Services.OuterLayer.Selection.Implementation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace _3D_Bin_Packing_Problem.Core;
 
@@ -39,7 +40,7 @@ public class GeneticAlgorithm(
     private readonly double _mutationProbability = SettingsManager.Current.Genetic.MutationRate;    // احتمال جهش
     private readonly int _tournamentGroupSize = SettingsManager.Current.Genetic.TournamentGroupSize;         // اندازه گروه انتخاب تورنمنتی
     private readonly int _elitismPopulationSize = SettingsManager.Current.Genetic.ElitismPopulationSize;
-
+    private readonly ParallelOptions _parallelOptions = new() { MaxDegreeOfParallelism = Environment.ProcessorCount };
     private readonly IEnumerable<ICrossoverOperator> _crossoverOperators =
         crossoverFactory.Create(SettingsManager.Current.Crossover);
 
@@ -70,103 +71,64 @@ public class GeneticAlgorithm(
 
     public Chromosome Execute(List<BinType> availableBinTypes, List<Item> itemList)
     {
-
-
-        // Step 1: Initial population
         populationGenerator.SetAvailableBins(availableBinTypes);
         var binTypeCount = Math.Max(1, (int)(availableBinTypes.Count * 0.4));
-        var initialPopulation = populationGenerator.Generate(itemList, _populationSize, binTypeCount);
-        initialPopulation.ForEach(x =>
+        var population = populationGenerator.Generate(itemList, _populationSize, binTypeCount);
+
+        Parallel.ForEach(population, _parallelOptions, chr =>
         {
-            var fitnessResultViewModel = fitnessCalculator.Evaluate(x, itemList);
-            x.SetFitness(fitnessResultViewModel);
+            var res = fitnessCalculator.Evaluate(chr, itemList);
+            chr.SetFitness(res);
         });
-        initialPopulation.Sort(comparer);
-        _population = initialPopulation;
 
-        _elitismPopulation = initialPopulation.Take(_elitismPopulationSize).ToList();
-        var bestIndividual = _population.First();
-        var iter = 0;
+        population.Sort(comparer);
+        var best = population[0].Clone();
+        int noImprovement = 0;
 
-        while (iter < _maxIteration)
+        for (int iter = 0; iter < _maxIteration; iter++)
         {
-            List<Chromosome> newPopulation = [];
+            var newPopulation = new List<Chromosome>(_populationSize);
 
-            bestIndividual = _population[0];
+            // التیزم مستقیم
+            newPopulation.AddRange(population.Take(_elitismPopulationSize).Select(c => c.Clone()));
 
             while (newPopulation.Count < _populationSize)
             {
-                // Step 3: Selection
-                var parentA = selection.Select(_population, itemList, _tournamentGroupSize, _elitismPopulationSize).First();
-                var parentB = selection.Select(_population, itemList, _tournamentGroupSize, _elitismPopulationSize).First();
-                // Step 4: Crossover with probability
-                var crossChildrenList = new List<Chromosome>();
-                if (_random.NextDouble() < _crossoverProbability)
-                {
-                    foreach (var crossoverOperator in _crossoverOperators)
-                    {
-                        var (crossChildA, crossChildB) = crossoverOperator.Crossover(parentA, parentB);
-                        crossChildrenList.Add(crossChildA);
-                        crossChildrenList.Add(crossChildB);
-                    }
-                }
-                else
-                {
-                    crossChildrenList.Add(parentA.Clone());
-                    crossChildrenList.Add(parentB.Clone());
-                }
-                crossChildrenList.ForEach(x =>
-                {
-                    var fitnessResultViewModel = fitnessCalculator.Evaluate(x, itemList);
-                    x.SetFitness(fitnessResultViewModel);
-                });
-                crossChildrenList.Sort(comparer);
-                var childA = crossChildrenList[0];
-                var childB = crossChildrenList[1];
+                var parent1 = selection.Select(population, itemList, _tournamentGroupSize, _elitismPopulationSize).First();
+                var parent2 = selection.Select(population, itemList, _tournamentGroupSize, _elitismPopulationSize).First();
 
-                // Step 5: Mutation with probability
-                var muteChildrenList = new List<Chromosome>();
-                if (_random.NextDouble() < _mutationProbability)
+                var offspring = _random.NextDouble() < _crossoverProbability
+                    ? _crossoverOperators.SelectMany(op => op.Crossover(parent1, parent2)).ToList()
+                    : [parent1.Clone(), parent2.Clone()];
+
+                var mutated = offspring.Select(child =>
+                    _random.NextDouble() < _mutationProbability
+                        ? _mutationOperators.Aggregate(child.Clone(), (c, op) => op.Mutate(c))
+                        : child.Clone()
+                ).ToList();
+
+                Parallel.ForEach(mutated, _parallelOptions, chr =>
                 {
-                    foreach (var mutationOperator in _mutationOperators)
-                    {
-                        var muteChildA = mutationOperator.Mutate(childA);
-                        var muteChildB = mutationOperator.Mutate(childB);
-                        muteChildrenList.Add(muteChildA);
-                        muteChildrenList.Add(muteChildB);
-                    }
-                }
-                else
-                {
-                    muteChildrenList.Add(childA.Clone());
-                    muteChildrenList.Add(childB.Clone());
-                }
-                muteChildrenList.ForEach(x =>
-                {
-                    var fitnessResultViewModel = fitnessCalculator.Evaluate(x, itemList);
-                    x.SetFitness(fitnessResultViewModel);
+                    var res = fitnessCalculator.Evaluate(chr, itemList);
+                    chr.SetFitness(res);
                 });
-                muteChildrenList.Sort(comparer);
-                newPopulation.Add(muteChildrenList[0]);
-                newPopulation.Add(muteChildrenList[1]);
+
+                mutated.Sort(comparer);
+                newPopulation.AddRange(mutated.Take(_populationSize - newPopulation.Count));
             }
 
-            // Step 8: 
-            _population = _population.Except(_elitismPopulation).ToList();
-            _population = _population.Concat(_elitismPopulation).Concat(newPopulation.Take(_populationSize - _elitismPopulationSize)).ToList();
-            _population.Sort(comparer);
+            population = newPopulation;
+            population.Sort(comparer);
 
-            _elitismPopulation = _population.Take(_elitismPopulationSize).ToList();
-
-
-            if (_population.First().Fitness <= bestIndividual.Fitness)
+            if (population[0].Fitness > best.Fitness)
             {
-                bestIndividual = _population.First();
-
+                best = population[0].Clone();
+                noImprovement = 0;
             }
-
-            iter++;
+            else if (++noImprovement >= 20)
+                break;
         }
-        return bestIndividual;
+
+        return best;
     }
 }
