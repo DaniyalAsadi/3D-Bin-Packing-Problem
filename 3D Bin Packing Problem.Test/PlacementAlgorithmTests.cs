@@ -26,6 +26,7 @@ using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.PA;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SPA;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SubBinSelectionStrategy;
 using _3D_Bin_Packing_Problem.Core.ViewModels;
+using FluentAssertions;
 using Moq;
 
 namespace _3D_Bin_Packing_Problem.Test;
@@ -71,12 +72,12 @@ public class PlacementAlgorithmBehaviorTests
         var result = alg.Execute(items, bins);
 
         // Assert
-        Assert.Equal(2, result.LeftItems.Count);
+        result.LeftItems.Count.Should().Be(2);
         var leftIds = result.LeftItems.Select(l => l.Id).ToHashSet();
-        Assert.Contains(itemA.Id, leftIds);
-        Assert.Contains(itemB.Id, leftIds);
-        Assert.Empty(result.PackedItems);
-        Assert.Empty(result.UsedBinTypes);
+        leftIds.Should().Contain(itemA.Id);
+        leftIds.Should().Contain(itemB.Id);
+        result.PackedItems.Should().BeEmpty();
+        result.UsedBinTypes.Should().BeEmpty();
     }
 
     [Fact]
@@ -127,8 +128,8 @@ public class PlacementAlgorithmBehaviorTests
 
         // Assert
         // Bin was used
-        Assert.Single(result.UsedBinTypes);
-        Assert.Same(bin, result.UsedBinTypes[0].BinType);
+        result.UsedBinTypes.Should().HaveCount(1);
+        bin.Should().BeSameAs(result.UsedBinTypes[0].BinType);
 
         // Packed items: only itemA
         Assert.Single(result.PackedItems);
