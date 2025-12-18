@@ -14,6 +14,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "3D Bin Packing Problem.Benchmark", "3D Bin Packing Problem.Benchmark\3D Bin Packing Problem.Benchmark.csproj", "{DB294039-A0E3-4B02-BCD6-0C8AE38CA1A5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -32,6 +34,10 @@ Global
 		{9D35369E-915C-4807-A8BC-CDD546394596}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9D35369E-915C-4807-A8BC-CDD546394596}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9D35369E-915C-4807-A8BC-CDD546394596}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DB294039-A0E3-4B02-BCD6-0C8AE38CA1A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DB294039-A0E3-4B02-BCD6-0C8AE38CA1A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DB294039-A0E3-4B02-BCD6-0C8AE38CA1A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DB294039-A0E3-4B02-BCD6-0C8AE38CA1A5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
