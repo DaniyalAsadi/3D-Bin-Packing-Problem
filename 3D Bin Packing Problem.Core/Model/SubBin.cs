@@ -9,49 +9,42 @@ public record SubBin(
     int X,
     int Y,
     int Z,
-    int Length,
-    int Width,
-    int Height,
-    int Back,
-    int Left,
-    int Front,
-    int Right,
-    int Top)
+    float Length,
+    float Width,
+    float Height,
+    int Back = 0,
+    int Left = 0,
+    int Front = 0,
+    int Right = 0)
 {
-    public int Volume => Length * Width * Height;
-    public int X { get; set; } = X;
-    public int Y { get; set; } = Y;
-    public int Z { get; set; } = Z;
-    public int Length { get; set; } = Length;
-    public int Width { get; set; } = Width;
-    public int Height { get; set; } = Height;
-    public int Back { get; set; } = Back;
-    public int Left { get; set; } = Left;
+    public float Volume => Length * Width * Height;
+    public int X { get; } = X;
+    public int Y { get; } = Y;
+    public int Z { get; } = Z;
+    public float Length { get; } = Length;
+    public float Width { get; } = Width;
+    public float Height { get; } = Height;
+    public int Back { get; } = Back;
+    public int Left { get; } = Left;
     public int Front { get; } = Front;
     public int Right { get; } = Right;
-    public int Top { get; } = Top;
 
     public SubBin(BinType binType) : this(
         0,
         0,
         0,
-        binType.Length,
-        binType.Width,
-        binType.Height,
-        0,
-        0,
-        0,
-        0,
-        0)
+        binType.InnerDimensions.Length,
+        binType.InnerDimensions.Width,
+        binType.InnerDimensions.Height)
     {
     }
 
     // برای خوانایی بیشتر یک ToString
     public override string ToString()
         => $"Pos=({X},{Y},{Z}), Size=({Length}×{Width}×{Height}), " +
-           $"Margins [B:{Back}, L:{Left}, F:{Front}, R:{Right}] T:{Top}";
+           $"Margins [B:{Back}, L:{Left}, F:{Front}, R:{Right}]";
 
-    public int GetMinimumDimension()
+    public float GetMinimumDimension()
     {
         return Math.Min(Length, Math.Min(Width, Height));
     }

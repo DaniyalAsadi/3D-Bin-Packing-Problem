@@ -39,10 +39,10 @@ public record PackedItemViewModel
     public int Z { get; set; }
 
     // اورینتیشن آیتم در لحظه قرارگیری
-    public int Length { get; set; }
-    public int Width { get; set; }
-    public int Height { get; set; }
-    public int Volume => Length * Width * Height;
+    public float Length { get; set; }
+    public float Width { get; set; }
+    public float Height { get; set; }
+    public float Volume => Length * Width * Height;
     // نسبت تکیه‌گاه
     public double SupportRatio { get; set; }
 
@@ -60,9 +60,9 @@ public class SubBinViewModel
     public int X { get; set; }
     public int Y { get; set; }
     public int Z { get; set; }
-    public double Length { get; set; }
-    public double Width { get; set; }
-    public double Height { get; set; }
+    public float Length { get; set; }
+    public float Width { get; set; }
+    public float Height { get; set; }
     public override string ToString()
     {
         return $"SubBin Position: ({X}, {Y}, {Z}), Dimensions: {Length} x {Width} x {Height}";
@@ -75,9 +75,9 @@ public class SubBinViewModel
 public class ItemViewModel
 {
     public Guid Id { get; set; }
-    public double Length { get; set; }
-    public double Width { get; set; }
-    public double Height { get; set; }
+    public float Length { get; set; }
+    public float Width { get; set; }
+    public float Height { get; set; }
 
     public override string ToString()
     {

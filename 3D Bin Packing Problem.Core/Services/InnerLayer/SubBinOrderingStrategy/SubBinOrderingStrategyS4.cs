@@ -1,4 +1,6 @@
-﻿using _3D_Bin_Packing_Problem.Core.Model;
+﻿using _3D_Bin_Packing_Problem.Core.Configuration;
+using _3D_Bin_Packing_Problem.Core.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -6,6 +8,7 @@ namespace _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SubBinOrderingStrateg
 
 public class SubBinOrderingStrategyS4 : ISubBinOrderingStrategy
 {
+    private const float Tolerance = AppConstants.Tolerance;
     public IEnumerable<SubBin> Apply(IEnumerable<SubBin> subBins, Item item)
     {
         var enumerable = subBins as SubBin[] ?? subBins.ToArray();
@@ -30,14 +33,16 @@ public class SubBinOrderingStrategyS4 : ISubBinOrderingStrategy
         return sorted;
     }
 
-    private int CalculateRule(SubBin sub, Item item)
+    private static int CalculateRule(SubBin sub, Item item)
     {
         // الگوریتم 5: تعیین Rule براساس اندازه‌ها
-        if (sub.Length == item.Length && sub.Width == item.Width && sub.Height == item.Height)
+        if (Math.Abs(sub.Length - item.Dimensions.Length) < Tolerance &&
+            Math.Abs(sub.Width - item.Dimensions.Width) < Tolerance &&
+            Math.Abs(sub.Height - item.Dimensions.Height) < Tolerance)
             return 1;
         if (TwoDimensionsMatch(sub, item))
             return 2;
-        if (LWMatch(sub, item))
+        if (LwMatch(sub, item))
             return 3;
         if (HMatches(sub, item))
             return 4;
@@ -47,29 +52,38 @@ public class SubBinOrderingStrategyS4 : ISubBinOrderingStrategy
         return int.MaxValue; // اگر هیچ Rule ای برقرار نبود
     }
 
-    private bool TwoDimensionsMatch(SubBin sub, Item item)
+    private static bool TwoDimensionsMatch(SubBin sub, Item item)
     {
         // چک کردن اینکه هر دو از سه بعد L,W,H برابر باشند
         var subDims = new[] { sub.Length, sub.Width, sub.Height };
-        var itemDims = new[] { item.Length, item.Width, item.Height };
+        var itemDims = new[] { item.Dimensions.Length, item.Dimensions.Width, item.Dimensions.Height };
         var matchCount = subDims.Count(d => itemDims.Contains(d));
         return matchCount == 2;
     }
 
-    private bool LWMatch(SubBin sub, Item item)
+    private static bool LwMatch(SubBin sub, Item item)
     {
         // چک کردن تطابق L و W دقیق
-        return (sub.Length == item.Length && sub.Width == item.Width) || (sub.Length == item.Width && sub.Width == item.Length);
+        return (Math.Abs(sub.Length - item.Dimensions.Length) < Tolerance &&
+                Math.Abs(sub.Width - item.Dimensions.Width) < Tolerance) ||
+               (Math.Abs(sub.Length - item.Dimensions.Width) < Tolerance &&
+                Math.Abs(sub.Width - item.Dimensions.Length) < Tolerance);
     }
 
-    private bool HMatches(SubBin sub, Item item)
+    private static bool HMatches(SubBin sub, Item item)
     {
-        return sub.Height == item.Length || sub.Height == item.Width || sub.Height == item.Height;
+        return Math.Abs(sub.Height - item.Dimensions.Length) < Tolerance ||
+               Math.Abs(sub.Height - item.Dimensions.Width) < Tolerance ||
+               Math.Abs(sub.Height - item.Dimensions.Height) < Tolerance;
     }
 
-    private bool LOrWMatches(SubBin sub, Item item)
+    private static bool LOrWMatches(SubBin sub, Item item)
     {
-        return sub.Length == item.Length || sub.Length == item.Width || sub.Length == item.Height ||
-               sub.Width == item.Length || sub.Width == item.Width || sub.Width == item.Height;
+        return Math.Abs(sub.Length - item.Dimensions.Length) < Tolerance ||
+               Math.Abs(sub.Length - item.Dimensions.Width) < Tolerance ||
+               Math.Abs(sub.Length - item.Dimensions.Height) < Tolerance ||
+               Math.Abs(sub.Width - item.Dimensions.Length) < Tolerance ||
+               Math.Abs(sub.Width - item.Dimensions.Width) < Tolerance ||
+               Math.Abs(sub.Width - item.Dimensions.Height) < Tolerance;
     }
 }

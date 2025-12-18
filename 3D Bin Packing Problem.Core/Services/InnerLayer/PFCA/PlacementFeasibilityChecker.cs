@@ -19,63 +19,73 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
 
     public static PlacementResult? LastPlacement { get; private set; }
 
-
     public bool Execute(BinType binType, Item item, SubBin subBin, out PlacementResult? result)
     {
+        result = null;
+        LastPlacement = null;
+
         if (subBin.Volume < item.Volume)
-        {
-            result = null;
             return false;
-        }
+
         var bestMargin = double.PositiveInfinity;
         PlacementResult? bestResult = null;
 
-        var keyPoints = GetPoints(subBin, item, _lambda);
         var orientations = item.GetOrientations().ToList();
 
-        foreach (var pos in keyPoints)
+        foreach (var orientation in orientations)
         {
-            foreach (var orientation in orientations)
+            int L = (int)orientation.X;
+            int W = (int)orientation.Y;
+            int H = (int)orientation.Z; // فقط برای خوانایی
+
+            var keyPoints = GetKeyPoints(subBin, L, W, _lambda);
+
+            foreach (var pos in keyPoints)
             {
-                // موقعیت آیتم بعد از چرخش
+                // فقط روی کف SubBin اجازه قرارگیری داریم
+                if (Math.Abs(pos.Z - subBin.Z) > Eps)
+                    continue;
+
                 var placedBox = new PlacedBox(
                     x: (int)pos.X,
                     y: (int)pos.Y,
                     z: (int)pos.Z,
-                    l: (int)orientation.X,
-                    w: (int)orientation.Y,
-                    h: (int)orientation.Z);
+                    l: L,
+                    w: W,
+                    h: H
+                );
 
-                // بررسی برخورد با مرزهای SubBin
-                if (placedBox.X + placedBox.L > subBin.X + subBin.Length + subBin.Right ||
-                    placedBox.Y + placedBox.W > subBin.Y + subBin.Width + subBin.Front ||
-                    placedBox.Z + placedBox.H > subBin.Z + subBin.Height)
-                {
-                    continue; // این اورینتیشن نمی‌گنجه
-                }
+                // بررسی مرزهای مجاز (با احتساب حاشیه‌ها)
+                if (placedBox.X < subBin.X - subBin.Left ||
+                    placedBox.Y < subBin.Y - subBin.Back ||
+                    placedBox.X + L > subBin.X + subBin.Length + subBin.Right ||
+                    placedBox.Y + W > subBin.Y + subBin.Width + subBin.Front ||
+                    placedBox.Z + H > subBin.Z + subBin.Height)
+                    continue;
 
-                // --- محاسبه margins ---
+                // محاسبه حاشیه‌ها (فاصله تا نزدیک‌ترین دیوار مجاز)
                 var marginLeft = placedBox.X - (subBin.X - subBin.Left);
-                var marginRight = subBin.X + subBin.Length + subBin.Right - (placedBox.X + placedBox.L);
+                var marginRight = (subBin.X + subBin.Length + subBin.Right) - (placedBox.X + L);
                 var marginBack = placedBox.Y - (subBin.Y - subBin.Back);
-                var marginFront = subBin.Y + subBin.Width + subBin.Front - (placedBox.Y + placedBox.W);
-                var marginTop = subBin.Z + subBin.Height - (placedBox.Z + placedBox.H);
+                var marginFront = (subBin.Y + subBin.Width + subBin.Front) - (placedBox.Y + W);
+                var marginTop = (subBin.Z + subBin.Height) - (placedBox.Z + H);
 
                 var margins = new[] { marginLeft, marginRight, marginBack, marginFront, marginTop };
                 var smallestMargin = margins.Min();
 
                 if (smallestMargin < -Eps)
-                    continue; // یعنی برخورد کرده
+                    continue; // خارج از محدوده مجاز
 
-                // --- بررسی نسبت تکیه‌گاه (support ratio) ---
+                // محاسبه نسبت تکیه‌گاه (فقط روی کف اصلی SubBin)
                 var supportArea = ComputeSupportArea(subBin, placedBox);
-                var itemArea = placedBox.L * placedBox.W;
-                var supportRatio = (double)supportArea / itemArea;
+                var itemBaseArea = (double)L * W;
+                var supportRatio = itemBaseArea > 0 ? supportArea / itemBaseArea : 0.0;
 
-                if (supportRatio < _lambda) continue; // شرط ساپورت برقرار نیست
+                if (supportRatio < _lambda - Eps)
+                    continue;
 
-                // --- انتخاب بهترین ---
-                if (!(smallestMargin < bestMargin)) continue;
+                // بهترین موقعیت بر اساس بیشترین حاشیه کوچک‌ترین (Stable + Compact)
+                if (!(smallestMargin < bestMargin - Eps)) continue;
                 bestMargin = smallestMargin;
                 bestResult = new PlacementResult(
                     Item: item,
@@ -83,7 +93,8 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
                     Position: pos,
                     Orientation: orientation,
                     SmallestMargin: smallestMargin,
-                    SupportRatio: supportRatio);
+                    SupportRatio: supportRatio
+                );
             }
         }
 
@@ -93,109 +104,111 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
     }
 
     /// <summary>
-    /// محاسبه مساحت تکیه‌گاه آیتم روی کف SubBin
-    /// (برای ساده‌سازی اینجا فرض می‌کنیم کف کامل ساپورت هست)
+    /// تولید ۵ نقطه کلیدی استاندارد (Extreme Points + λ-constraint)
+    /// کاملاً سازگار با حاشیه‌ها (Left/Back/Right/Front)
     /// </summary>
-    private static float ComputeSupportArea(SubBin sb, PlacedBox placedBox)
-    {
-        // ساده‌سازی: تقاطع بین کف subBin و قاعده آیتم
-        var x1 = Math.Max(sb.X, placedBox.X);
-        var y1 = Math.Max(sb.Y, placedBox.Y);
-        var x2 = Math.Min(sb.X + sb.Length, placedBox.X + placedBox.L);
-        var y2 = Math.Min(sb.Y + sb.Width, placedBox.Y + placedBox.W);
-
-        if (x2 <= x1 || y2 <= y1)
-            return 0;
-
-        return (x2 - x1) * (y2 - y1);
-    }
-    /// <summary>
-    /// تولید نقاط 1..5 برای یک آیتم با اورینتیشن فعلی (Length×Width روی کف) و نسبت تکیه‌گاه λ.
-    /// اگر Point2/Point4 دست‌یافتنی نباشند، به ترتیب برابر Point1/Point3 می‌شوند.
-    /// خروجی به ترتیب 1→5 و بدون تکراری است.
-    /// </summary>
-    public static IReadOnlyList<Vector3> GetPoints(SubBin sb, Item item, double lambda)
+    private static IReadOnlyList<Vector3> GetKeyPoints(SubBin sb, int L, int W, double lambda)
     {
         lambda = Math.Clamp(lambda, 0.0, 1.0);
 
-        // محدوده‌ی مجاز مبدأ آیتم (MER + Extension) روی کف z=sb.Z
         var xMin = sb.X - sb.Left;
-        var xMax = sb.X + sb.Length + sb.Right - item.Length;
+        var xMax = sb.X + sb.Length + sb.Right - L;
         var yMin = sb.Y - sb.Back;
-        var yMax = sb.Y + sb.Width + sb.Front - item.Width;
+        var yMax = sb.Y + sb.Width + sb.Front - W;
 
         if (xMin > xMax || yMin > yMax)
-            return Array.Empty<Vector3>(); // آیتم با این اورینتیشن داخل این ساب‌بن جا نمی‌شود
+            return Array.Empty<Vector3>();
 
-        // مساحت لازم روی بخش «خاکستری» (سطح دارای تکیه‌گاه)
-        var itemArea = (long)item.Length * item.Width;
-        var needArea = lambda * itemArea;
+        var itemArea = (long)L * W;
+        var requiredArea = (long)Math.Ceiling(lambda * itemArea);
 
-        // --- شاخه Back: نقاط 1 و 2 (x ثابت، y تغییر می‌کند) ---
-        // بیشینه‌ی هم‌پوشانی در x با بخش خاکستری وقتی x=sb.X:
-        var supportX = Math.Min(item.Length, sb.Length);
-        // بیشینه‌ی هم‌پوشانی ممکن در y:
-        var maxYOverlap = Math.Min(item.Width, sb.Width);
+        var coreX1 = sb.X;
+        var coreX2 = sb.X + sb.Length;
+        var coreY1 = sb.Y;
+        var coreY2 = sb.Y + sb.Width;
 
-        var y1 = yMin; // "تا حد امکان به سمت پشت"
-        float y2;
-        if (supportX == 0 || needArea > (long)supportX * maxYOverlap)
+        var points = new List<Vector3>();
+
+        // Point 1: تا حد امکان عقب و چپ (Back-Left)
+        points.Add(new Vector3(xMin, yMin, sb.Z));
+
+        // Point 2: چسبیده به پشت، ولی کمی جلو برای تأمین λ
+        if (lambda > 0 && requiredArea > 0)
         {
-            // Point 2 وجود ندارد؛ همان Point 1
-            y2 = y1;
-        }
-        else
-        {
-            // کمترین جابه‌جایی به سمت جلو که λ را تامین کند
-            var needY = needArea / supportX;            // طول هم‌پوشانی لازم در y
-            var y2Ideal = sb.Y + needY - item.Width;    // فرمول از هندسه‌ی هم‌پوشانی
-            y2 = (int)Math.Ceiling(y2Ideal);               // Ceil تا نسبت کم نشود
-            y2 = Math.Clamp(y2, yMin, yMax);
-        }
-
-        var p1 = new Vector3(sb.X, y1, sb.Z);
-        var p2 = new Vector3(sb.X, y2, sb.Z);
-
-        // --- شاخه Left: نقاط 3 و 4 (y ثابت، x تغییر می‌کند) ---
-        var supportY = Math.Min(item.Width, sb.Width);
-        var maxXOverlap = Math.Min(item.Length, sb.Length);
-
-        var x3 = xMin; // "تا حد امکان به سمت چپ"
-        float x4;
-        if (supportY == 0 || needArea > (long)maxXOverlap * supportY)
-        {
-            // Point 4 وجود ندارد؛ همان Point 3
-            x4 = x3;
-        }
-        else
-        {
-            var needX = needArea / supportY;           // طول هم‌پوشانی لازم در x
-            var x4Ideal = sb.X + needX - item.Length;  // کمترین جابه‌جایی به چپ که λ را تامین کند
-            x4 = (int)Math.Ceiling(x4Ideal);
-            x4 = Math.Clamp(x4, xMin, xMax);
-        }
-
-        var p3 = new Vector3(x3, sb.Y, sb.Z);
-        var p4 = new Vector3(x4, sb.Y, sb.Z);
-
-        var p5 = new Vector3(sb.X, sb.Y, sb.Z);
-
-        // حذف تکراری‌ها با حفظ ترتیب 1→5
-        var ordered = new[] { p1, p2, p3, p4, p5 };
-        var unique = new List<Vector3>(5);
-        foreach (var kp in ordered)
-            if (!unique.Any(q =>
-                    Math.Abs(q.X - kp.X) < Eps &&
-                    Math.Abs(q.Y - kp.Y) < Eps &&
-                    Math.Abs(q.Z - kp.Z) < Eps))
+            float maxOverlapX = Math.Min(L, sb.Length);
+            if (maxOverlapX > 0)
             {
-                unique.Add(kp);
+                float neededY = (requiredArea + maxOverlapX - 1) / maxOverlapX; // ceil division
+                float y2 = coreY1 + neededY - W;
+                y2 = Math.Max(y2, yMin);
+                y2 = Math.Min(y2, yMax);
+                points.Add(new Vector3(xMin, y2, sb.Z));
             }
+        }
+
+        // Point 3: چسبیده به چپ، ولی کمی راست برای تأمین λ
+        if (lambda > 0 && requiredArea > 0)
+        {
+            float maxOverlapY = Math.Min(W, sb.Width);
+            if (maxOverlapY > 0)
+            {
+                float neededX = (requiredArea + maxOverlapY - 1) / maxOverlapY;
+                float x3 = coreX1 + neededX - L;
+                x3 = Math.Max(x3, xMin);
+                x3 = Math.Min(x3, xMax);
+                points.Add(new Vector3(x3, yMin, sb.Z));
+            }
+        }
+
+        // Point 4 & 5: گوشه اصلی کف (Core Bottom-Left) — معمولاً بهترین نقطه برای پایداری
+        points.Add(new Vector3(sb.X, sb.Y, sb.Z));
+
+        // حذف تکراری‌ها با دقت بالا
+        var unique = new List<Vector3>();
+        foreach (var p in points)
+        {
+            bool exists = unique.Any(q =>
+                Math.Abs(q.X - p.X) < Eps &&
+                Math.Abs(q.Y - p.Y) < Eps);
+
+            if (!exists)
+                unique.Add(p);
+        }
 
         return unique;
     }
-}
 
+    /// <summary>
+    /// محاسبه دقیق مساحت تکیه‌گاه روی کف اصلی SubBin
+    /// فقط وقتی Z برابر باشد و تقاطع با بخش اصلی (Core) داشته باشد
+    /// </summary>
+    private static float ComputeSupportArea(SubBin sb, PlacedBox box)
+    {
+        // فقط روی کف SubBin ساپورت داریم
+        if (Math.Abs(box.Z - sb.Z) > Eps)
+            return 0f;
+
+        var coreX1 = sb.X;
+        var coreX2 = sb.X + sb.Length;
+        var coreY1 = sb.Y;
+        var coreY2 = sb.Y + sb.Width;
+
+        var boxX1 = box.X;
+        var boxX2 = box.X + box.L;
+        var boxY1 = box.Y;
+        var boxY2 = box.Y + box.W;
+
+        var ox1 = Math.Max(coreX1, boxX1);
+        var ox2 = Math.Min(coreX2, boxX2);
+        var oy1 = Math.Max(coreY1, boxY1);
+        var oy2 = Math.Min(coreY2, boxY2);
+
+        if (ox2 <= ox1 || oy2 <= oy1)
+            return 0f;
+
+        return (ox2 - ox1) * (oy2 - oy1);
+    }
+}
 /// <summary>
 /// Represents the dimensions and coordinates of a placed item for feasibility checks.
 /// </summary>

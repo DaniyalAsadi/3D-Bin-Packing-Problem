@@ -9,7 +9,7 @@ namespace _3D_Bin_Packing_Problem.Core.Configuration;
 public static class AppConstants
 {
     public const string AlgorithmName = "Two-Layer Genetic Packing";
-    public const string Author = "Daniyal - M.Sc. Thesis";
+    public const string Author = "Danial - M.Sc. Thesis";
 
     // Example of predefined heuristic identifiers
     public const string OuterLayerHeuristic = "GA";
@@ -28,11 +28,11 @@ public class GeneticAlgorithmSettings
     public int ElitismPopulationSize { get; set; } = 5;
 
     // ✅ نسبت حداقل تکیه‌گاه
-    public double SupportThreshold { get; set; } = 0.75;
+    public double SupportThreshold { get; set; } = 1;
 
     // ✅ ضرایب وزن‌دهی در تابع برازندگی
-    public double AlphaWeight { get; set; } = 1.0;
-    public double BetaWeight { get; set; } = 1.0;
+    public float AlphaWeight { get; set; } = 1.0f;
+    public float BetaWeight { get; set; } = 1.0f;
 
     // ✅ ضریب جریمه برای آیتم‌های بسته‌نشده
     public int PenaltyCoefficient { get; set; } = 200000;

@@ -14,16 +14,16 @@ public class ItemOrderingStrategyI2 : IItemOrderingStrategy
     {
         return items
             .OrderByDescending(GetMaxArea)
-            .ThenByDescending(i => i.Length)
-            .ThenByDescending(i => i.Width)
-            .ThenByDescending(i => i.Height)
+            .ThenByDescending(i => i.Dimensions.Length)
+            .ThenByDescending(i => i.Dimensions.Width)
+            .ThenByDescending(i => i.Dimensions.Height)
             .ThenBy(i => i.Id);
     }
-    private static double GetMaxArea(Item item)
+    private static float GetMaxArea(Item item)
     {
-        var area1 = item.Length * item.Width;
-        var area2 = item.Length * item.Height;
-        var area3 = item.Width * item.Height;
+        var area1 = item.Dimensions.Length * item.Dimensions.Width;
+        var area2 = item.Dimensions.Length * item.Dimensions.Height;
+        var area3 = item.Dimensions.Width * item.Dimensions.Height;
         return Math.Max(area1, Math.Max(area2, area3));
     }
 

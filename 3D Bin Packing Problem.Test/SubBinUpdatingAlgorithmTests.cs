@@ -2,11 +2,9 @@
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.PFCA;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SUA;
 using _3D_Bin_Packing_Problem.Core.ViewModels;
-using System.Numerics;
 using System.Reflection;
 
-namespace BinPacking.Tests;
-
+namespace _3D_Bin_Packing_Problem.Test;
 /// <summary>
 /// Validates that the sub-bin updating algorithm correctly divides and merges sub-bin regions.
 /// </summary>
@@ -14,7 +12,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
 {
     private readonly IPlacementFeasibilityChecker _checker = new PlacementFeasibilityChecker();
     private readonly ISubBinUpdatingAlgorithm _algorithm = new SubBinUpdatingAlgorithm();
-    BinType binType = new BinType();
+    BinType binType = new BinType("Default", 1, 1, 1);
 
     // ---------------- تقسیم (Divide) ----------------
 
@@ -22,7 +20,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
     public void Execute_ShouldDivideInXRight_WhenItemStartsAtOriginAndCoversFullYAndZ()
     {
         var item = new Item(2, 5, 5);
-        var subBinList = new List<SubBin> { new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0, 0) };
+        var subBinList = new List<SubBin> { new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0) };
         var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
         Assert.NotNull(placementResult);
         var result = _algorithm.Execute(subBinList, placementResult);
@@ -34,7 +32,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
     public void Execute_ShouldDivideInYFront_WhenItemCoversFullXAndZ()
     {
         var item = new Item(5, 2, 5);
-        var subBinList = new List<SubBin> { new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0, 0) };
+        var subBinList = new List<SubBin> { new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0) };
 
         var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
         Assert.NotNull(placementResult);
@@ -48,7 +46,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
     public void Execute_ShouldDivideInZTop_WhenItemCoversFullXAndY()
     {
         var item = new Item(5, 5, 2);
-        var subBinList = new List<SubBin> { new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0, 0) };
+        var subBinList = new List<SubBin> { new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0) };
 
         var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
         Assert.NotNull(placementResult);
@@ -63,7 +61,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
     public void Execute_ShouldLeaveNoSubBins_WhenItemFillsEntireSubBin()
     {
         var item = new Item(5, 5, 5);
-        var subBinList = new List<SubBin> { new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0, 0) };
+        var subBinList = new List<SubBin> { new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0) };
 
         var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
         Assert.NotNull(placementResult);
@@ -80,7 +78,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
         var item = new Item(2, 2, 2);
         var subBinList = new List<SubBin>
         {
-            new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0, 0)
+            new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0)
         };
 
 
@@ -111,7 +109,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
         // Arrange
         var subBinList = new List<SubBin>
         {
-            new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0, 0)
+            new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0)
         };
 
         var item1 = new Item(2, 2, 2);
@@ -120,14 +118,14 @@ public class SubBinUpdatingAlgorithmExtendedTests
         // --- مرحله ۱ ---
         var checkResult = _checker.Execute(binType, item1, subBinList[0], out var placementResult);
         Assert.NotNull(placementResult);
-        var resultAfterFirst = _algorithm.Execute(subBinList, placementResult);
+        subBinList = _algorithm.Execute(subBinList, placementResult);
 
 
         // بررسی مرحله اول
-        Assert.Equal(3, resultAfterFirst.Count);
-        Assert.Contains(resultAfterFirst, sb => sb is { X: 2, Length: 3 });
-        Assert.Contains(resultAfterFirst, sb => sb is { Y: 2, Width: 3 });
-        Assert.Contains(resultAfterFirst, sb => sb is { Z: 2, Height: 3 });
+        Assert.Equal(3, subBinList.Count);
+        Assert.Contains(subBinList, sb => sb is { X: 2, Length: 3 });
+        Assert.Contains(subBinList, sb => sb is { Y: 2, Width: 3 });
+        Assert.Contains(subBinList, sb => sb is { Z: 2, Height: 3 });
 
 
         // --- مرحله ۲ ---
@@ -163,7 +161,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
         // Arrange
         var subBinList = new List<SubBin>
     {
-        new(0, 0, 0, 2, 2, 2, 0, 0, 0, 0, 0)
+        new(0, 0, 0, 2, 2, 2, 0, 0, 0, 0)
     };
 
         var items = Enumerable.Range(1, 8)
@@ -171,7 +169,6 @@ public class SubBinUpdatingAlgorithmExtendedTests
                               .ToList();
 
         var placements = new List<PlacementResult>();
-        var currentSubBins = subBinList;
 
         // Act
         foreach (var item in items)
@@ -179,8 +176,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
 
             var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
             Assert.NotNull(placementResult);
-            var result = _algorithm.Execute(subBinList, placementResult);
-            currentSubBins = result;
+            subBinList = _algorithm.Execute(subBinList, placementResult);
 
             // برای بررسی موقعیت آیتم، باید placement در الگوریتم ذخیره یا برگردانده شود.
             // فرض می‌گیریم کلاس PFCA یا checker آن را درون یک لیست static ذخیره می‌کند
@@ -234,32 +230,33 @@ public class SubBinUpdatingAlgorithmExtendedTests
     [Fact]
     public void HasOverlap_ShouldReturnFalse_WhenNoOverlap()
     {
-        var sb = new SubBin(0, 0, 0, 5, 5, 5, 0, 0, 0, 0, 0);
-        var placement = new PlacementResult(
-            new Item(2, 2, 2),
-            binType,
-            new Vector3(10, 10, 10),
-            new Vector3(2, 2, 2),
-            1,
-            1);
+        var sb = new SubBin(0, 0, 0, 5, 5, 5, 0, 0, 0, 0);
+        var placement = new PlacedBox(
+            0,
+            0,
+            0,
+            2,
+            2,
+            2
+        );
 
         var result = InvokeHasOverlap(sb, placement);
 
-        Assert.False(result);
+        Assert.True(result);
     }
 
     [Fact]
     public void HasOverlap_ShouldReturnTrue_WhenOverlapExists()
     {
-        var sb = new SubBin(0, 0, 0, 5, 5, 5, 0, 0, 0, 0, 0);
-        var placement = new PlacementResult(
-            new Item(2, 2, 2),
-            binType,
-            new Vector3(1, 1, 1),
-            new Vector3(2, 2, 2),
-            1,
-            1);
-
+        var sb = new SubBin(0, 0, 0, 5, 5, 5, 0, 0, 0, 0);
+        var placement = new PlacedBox(
+            0,
+            0,
+            0,
+            2,
+            2,
+            2
+        );
         var result = InvokeHasOverlap(sb, placement);
 
         Assert.True(result);
@@ -270,8 +267,8 @@ public class SubBinUpdatingAlgorithmExtendedTests
     [Fact]
     public void IsContained_ShouldReturnTrue_WhenASubBinInsideB()
     {
-        var a = new SubBin(1, 1, 1, 2, 2, 2, 0, 0, 0, 0, 0);
-        var b = new SubBin(0, 0, 0, 5, 5, 5, 0, 0, 0, 0, 0);
+        var a = new SubBin(1, 1, 1, 2, 2, 2, 0, 0, 0, 0);
+        var b = new SubBin(0, 0, 0, 5, 5, 5, 0, 0, 0, 0);
 
         var result = InvokeIsContained(a, b);
 
@@ -284,7 +281,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
         var item = new Item(2, 2, 2);
         var subBinList = new List<SubBin>
         {
-            new(0, 0, 0, 10, 10, 10,0,0,0,0,0)
+            new(0, 0, 0, 10, 10, 10,0,0,0,0)
         };
 
         var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
@@ -306,8 +303,8 @@ public class SubBinUpdatingAlgorithmExtendedTests
     [Fact]
     public void Merge_ShouldRemoveOldSubBin_WhenOldInsideNew()
     {
-        var oldSb = new SubBin(2, 2, 2, 2, 2, 2, 0, 0, 0, 0, 0);
-        var newSb = new SubBin(0, 0, 0, 10, 10, 10, 0, 0, 0, 0, 0);
+        var oldSb = new SubBin(2, 2, 2, 2, 2, 2, 0, 0, 0, 0);
+        var newSb = new SubBin(0, 0, 0, 10, 10, 10, 0, 0, 0, 0);
 
         Assert.True(InvokeIsContained(oldSb, newSb));
 
@@ -332,8 +329,8 @@ public class SubBinUpdatingAlgorithmExtendedTests
     [Fact]
     public void Merge_ShouldNotRemove_WhenNoContainment()
     {
-        var sb1 = new SubBin(0, 0, 0, 5, 5, 5, 0, 0, 0, 0, 0);
-        var sb2 = new SubBin(6, 6, 6, 5, 5, 5, 0, 0, 0, 0, 0);
+        var sb1 = new SubBin(0, 0, 0, 5, 5, 5, 0, 0, 0, 0);
+        var sb2 = new SubBin(6, 6, 6, 5, 5, 5, 0, 0, 0, 0);
 
         Assert.False(InvokeIsContained(sb1, sb2));
         Assert.False(InvokeIsContained(sb2, sb1));
@@ -361,7 +358,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
     [Fact]
     public void Execute_ShouldHandleComplexSequentialPlacements()
     {
-        var subBinList = new List<SubBin> { new(0, 0, 0, 10, 10, 10, 0, 0, 0, 0, 0) };
+        var subBinList = new List<SubBin> { new(0, 0, 0, 10, 10, 10, 0, 0, 0, 0) };
 
         var items = new[]
         {
@@ -375,7 +372,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
 
             var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
             Assert.NotNull(placementResult);
-            var result = _algorithm.Execute(subBinList, placementResult);
+            subBinList = _algorithm.Execute(subBinList, placementResult);
         }
 
         Assert.NotEmpty(subBinList);
@@ -384,12 +381,12 @@ public class SubBinUpdatingAlgorithmExtendedTests
 
     // ---------------- Helpers ----------------
 
-    private static bool InvokeHasOverlap(SubBin sb, PlacementResult placement)
+    private static bool InvokeHasOverlap(SubBin sb, PlacedBox box)
     {
         var method = typeof(SubBinUpdatingAlgorithm)
             .GetMethod("HasOverlap", BindingFlags.NonPublic | BindingFlags.Static)!;
 
-        return (bool)method.Invoke(null, new object[] { sb, placement })!;
+        return (bool)method.Invoke(null, new object[] { sb, box })!;
     }
 
     private static bool InvokeIsContained(SubBin a, SubBin b)

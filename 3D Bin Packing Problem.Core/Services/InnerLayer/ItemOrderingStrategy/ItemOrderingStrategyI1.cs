@@ -13,9 +13,9 @@ public class ItemOrderingStrategyI1 : IItemOrderingStrategy
     {
         return items
             .OrderByDescending(i => i.Volume)
-            .ThenByDescending(i => i.Length)
-            .ThenByDescending(i => i.Width)
-            .ThenByDescending(i => i.Height)
+            .ThenByDescending(i => i.Dimensions.Length)
+            .ThenByDescending(i => i.Dimensions.Width)
+            .ThenByDescending(i => i.Dimensions.Height)
             .ThenBy(i => i.Id); // صعودی چون یکتا است
     }
 }

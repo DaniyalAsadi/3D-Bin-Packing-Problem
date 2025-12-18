@@ -12,20 +12,19 @@ public class ItemOrderingStrategyI3(IEnumerable<BinType> binTypes) : IItemOrderi
     private int ComputeBtn(Item item)
     {
         return binTypes.Count(bt =>
-            item.Length <= bt.Length &&
-            item.Width <= bt.Width &&
-            item.Height <= bt.Height);
+            item.Dimensions.Length <= bt.InnerDimensions.Length &&
+            item.Dimensions.Width <= bt.InnerDimensions.Width &&
+            item.Dimensions.Height <= bt.InnerDimensions.Height);
     }
 
-    private double ComputeMinCost(Item item)
+    private decimal ComputeMinCost(Item item)
     {
         return binTypes
             .Where(bt =>
-                item.Length <= bt.Length &&
-                item.Width <= bt.Width &&
-                item.Height <= bt.Height)
+                item.Dimensions.Length <= bt.InnerDimensions.Length &&
+                item.Dimensions.Width <= bt.InnerDimensions.Width &&
+                item.Dimensions.Height <= bt.InnerDimensions.Height)
             .Select(bt => bt.Cost)
-            .DefaultIfEmpty(double.MaxValue)
             .Min();
     }
 
@@ -35,9 +34,9 @@ public class ItemOrderingStrategyI3(IEnumerable<BinType> binTypes) : IItemOrderi
             .OrderBy(ComputeBtn)
             .ThenBy(ComputeMinCost)
             .ThenByDescending(i => i.Volume)
-            .ThenByDescending(i => i.Length)
-            .ThenByDescending(i => i.Width)
-            .ThenByDescending(i => i.Height)
+            .ThenByDescending(i => i.Dimensions.Length)
+            .ThenByDescending(i => i.Dimensions.Width)
+            .ThenByDescending(i => i.Dimensions.Height)
             .ThenBy(i => i.Id);
     }
 }

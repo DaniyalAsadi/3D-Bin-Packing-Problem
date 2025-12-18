@@ -14,47 +14,49 @@ public class DefaultFitnessCalculator(IPlacementAlgorithm placementAlgorithm) : 
 {
     private readonly int _penaltyCoefficient = SettingsManager.Current.Genetic.PenaltyCoefficient;
 
-    private readonly double _alpha = SettingsManager.Current.Genetic.AlphaWeight; // ضریب وزن‌دهی پرشدگی
-    private readonly double _beta = SettingsManager.Current.Genetic.BetaWeight;  // ضریب وزن‌دهی هزینه
-
+    private readonly float _alpha = SettingsManager.Current.Genetic.AlphaWeight; // ضریب وزن‌دهی پرشدگی
+    private readonly float _beta = SettingsManager.Current.Genetic.BetaWeight;  // ضریب وزن‌دهی هزینه
 
 
 
     public FitnessResultViewModel Evaluate(Chromosome chromosome, List<Item> items)
     {
-        var results = placementAlgorithm.Execute(items, chromosome.GeneSequences.Select(e =>
-            new BinType()
-            {
-                Height = e.Height.Value,
-                Length = e.Length.Value,
-                Width = e.Width.Value,
-                Description = e.BinType.Description,
-                CostFunc = () => e.BinType.Cost
-            }).ToList());
+        var results = placementAlgorithm.Execute(items, chromosome.Sequences.Select(e =>
+            BinType.Create(
+                e.BinType.Name,
+                e.Length.Value,
+                e.Width.Value,
+                e.Height.Value,
+                e.BinType.MaxWeight,
+                e.BinType.Cost,
+                e.BinType.TareWeight)).ToList());
+
+        var fillRate = results.SpaceUtilization;
         var totalCost = results.UsedBinTypes.Sum(b => b.BinType.Cost);
+        var leftItemsCount = results.LeftItems.Count;
 
-        // محاسبه FillRate
-        var totalPackedVolume = items.Sum(item => item.Length * item.Width * item.Height); // حجم اقلام بسته‌بندی شده
-        var totalBinVolume = results.UsedBinTypes.Sum(bin => bin.BinType.Length * bin.BinType.Width * bin.BinType.Height); // حجم کل جعبه‌ها
-        int fillRate;
-        if (totalBinVolume > 0)
-        {
-            fillRate = totalPackedVolume / totalBinVolume;
-        }
-        else
-        {
-            fillRate = 0; // یا مقدار مناسب دیگر
-        }
-        // محاسبه جریمه
-        var penalty = results.LeftItems.Count * _penaltyCoefficient;
+        // ۱. نرمال‌سازی هزینه برای هم‌مقیاس شدن
+        var maxPossibleCost = EstimateMaxPossibleCost(items, results.UsedBinTypes);
+        var normalizedCost = (float)(totalCost / maxPossibleCost);
 
-        // محاسبه Fitness
-        var fitness = _alpha * fillRate - _beta * totalCost + penalty;
+        // ۲. محاسبه fitness با فرمول صحیح
+        var fitness = (_alpha * fillRate)                    // fillRate بالا → fitness بالا
+                      + (_beta * (1 - normalizedCost))       // هزینه پایین → fitness بالا  
+                      - (_penaltyCoefficient * leftItemsCount); // آیتم باقیمانده → fitness پایین
 
         return new FitnessResultViewModel()
         {
             PackingResults = results,
             Fitness = fitness,
         };
+    }
+
+    private static decimal EstimateMaxPossibleCost(List<Item> items, List<BinInstance> usedBins)
+    {
+        if (!usedBins.Any()) return 1;
+
+        // بیشترین هزینه ممکن: همه آیتم‌ها در گران‌ترین جعبه
+        var mostExpensiveBin = usedBins.Max(b => b.BinType.Cost);
+        return items.Count * mostExpensiveBin;
     }
 }

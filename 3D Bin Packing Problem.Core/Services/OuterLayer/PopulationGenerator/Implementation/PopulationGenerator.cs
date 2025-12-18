@@ -59,7 +59,7 @@ public class PopulationGenerator : IPopulationGenerator
 
         // 🔹 ارزیابی اولیه بر اساس مجموع هزینه جعبه‌ها
         population = population
-            .OrderBy(c => c.GeneSequences.Sum(g => g.BinType.Cost))
+            .OrderBy(c => c.Sequences.Sum(g => g.BinType.Cost))
             .Take(populationSize)
             .ToList();
 

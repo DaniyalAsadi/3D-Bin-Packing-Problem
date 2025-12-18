@@ -14,19 +14,19 @@ public class SubBinSelectionStrategyB4 : ISubBinSelectionStrategy
         var feasibleBins = FilterFeasibleBins(binTypes, items);
 
         return feasibleBins
-            .OrderBy(bt => 2 * (bt.Length * bt.Width + bt.Length * bt.Height + bt.Width * bt.Height))
+            .OrderBy(bt => 2 * (bt.InnerDimensions.Length * bt.InnerDimensions.Width + bt.InnerDimensions.Length * bt.InnerDimensions.Height + bt.InnerDimensions.Width * bt.InnerDimensions.Height))
             .FirstOrDefault();
     }
 
     private IEnumerable<BinType> FilterFeasibleBins(IEnumerable<BinType> binTypes, List<Item> items)
     {
-        var maxLength = items.Max(i => i.Length);
-        var maxWidth = items.Max(i => i.Width);
-        var maxHeight = items.Max(i => i.Height);
+        var maxLength = items.Max(i => i.Dimensions.Length);
+        var maxWidth = items.Max(i => i.Dimensions.Width);
+        var maxHeight = items.Max(i => i.Dimensions.Height);
 
         return binTypes.Where(bt =>
-            bt.Length >= maxLength &&
-            bt.Width >= maxWidth &&
-            bt.Height >= maxHeight);
+            bt.InnerDimensions.Length >= maxLength &&
+            bt.InnerDimensions.Width >= maxWidth &&
+            bt.InnerDimensions.Height >= maxHeight);
     }
 }

@@ -1,6 +1,10 @@
+using _3D_Bin_Packing_Problem.Core.Configuration;
 using _3D_Bin_Packing_Problem.Core.Model;
+using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.PFCA;
 using _3D_Bin_Packing_Problem.Core.ViewModels;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 
 namespace _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SUA;
@@ -10,117 +14,273 @@ namespace _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SUA;
 /// </summary>
 public class SubBinUpdatingAlgorithm : ISubBinUpdatingAlgorithm
 {
-    public List<SubBin> Execute(List<SubBin> subBinList, PlacementResult? placement)
+    private const float Eps = AppConstants.Tolerance;
+
+    public List<SubBin> Execute(List<SubBin> currentSubBins, PlacementResult? placement)
     {
-        var newSubBinList = new List<SubBin>();
-        if (placement == null)
-            return subBinList; // آیتم جا نشد → بدون تغییر
+        if (placement == null) throw new ArgumentNullException(nameof(placement));
 
-        // --- خط 3: تقسیم ---
-        foreach (var subBin in subBinList.ToList())
-        {
-            if (!HasOverlap(subBin, placement)) continue;
-            var divided = Divide(subBin, placement);
-            newSubBinList.AddRange(divided);
-            subBinList.Remove(subBin);
-        }
+        var placedBox = new PlacedBox(
+            x: (int)placement.Position.X,
+            y: (int)placement.Position.Y,
+            z: (int)placement.Position.Z,
+            l: (int)placement.Orientation.X,
+            w: (int)placement.Orientation.Y,
+            h: (int)placement.Orientation.Z
+        );
 
-        // --- خط 10: ادغام ---
-        foreach (var sb in subBinList.ToList())
+        var newSubBins = new List<SubBin>();
+        var toRemove = new HashSet<SubBin>();
+
+        // مرحله ۱: تقسیم تمام SubBinهایی که با آیتم هم‌پوشانی دارند
+        foreach (var sb in currentSubBins)
         {
-            foreach (var nsb in newSubBinList.ToList())
+            if (!HasOverlap(sb, placedBox))
             {
-                if (IsContained(nsb, sb))
-                {
-                    newSubBinList.Remove(nsb);
-                }
-                else if (IsContained(sb, nsb))
-                {
-                    subBinList.Remove(sb);
-                }
+                continue;
             }
+
+            toRemove.Add(sb);
+            var fragments = DivideSubBin(sb, placedBox);
+            newSubBins.AddRange(fragments);
         }
 
-        // --- خط 21: افزودن ---
-        subBinList.AddRange(newSubBinList);
+        // حذف SubBinهای تقسیم‌شده
+        foreach (var sb in toRemove)
+            currentSubBins.Remove(sb);
 
-        return subBinList;
+        // مرحله ۲: حذف SubBinهای جدید که داخل قبلی‌ها هستند (Containment)
+        newSubBins = newSubBins
+            .Where(ns => !currentSubBins.Any(os => IsContained(ns, os)))
+            .ToList();
+
+        // مرحله ۳: ادغام (Merge) SubBinهای مجاور و هم‌تراز
+        var allSubBins = currentSubBins.Concat(newSubBins).ToList();
+        var merged = MergeAdjacentSubBins(allSubBins);
+
+        // مرحله ۴: حذف دوباره زیرمجموعه‌ها بعد از ادغام
+        var finalList = new List<SubBin>();
+        foreach (var sb in merged)
+        {
+            if (!finalList.Any(big => IsContained(sb, big)))
+                finalList.Add(sb);
+        }
+
+        return finalList;
     }
 
-    private static bool HasOverlap(SubBin sb, PlacementResult placement)
+    private static bool HasOverlap(SubBin sb, PlacedBox box)
     {
-        var ix = (int)placement.Position.X;
-        var iy = (int)placement.Position.Y;
-        var iz = (int)placement.Position.Z;
-
-        var il = (int)placement.Orientation.X;
-        var iw = (int)placement.Orientation.Y;
-        var ih = (int)placement.Orientation.Z;
-
-        var overlapX = !(ix + il <= sb.X || ix >= sb.X + sb.Length);
-        var overlapY = !(iy + iw <= sb.Y || iy >= sb.Y + sb.Width);
-        var overlapZ = !(iz + ih <= sb.Z || iz >= sb.Z + sb.Height);
-
-        return overlapX && overlapY && overlapZ;
+        return !(box.X + box.L <= sb.X ||
+                 box.X >= sb.X + sb.Length ||
+                 box.Y + box.W <= sb.Y ||
+                 box.Y >= sb.Y + sb.Width ||
+                 box.Z + box.H <= sb.Z ||
+                 box.Z >= sb.Z + sb.Height);
     }
 
-    private static List<SubBin> Divide(SubBin sb, PlacementResult placement)
+    /// <summary>
+    /// تقسیم Guillotine: فقط ۳ قطعه (Right, Front, Top) — حاشیه‌ها صفر می‌شوند
+    /// </summary>
+    private static List<SubBin> DivideSubBin(SubBin sb, PlacedBox box)
     {
         var result = new List<SubBin>();
 
-        var ix = (int)placement.Position.X;
-        var iy = (int)placement.Position.Y;
-        var iz = (int)placement.Position.Z;
-        var il = (int)placement.Orientation.X;
-        var iw = (int)placement.Orientation.Y;
-        var ih = (int)placement.Orientation.Z;
+        var ix1 = box.X;
+        var ix2 = box.X + box.L;
+        var iy1 = box.Y;
+        var iy2 = box.Y + box.W;
+        var iz1 = box.Z;
+        var iz2 = box.Z + box.H;
 
+        var sx1 = sb.X;
+        var sx2 = sb.X + sb.Length;
+        var sy1 = sb.Y;
+        var sy2 = sb.Y + sb.Width;
+        var sz1 = sb.Z;
+        var sz2 = sb.Z + sb.Height;
 
-        // Right
-        if (ix + il < sb.X + sb.Length)
+        // ۱. Right sub-bin
+        if (ix2 < sx2)
         {
-            result.Add(sb with
-            {
-                X = ix + il,
-                Length = sb.X + sb.Length - (ix + il),
-                Left = sb.Left + (ix + il - sb.X)
-            });
+            result.Add(new SubBin(
+                X: ix2,
+                Y: sy1,
+                Z: sz1,
+                Length: sx2 - ix2,
+                Width: sb.Width,
+                Height: sb.Height,
+                Left: 0, Right: 0, Back: 0, Front: 0
+            ));
         }
 
-
-        // Front
-        if (iy + iw < sb.Y + sb.Width)
+        // ۲. Front sub-bin
+        if (iy2 < sy2)
         {
-            result.Add(sb with
-            {
-                Y = iy + iw,
-                Width = sb.Y + sb.Width - (iy + iw),
-                Back = sb.Back + (iy + iw - sb.Y)
-            });
+            result.Add(new SubBin(
+                X: sx1,
+                Y: iy2,
+                Z: sz1,
+                Length: sb.Length,
+                Width: sy2 - iy2,
+                Height: sb.Height,
+                Left: 0, Right: 0, Back: 0, Front: 0
+            ));
         }
 
-
-        // Top
-        if (iz + ih < sb.Z + sb.Height)
+        // ۳. Top sub-bin
+        if (iz2 < sz2)
         {
-            result.Add(sb with
-            {
-                Z = iz + ih,
-                Height = sb.Z + sb.Height - (iz + ih)
-            });
+            result.Add(new SubBin(
+                X: sx1,
+                Y: sy1,
+                Z: iz2,
+                Length: sb.Length,
+                Width: sb.Width,
+                Height: sz2 - iz2,
+                Left: 0, Right: 0, Back: 0, Front: 0
+            ));
         }
 
-        return result;
+        return result.Where(s => s.Volume > Eps).ToList();
     }
 
-
-    private static bool IsContained(SubBin a, SubBin b)
+    /// <summary>
+    /// ادغام SubBinهای مجاور در سه جهت (X, Y, Z)
+    /// </summary>
+    private static List<SubBin> MergeAdjacentSubBins(List<SubBin> subBins)
     {
-        return a.X >= b.X &&
-               a.Y >= b.Y &&
-               a.Z >= b.Z &&
-               a.X + a.Length <= b.X + b.Length &&
-               a.Y + a.Width <= b.Y + b.Width &&
-               a.Z + a.Height <= b.Z + b.Height;
+        var active = new List<SubBin>(subBins);
+        var merged = new List<SubBin>();
+        var used = new bool[active.Count];
+
+        for (var i = 0; i < active.Count; i++)
+        {
+            if (used[i]) continue;
+
+            var current = active[i];
+            bool changed;
+
+            do
+            {
+                changed = false;
+                for (var j = 0; j < active.Count; j++)
+                {
+                    if (used[j] || i == j) continue;
+
+                    var other = active[j];
+
+                    if (TryMergeTwo(current, other, out var mergedBox))
+                    {
+                        current = mergedBox;
+                        used[j] = true;
+                        changed = true;
+                    }
+                }
+            } while (changed);
+
+            merged.Add(current);
+            used[i] = true;
+        }
+
+        return merged;
+    }
+
+    /// <summary>
+    /// تلاش برای ادغام دو SubBin (فقط اگر دقیقاً مجاور و هم‌تراز باشند)
+    /// </summary>
+    private static bool TryMergeTwo(SubBin a, SubBin b, [NotNullWhen(true)] out SubBin? result)
+    {
+        result = null;
+
+        // ادغام در جهت X
+        if (Math.Abs(a.Y - b.Y) < Eps &&
+            Math.Abs(a.Z - b.Z) < Eps &&
+            Math.Abs(a.Width - b.Width) < Eps &&
+            Math.Abs(a.Height - b.Height) < Eps)
+        {
+            if (a.X + a.Length < b.X + Eps && b.X < a.X + a.Length + Eps)
+            {
+                result = new SubBin(
+                    X: Math.Min(a.X, b.X),
+                    Y: a.Y,
+                    Z: a.Z,
+                    Length: Math.Max(a.X + a.Length, b.X + b.Length) - Math.Min(a.X, b.X),
+                    Width: a.Width,
+                    Height: a.Height,
+                    Left: 0, Right: 0, Back: 0, Front: 0
+                );
+                return true;
+            }
+            if (b.X + b.Length < a.X + Eps && a.X < b.X + b.Length + Eps)
+            {
+                result = new SubBin(
+                    X: Math.Min(a.X, b.X),
+                    Y: a.Y,
+                    Z: a.Z,
+                    Length: Math.Max(a.X + a.Length, b.X + b.Length) - Math.Min(a.X, b.X),
+                    Width: a.Width,
+                    Height: a.Height,
+                    Left: 0, Right: 0, Back: 0, Front: 0
+                );
+                return true;
+            }
+        }
+
+        // ادغام در جهت Y
+        if (Math.Abs(a.X - b.X) < Eps &&
+            Math.Abs(a.Z - b.Z) < Eps &&
+            Math.Abs(a.Length - b.Length) < Eps &&
+            Math.Abs(a.Height - b.Height) < Eps)
+        {
+            if (a.Y + a.Width < b.Y + Eps && b.Y < a.Y + a.Width + Eps ||
+                b.Y + b.Width < a.Y + Eps && a.Y < b.Y + b.Width + Eps)
+            {
+                result = new SubBin(
+                    X: a.X,
+                    Y: Math.Min(a.Y, b.Y),
+                    Z: a.Z,
+                    Length: a.Length,
+                    Width: Math.Max(a.Y + a.Width, b.Y + b.Width) - Math.Min(a.Y, b.Y),
+                    Height: a.Height,
+                    Left: 0, Right: 0, Back: 0, Front: 0
+                );
+                return true;
+            }
+        }
+
+        // ادغام در جهت Z
+        if (Math.Abs(a.X - b.X) < Eps &&
+            Math.Abs(a.Y - b.Y) < Eps &&
+            Math.Abs(a.Length - b.Length) < Eps &&
+            Math.Abs(a.Width - b.Width) < Eps)
+        {
+            if (a.Z + a.Height < b.Z + Eps && b.Z < a.Z + a.Height + Eps ||
+                b.Z + b.Height < a.Z + Eps && a.Z < b.Z + b.Height + Eps)
+            {
+                result = new SubBin(
+                    X: a.X,
+                    Y: a.Y,
+                    Z: Math.Min(a.Z, b.Z),
+                    Length: a.Length,
+                    Width: a.Width,
+                    Height: Math.Max(a.Z + a.Height, b.Z + b.Height) - Math.Min(a.Z, b.Z),
+                    Left: 0, Right: 0, Back: 0, Front: 0
+                );
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private static bool IsContained(SubBin small, SubBin big)
+    {
+        return small.X >= big.X - Eps &&
+               small.Y >= big.Y - Eps &&
+               small.Z >= big.Z - Eps &&
+               small.X + small.Length <= big.X + big.Length + Eps &&
+               small.Y + small.Width <= big.Y + big.Width + Eps &&
+               small.Z + small.Height <= big.Z + big.Height + Eps;
     }
 }

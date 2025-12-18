@@ -13,18 +13,18 @@ public class SubBinSelectionStrategyB1 : ISubBinSelectionStrategy
     {
         // 1. مرتب‌سازی بر اساس معیارهای B1
         var orderedBins = binTypes
-            .OrderByDescending(bt => bt.Cost / (double)bt.Volume)   // نزولی Cost/Volume
+            .OrderByDescending(bt => bt.Cost / (decimal)bt.Volume)   // نزولی Cost/Volume
             .ThenByDescending(bt => bt.Volume)                      // نزولی حجم
-            .ThenByDescending(bt => bt.Length)                      // نزولی طول
-            .ThenByDescending(bt => bt.Width)                       // نزولی عرض
-            .ThenByDescending(bt => bt.Height)                      // نزولی ارتفاع
+            .ThenByDescending(bt => bt.InnerDimensions.Length)                      // نزولی طول
+            .ThenByDescending(bt => bt.InnerDimensions.Width)                       // نزولی عرض
+            .ThenByDescending(bt => bt.InnerDimensions.Height)                      // نزولی ارتفاع
             .ToList();
 
         // 2. فقط Binهایی که حداقل یکی از آیتم‌ها در آن‌ها جا می‌شوند
         var feasibleBins = orderedBins
-            .Where(bt => items.Any(i => i.Length <= bt.Length &&
-                                        i.Width <= bt.Width &&
-                                        i.Height <= bt.Height))
+            .Where(bt => items.Any(i => i.Dimensions.Length <= bt.InnerDimensions.Length &&
+                                        i.Dimensions.Width <= bt.InnerDimensions.Width &&
+                                        i.Dimensions.Height <= bt.InnerDimensions.Height))
             .ToList();
 
         // 3. Bin اول را برمی‌گردانیم یا null اگر هیچ Bin feasible وجود نداشت

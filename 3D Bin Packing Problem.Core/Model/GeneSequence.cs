@@ -19,9 +19,9 @@ public class GeneSequence : IEnumerable<Gene>, IEquatable<GeneSequence>
     public GeneSequence(BinType binType)
     {
         BinType = binType;
-        Length = new Gene(binType.Length);
-        Width = new Gene(binType.Width);
-        Height = new Gene(binType.Height);
+        Length = new Gene(binType.InnerDimensions.Length);
+        Width = new Gene(binType.InnerDimensions.Width);
+        Height = new Gene(binType.InnerDimensions.Height);
     }
 
     private IEnumerable<Gene> Items

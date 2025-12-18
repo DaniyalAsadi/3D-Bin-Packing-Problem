@@ -20,7 +20,6 @@
 // - Use Moq to stub factories/strategies and the single-bin packing algorithm.
 // - Use SetupSequence for sub-bin selection to simulate multiple iterations.
 // - Construct Item and ItemViewModel objects with stable Guid Ids to assert identity.
-
 using _3D_Bin_Packing_Problem.Core.Model;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.ItemOrderingStrategy;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.PA;
@@ -29,9 +28,10 @@ using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SubBinSelectionStrategy;
 using _3D_Bin_Packing_Problem.Core.ViewModels;
 using Moq;
 
+namespace _3D_Bin_Packing_Problem.Test;
 public class PlacementAlgorithmBehaviorTests
 {
-    [Xunit.Fact]
+    [Fact]
     public void Execute_WhenNoBinAvailable_AllItemsMarkedLeft()
     {
         // Arrange
@@ -41,7 +41,7 @@ public class PlacementAlgorithmBehaviorTests
         var bins = new List<BinType>(); // empty or irrelevant for this test
 
         // Mock ordering strategy
-        var mockOrderingStrategy = new Moq.Mock<IItemOrderingStrategy>();
+        var mockOrderingStrategy = new Mock<IItemOrderingStrategy>();
         mockOrderingStrategy
             .Setup(s => s.Apply(It.IsAny<IEnumerable<Item>>()))
             .Returns((IEnumerable<Item> src) => src);
@@ -50,7 +50,7 @@ public class PlacementAlgorithmBehaviorTests
 
 
         // Mock sub-bin selection strategy to return null (no bin available)
-        var mockSubStrategy = new Moq.Mock<ISubBinSelectionStrategy>();
+        var mockSubStrategy = new Mock<ISubBinSelectionStrategy>();
         mockSubStrategy
             .Setup(s => s.Execute(It.IsAny<IEnumerable<BinType>>(), It.IsAny<List<Item>>()))
             .Returns((BinType?)null);
@@ -59,7 +59,7 @@ public class PlacementAlgorithmBehaviorTests
 
 
         // Mock single-bin packing algorithm (should not be invoked, but provide a stub)
-        var mockSingleBin = new Moq.Mock<ISingleBinPackingAlgorithm>();
+        var mockSingleBin = new Mock<ISingleBinPackingAlgorithm>();
 
         var alg = new PlacementAlgorithm(
             mockOrderingFactory,
@@ -71,12 +71,12 @@ public class PlacementAlgorithmBehaviorTests
         var result = alg.Execute(items, bins);
 
         // Assert
-        Xunit.Assert.Equal(2, result.LeftItems.Count);
+        Assert.Equal(2, result.LeftItems.Count);
         var leftIds = result.LeftItems.Select(l => l.Id).ToHashSet();
-        Xunit.Assert.Contains(itemA.Id, leftIds);
-        Xunit.Assert.Contains(itemB.Id, leftIds);
-        Xunit.Assert.Empty(result.PackedItems);
-        Xunit.Assert.Empty(result.UsedBinTypes);
+        Assert.Contains(itemA.Id, leftIds);
+        Assert.Contains(itemB.Id, leftIds);
+        Assert.Empty(result.PackedItems);
+        Assert.Empty(result.UsedBinTypes);
     }
 
     [Fact]
@@ -88,16 +88,11 @@ public class PlacementAlgorithmBehaviorTests
         var items = new List<Item> { itemA, itemB };
 
         // Bin can fit only itemA
-        var bin = new BinType
-        {
-            Length = 1,
-            Width = 1,
-            Height = 1
-        };
+        var bin = new BinType("Default", 1, 1, 1);
         var bins = new List<BinType> { bin };
 
         // Mock ordering strategy: returns items as-is
-        var mockOrderingStrategy = new Moq.Mock<IItemOrderingStrategy>();
+        var mockOrderingStrategy = new Mock<IItemOrderingStrategy>();
         mockOrderingStrategy
             .Setup(s => s.Apply(It.IsAny<IEnumerable<Item>>()))
             .Returns((IEnumerable<Item> src) => src);
@@ -105,7 +100,7 @@ public class PlacementAlgorithmBehaviorTests
         var orderingFactory = new ItemOrderingStrategyFactory();
 
         // Mock sub-bin selection: always returns the bin
-        var mockSubStrategy = new Moq.Mock<ISubBinSelectionStrategy>();
+        var mockSubStrategy = new Mock<ISubBinSelectionStrategy>();
         mockSubStrategy
             .Setup(s => s.Execute(It.IsAny<IEnumerable<BinType>>(), It.IsAny<List<Item>>()))
             .Returns(bin);
@@ -115,18 +110,12 @@ public class PlacementAlgorithmBehaviorTests
         // Mock single-bin packing: only packs itemA, leaves itemB
         var packingResult = new PackingResultViewModel
         {
-            PackedItems = new List<PackedItemViewModel>
-        {
-            new PackedItemViewModel { ItemId = itemA.Id }
-        },
-            LeftItems = new List<ItemViewModel>
-        {
-            new ItemViewModel { Id = itemB.Id }
-        },
-            RemainingSubBins = new List<SubBinViewModel>()
+            PackedItems = [new PackedItemViewModel { ItemId = itemA.Id }],
+            LeftItems = [new ItemViewModel { Id = itemB.Id }],
+            RemainingSubBins = []
         };
 
-        var mockSingleBin = new Moq.Mock<ISingleBinPackingAlgorithm>();
+        var mockSingleBin = new Mock<ISingleBinPackingAlgorithm>();
         mockSingleBin
             .Setup(s => s.Execute(It.IsAny<List<Item>>(), It.IsAny<BinInstance>()))
             .Returns(packingResult);

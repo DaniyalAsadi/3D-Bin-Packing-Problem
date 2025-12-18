@@ -1,3 +1,4 @@
+using Ardalis.GuardClauses;
 using System;
 
 namespace _3D_Bin_Packing_Problem.Core.Model;
@@ -7,85 +8,50 @@ namespace _3D_Bin_Packing_Problem.Core.Model;
 /// </summary>
 public class BinType
 {
-    private Func<double>? _valueFunc;
-    private double? _cachedCost;
+    /// <summary>
+    /// Describes a bin's dimensional properties and derived cost used within packing evaluations.
+    /// </summary>
+    internal BinType(string name,
+        float length,
+        float width,
+        float height)
+    {
+        Name = name;
+        InnerDimensions = new Dimensions(length, width, height);
+    }
 
-    private int _length;
-    private int _width;
-    private int _height;
-
+    /// <summary>
+    /// شناسه منحصربه‌فرد
+    /// </summary>
     public Guid Id { get; } = Guid.NewGuid();
-    public string? Description { get; set; }
+    /// <summary>
+    /// نام نوع کانتینر (e.g., "20ft Dry")
+    /// </summary>
+    public string Name { get; }
 
-    public int Length
-    {
-        get => _length;
-        set
-        {
-            if (_length == value) return;
-            _length = value;
-            _cachedCost = null; // invalidate cache automatically
-        }
-    }
-
-    public int Width
-    {
-        get => _width;
-        set
-        {
-            if (_width == value) return;
-            _width = value;
-            _cachedCost = null;
-        }
-    }
-
-    public int Height
-    {
-        get => _height;
-        set
-        {
-            if (_height == value) return;
-            _height = value;
-            _cachedCost = null;
-        }
-    }
+    /// <summary>
+    /// ابعاد داخلی قابل استفاده (mm)
+    /// </summary>
+    public Dimensions InnerDimensions { get; }
 
     /// <summary>
     /// حجم Bin فعلی
     /// </summary>
-    public int Volume => Length * Width * Height;
+    public float Volume => InnerDimensions.Length * InnerDimensions.Width * InnerDimensions.Height;
+    /// <summary>
+    /// حداکثر وزن قابل تحمل (kg)
+    /// </summary>
+    public decimal MaxWeight { get; private set; }
 
     /// <summary>
-    /// هزینه Bin بر اساس فرمول مقاله Alvarez-Valdés et al. (2013)
-    /// Ct = 10000 × (1.2Vt − 0.2LWH) / (LWH)
-    /// فقط یک بار محاسبه شده و کش می‌شود تا در دفعات بعدی سریع‌تر برگردد
+    /// وزن خالی کانتینر (kg)
     /// </summary>
-    public double Cost
-    {
-        get
-        {
-            if (_cachedCost.HasValue)
-                return _cachedCost.Value;
-
-            if (_valueFunc is null)
-                return 0.0;
-
-            _cachedCost = _valueFunc();
-            return _cachedCost.Value;
-        }
-    }
+    public decimal TareWeight { get; private set; }
 
     /// <summary>
-    /// تابع محاسبه هزینه؛ تنظیم آن باعث پاک شدن کش می‌شود
+    /// مقدار هزینه
     /// </summary>
-    public Func<double> CostFunc
-    {
-        set
-        {
-            _valueFunc = value;
-            _cachedCost = null; // invalidate cache when cost formula changes
-        }
-    }
+    public decimal Cost { get; private set; }
 
     /// <summary>
     /// تبدیل ضمنی به SubBin
@@ -93,23 +59,48 @@ public class BinType
     public static implicit operator SubBin(BinType binType) => new SubBin(binType);
 
     /// <summary>
-    /// ایجاد نسخه‌ی کپی از BinType (همراه با کش)
+    /// ایجاد نسخه‌ی کپی از BinType
     /// </summary>
     public BinType Clone()
     {
-        return new BinType
+        return new BinType(Name, InnerDimensions.Length, InnerDimensions.Width, InnerDimensions.Height)
         {
-            Length = Length,
-            Width = Width,
-            Height = Height,
-            Description = Description,
-            _valueFunc = _valueFunc,
-            _cachedCost = _cachedCost
+            MaxWeight = MaxWeight,
+            Cost = Cost,
+            TareWeight = TareWeight,
+
+        };
+    }
+    public static BinType Create(
+        string name,
+        float length,
+        float width,
+        float height,
+        decimal maxWeight,
+        decimal cost,
+        decimal tareWeight = 0)
+    {
+        name = Guard.Against.NullOrWhiteSpace(name);
+        length = Guard.Against.NegativeOrZero(length, nameof(length));
+        width = Guard.Against.NegativeOrZero(width, nameof(width));
+        height = Guard.Against.NegativeOrZero(height, nameof(height));
+        maxWeight = Guard.Against.NegativeOrZero(maxWeight, nameof(maxWeight));
+        cost = Guard.Against.Negative(cost, nameof(cost));
+        tareWeight = Guard.Against.Negative(tareWeight, nameof(tareWeight));
+
+        return new BinType(name, length, width, height)
+        {
+            MaxWeight = maxWeight,
+            Cost = cost,
+            TareWeight = tareWeight,
+
         };
     }
 
+
+
     public override string ToString()
     {
-        return $"Bin [{Description ?? "Unnamed"}: L×W×H=({Length}×{Width}×{Height}), Vol={Volume}, Cost={Cost:F2}]";
+        return $"Bin [{Name ?? "Unnamed"}: L×W×H=({InnerDimensions.Length}×{InnerDimensions.Width}×{InnerDimensions.Height}), Vol={Volume}, Cost={Cost:F2}]";
     }
 }

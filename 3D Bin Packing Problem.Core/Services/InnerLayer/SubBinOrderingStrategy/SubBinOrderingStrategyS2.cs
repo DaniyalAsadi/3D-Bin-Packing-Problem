@@ -19,27 +19,24 @@ public class SubBinOrderingStrategyS2 : ISubBinOrderingStrategy
 
         // تماس با کف (Z = 0)
         if (Math.Abs(sb.Z) < Eps)
-            touchArea += item.Length * item.Width;
+            touchArea += item.Dimensions.Length * item.Dimensions.Width;
 
         // تماس با دیواره پشت (Back = 0)
         if (Math.Abs(sb.Back) < Eps)
-            touchArea += item.Width * item.Height;
+            touchArea += item.Dimensions.Width * item.Dimensions.Height;
 
         // تماس با دیواره جلو (Front = 0)
         if (Math.Abs(sb.Front) < Eps)
-            touchArea += item.Width * item.Height;
+            touchArea += item.Dimensions.Width * item.Dimensions.Height;
 
         // تماس با دیواره چپ (Left = 0)
         if (Math.Abs(sb.Left) < Eps)
-            touchArea += item.Length * item.Height;
+            touchArea += item.Dimensions.Length * item.Dimensions.Height;
 
         // تماس با دیواره راست (Right = 0)
         if (Math.Abs(sb.Right) < Eps)
-            touchArea += item.Length * item.Height;
+            touchArea += item.Dimensions.Length * item.Dimensions.Height;
 
-        // تماس با سقف (Top = 0) – معمولاً در Bin باز نیاز نیست، اما برای کامل بودن اضافه شده
-        if (Math.Abs(sb.Top) < Eps)
-            touchArea += item.Length * item.Width;
 
         return touchArea;
     }

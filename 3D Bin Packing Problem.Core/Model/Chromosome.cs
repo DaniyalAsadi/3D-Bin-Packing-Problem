@@ -1,6 +1,5 @@
 ﻿using _3D_Bin_Packing_Problem.Core.ViewModels;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -9,37 +8,26 @@ namespace _3D_Bin_Packing_Problem.Core.Model;
 /// <summary>
 /// Represents a candidate solution composed of gene sequences with associated fitness results.
 /// </summary>
-public class Chromosome : IList<GeneSequence>
+public class Chromosome
 {
     public Guid Id { get; } = Guid.NewGuid();
     private double _fitness;
     private PackingResultsViewModel? _packingResults;
-
-    public List<GeneSequence> GeneSequences { get; private set; }
-
+    private readonly List<GeneSequence> _sequences = [];
+    public IReadOnlyList<GeneSequence> Sequences => _sequences;
     public Chromosome(List<GeneSequence> geneSequences)
     {
         // clone to avoid shared reference when creating population
-        GeneSequences = geneSequences.Select(gs => gs.Clone()).ToList();
+        _sequences = geneSequences.Select(gs => gs.Clone()).ToList();
     }
 
-    public IEnumerator<GeneSequence> GetEnumerator() => GeneSequences.GetEnumerator();
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+    public IEnumerator<GeneSequence> GetEnumerator() => Sequences.GetEnumerator();
 
-    public void Add(GeneSequence item) => GeneSequences.Add(item);
-    public void Clear() => GeneSequences.Clear();
-    public bool Contains(GeneSequence item) => GeneSequences.Contains(item);
-    public void CopyTo(GeneSequence[] array, int arrayIndex) => GeneSequences.CopyTo(array, arrayIndex);
-    public bool Remove(GeneSequence item) => GeneSequences.Remove(item);
-    public int Count => GeneSequences.Count;
-    public bool IsReadOnly => false;
-    public int IndexOf(GeneSequence item) => GeneSequences.IndexOf(item);
-    public void Insert(int index, GeneSequence item) => GeneSequences.Insert(index, item);
-    public void RemoveAt(int index) => GeneSequences.RemoveAt(index);
+    public int Count => Sequences.Count;
     public GeneSequence this[int index]
     {
-        get => GeneSequences[index];
-        set => GeneSequences[index] = value;
+        get => _sequences[index];
+        set => _sequences[index] = value;
     }
 
     public double Fitness => _fitness;
@@ -56,7 +44,7 @@ public class Chromosome : IList<GeneSequence>
     /// </summary>
     public Chromosome Clone()
     {
-        var clonedSequences = GeneSequences.Select(gs => gs.Clone()).ToList();
+        var clonedSequences = Sequences.Select(gs => gs.Clone()).ToList();
         var clone = new Chromosome(clonedSequences);
         clone._fitness = _fitness;
         clone._packingResults = null;

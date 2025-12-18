@@ -16,8 +16,8 @@ public class PackingResultsViewModel
     public int TotalPackedItems => PackedItems.Count;
     public int TotalLeftItems => LeftItems.Count;
     public int TotalUsedBins => UsedBinTypes.Count;
-    public double TotalCost => UsedBinTypes.Sum(binInstance => binInstance.BinType.Cost);
-    public double TotalPackedVolume => PackedItems.Sum(item => item.Volume);
+    public decimal TotalCost => UsedBinTypes.Sum(binInstance => binInstance.BinType.Cost);
+    public float TotalPackedVolume => PackedItems.Sum(item => item.Volume);
     public double TotalBinVolume => UsedBinTypes.Sum(binInstance => binInstance.BinType.Volume);
     public double SpaceUtilization => TotalBinVolume > 0 ? TotalPackedVolume / TotalBinVolume : 0;
 
@@ -75,9 +75,9 @@ public class PackingResultsViewModel
             sb.AppendLine("🗳️  USED BIN TYPES");
             foreach (var binInstance in UsedBinTypes)
             {
-                sb.AppendLine($"   🗂️  {binInstance.BinType.Description ?? "Unnamed Bin"}");
+                sb.AppendLine($"   🗂️  {binInstance.BinType.Name ?? "Unnamed Bin"}");
                 sb.AppendLine($"      InstanceId: {binInstance.ClonedInstance}");
-                sb.AppendLine($"      Dimensions: {binInstance.BinType.Length} × {binInstance.BinType.Width} × {binInstance.BinType.Height}");
+                sb.AppendLine($"      Dimensions: {binInstance.BinType.InnerDimensions.Length} × {binInstance.BinType.InnerDimensions.Width} × {binInstance.BinType.InnerDimensions.Height}");
                 sb.AppendLine($"      Volume: {binInstance.BinType.Volume} | Cost: {binInstance.BinType.Cost:F2}");
             }
         }

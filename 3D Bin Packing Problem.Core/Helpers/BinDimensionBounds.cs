@@ -19,12 +19,12 @@ public static class BinDimensionBounds
         /// Represents the minimum and maximum extents for each dimension of the bin.
         /// </summary>
         public Bounds(
-            int minLength,
-            int minWidth,
-            int minHeight,
-            int maxLength,
-            int maxWidth,
-            int maxHeight)
+            float minLength,
+            float minWidth,
+            float minHeight,
+            float maxLength,
+            float maxWidth,
+            float maxHeight)
         {
             MinLength = minLength;
             MinWidth = minWidth;
@@ -34,12 +34,12 @@ public static class BinDimensionBounds
             MaxHeight = maxHeight;
         }
 
-        public int MinLength { get; }
-        public int MinWidth { get; }
-        public int MinHeight { get; }
-        public int MaxLength { get; }
-        public int MaxWidth { get; }
-        public int MaxHeight { get; }
+        public float MinLength { get; }
+        public float MinWidth { get; }
+        public float MinHeight { get; }
+        public float MaxLength { get; }
+        public float MaxWidth { get; }
+        public float MaxHeight { get; }
 
     }
 
@@ -52,7 +52,7 @@ public static class BinDimensionBounds
         var sortedTriples = items
             .Select(it =>
             {
-                var dims = new[] { it.Length, it.Width, it.Height };
+                var dims = new[] { it.Dimensions.Length, it.Dimensions.Width, it.Dimensions.Height };
                 Array.Sort(dims); // ascending
                 return (d1: dims[0], d2: dims[1], d3: dims[2]);
             })
