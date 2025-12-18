@@ -77,7 +77,6 @@ public class Item
     /// ارجاع به شناسه سفارش (برای traceability)
     /// </summary>
     public Guid OrderId { get; private set; }
-
     public static Item Create(
         float length,
         float width,

@@ -2,5 +2,24 @@
 
 public enum LoadType
 {
-    Normal, Hazardous, Liquid, Refrigerated, Oversized
+    /// <summary>
+    /// معمولی
+    /// </summary>
+    Normal,
+    /// <summary>
+    /// خطرناک 
+    /// </summary>
+    Hazardous, 
+    /// <summary>
+    /// مایع
+    /// </summary>
+    Liquid, 
+    /// <summary>
+    /// یخ زده
+    /// </summary>
+    Refrigerated,
+    /// <summary>
+    /// بزرگ
+    /// </summary>
+    Oversized
 }
