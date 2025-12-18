@@ -29,8 +29,8 @@ public class GeneticAlgorithmTests
         var result = ga.Execute(bins, items);
 
         // Assert
-        Assert.NotNull(result);
-        Assert.True(result.Fitness > double.MinValue);
+        result.Should().NotBeNull();
+        (result.Fitness > double.MinValue).Should().BeTrue();
     }
     [Fact]
     public void Execute_Should_Terminate()

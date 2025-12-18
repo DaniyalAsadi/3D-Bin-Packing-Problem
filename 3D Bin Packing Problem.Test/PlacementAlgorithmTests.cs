@@ -128,16 +128,16 @@ public class PlacementAlgorithmBehaviorTests
 
         // Assert
         // Bin was used
-        result.UsedBinTypes.Should().HaveCount(1);
+        result.UsedBinTypes.Should().ContainSingle();
         bin.Should().BeSameAs(result.UsedBinTypes[0].BinType);
 
         // Packed items: only itemA
-        Assert.Single(result.PackedItems);
-        Assert.Equal(itemA.Id, result.PackedItems[0].ItemId);
+        result.PackedItems.Should().ContainSingle();
+        result.PackedItems[0].ItemId.Should().Be(itemA.Id);
 
         // Left items: only itemB
-        Assert.Single(result.LeftItems);
-        Assert.Equal(itemB.Id, result.LeftItems[0].Id);
+        result.LeftItems.Should().ContainSingle();
+        result.LeftItems[0].Id.Should().Be(itemB.Id);
     }
 
 }

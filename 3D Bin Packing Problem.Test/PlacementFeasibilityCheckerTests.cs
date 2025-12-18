@@ -3,6 +3,7 @@ using _3D_Bin_Packing_Problem.Core.Extensions;
 using _3D_Bin_Packing_Problem.Core.Model;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.PFCA;
 using _3D_Bin_Packing_Problem.Core.ViewModels;
+using FluentAssertions;
 using System.Numerics;
 
 namespace _3D_Bin_Packing_Problem.Test;
@@ -27,8 +28,8 @@ public class PlacementFeasibilityCheckerTests
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
-        Assert.False(result);
-        Assert.Null(placement);
+        result.Should().BeFalse();
+        placement.Should().BeNull();
     }
 
 
@@ -47,9 +48,9 @@ public class PlacementFeasibilityCheckerTests
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
-        Assert.True(result);
-        Assert.NotNull(placement);
-        Assert.Equal(item, placement!.Item);
+        result.Should().BeTrue();
+        placement.Should().NotBeNull();
+        placement.Item.Should().Be(item);
     }
 
     /// <summary>
@@ -64,8 +65,8 @@ public class PlacementFeasibilityCheckerTests
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
-        Assert.False(result);
-        Assert.Null(placement);
+        result.Should().BeFalse();
+        placement.Should().BeNull();
     }
 
     /// <summary>
@@ -79,9 +80,12 @@ public class PlacementFeasibilityCheckerTests
 
         var points = InvokeGetPoints(subBin, 2, 2, 0.75);
 
-        Assert.NotEmpty(points);
-        Assert.True(points.Count <= 5);
-        Assert.All(points, p => Assert.True(p.Z == 0));
+        points.Should().NotBeEmpty();
+        (points.Count <= 5).Should().BeTrue();
+        points.Should().AllSatisfy(p =>
+        {
+            p.Z.Should().Be(0);
+        });
     }
 
     /// <summary>
@@ -96,10 +100,10 @@ public class PlacementFeasibilityCheckerTests
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
-        Assert.True(result);
-        Assert.NotNull(placement);
-        Assert.True(placement.SmallestMargin >= 0);
-        Assert.True(placement.SupportRatio >= 0.75);
+        result.Should().BeTrue();
+        placement.Should().NotBeNull();
+        placement.SmallestMargin.Should().BeGreaterThanOrEqualTo(0);
+        placement.SupportRatio .Should().BeGreaterThanOrEqualTo(0.75);
     }
 
     /// <summary>
@@ -115,8 +119,8 @@ public class PlacementFeasibilityCheckerTests
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
-        Assert.False(result);
-        Assert.Null(placement);
+        result.Should().BeFalse();
+        placement.Should().BeNull();
     }
 
     /// <summary>
@@ -130,7 +134,7 @@ public class PlacementFeasibilityCheckerTests
 
         var points = InvokeGetPoints(subBin, 10, 10, 0.75);
 
-        Assert.Empty(points);
+        points.Should().BeEmpty();
     }
 
     /// <summary>
@@ -144,8 +148,8 @@ public class PlacementFeasibilityCheckerTests
 
         var points = InvokeGetPoints(subBin, 5, 5, 0.9);
 
-        Assert.Single(points);
-        Assert.Equal(new Vector3(0, 0, 0), points[0]);
+        points.Should().ContainSingle();
+        points.Should().HaveElementAt(0, new Vector3(0, 0, 0));
     }
 
     /// <summary>
@@ -159,7 +163,7 @@ public class PlacementFeasibilityCheckerTests
 
         var result = InvokeComputeSupportArea(subBin, placedBox);
 
-        Assert.Equal(4, result);
+        result.Should().Be(4);
     }
 
     /// <summary>
@@ -174,9 +178,9 @@ public class PlacementFeasibilityCheckerTests
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
-        Assert.True(result);
-        Assert.NotNull(placement);
-        Assert.Contains(placement!.Orientation, item.GetOrientations());
+        result.Should().BeTrue();
+        placement.Should().NotBeNull();
+        item.GetOrientations().Should().Contain(placement!.Orientation);
     }
 
     /// <summary>
@@ -192,9 +196,9 @@ public class PlacementFeasibilityCheckerTests
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
-        Assert.True(result);
-        Assert.NotNull(placement);
-        Assert.True(Math.Abs(placement!.SmallestMargin) < 1e-5);
+        result.Should().BeTrue();
+        placement.Should().NotBeNull();
+        Math.Abs(placement!.SmallestMargin).Should().BeLessThan(1e-5);
     }
 
     /// <summary>
@@ -209,9 +213,9 @@ public class PlacementFeasibilityCheckerTests
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
-        Assert.True(result);
-        Assert.NotNull(placement);
-        Assert.True(placement!.SmallestMargin >= 0);
+        result.Should().BeTrue();
+        placement.Should().NotBeNull();
+        placement!.SmallestMargin.Should().BeGreaterThanOrEqualTo(0);
     }
 
     /// <summary>
@@ -224,8 +228,7 @@ public class PlacementFeasibilityCheckerTests
         var pb = new PlacedBox(x: 1, y: 1, z: 0, l: 3, w: 3, h: 1);
 
         var result = InvokeComputeSupportArea(sb, pb);
-
-        Assert.Equal(9, result);
+        result.Should().Be(9);
     }
 
     /// <summary>
@@ -238,8 +241,8 @@ public class PlacementFeasibilityCheckerTests
         var pb = new PlacedBox(x: 10, y: 10, z: 0, l: 2, w: 2, h: 1);
 
         var result = InvokeComputeSupportArea(sb, pb);
+        result.Should().Be(0);
 
-        Assert.Equal(0, result);
     }
 
 
@@ -255,8 +258,8 @@ public class PlacementFeasibilityCheckerTests
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
-        Assert.False(result);
-        Assert.Null(placement);
+        result.Should().BeFalse();
+        placement.Should().BeNull();
     }
 
     /// <summary>
@@ -271,8 +274,8 @@ public class PlacementFeasibilityCheckerTests
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
-        Assert.False(result);
-        Assert.Null(placement);
+        result.Should().BeFalse();
+        placement.Should().BeNull();
     }
 
     /// <summary>
@@ -287,8 +290,8 @@ public class PlacementFeasibilityCheckerTests
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
-        Assert.False(result);
-        Assert.Null(placement);
+        result.Should().BeFalse();
+        placement.Should().BeNull();
     }
 
     /// <summary>
@@ -303,8 +306,8 @@ public class PlacementFeasibilityCheckerTests
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
-        Assert.False(result);
-        Assert.Null(placement);
+        result.Should().BeFalse();
+        placement.Should().BeNull();
     }
 
 
@@ -321,8 +324,8 @@ public class PlacementFeasibilityCheckerTests
         var bottomItem = new Item(10, 10, 2);
         var result1 = _checker.Execute(binType, bottomItem, baseSubBin, out var placement1);
 
-        Assert.True(result1);
-        Assert.NotNull(placement1);
+        result1.Should().BeTrue();
+        placement1.Should().NotBeNull();
 
         var binType2 = new BinType("Default", 1, 1, 1);
         var topSubBin = new SubBin(0, 0, 2, 10, 10, 8, 0, 0, 0, 0);
@@ -330,9 +333,10 @@ public class PlacementFeasibilityCheckerTests
         var topItem = new Item(5, 5, 2);
         var result2 = _checker.Execute(binType2, topItem, topSubBin, out var placement2);
 
-        Assert.True(result2);
-        Assert.NotNull(placement2);
-        Assert.True(placement2!.SupportRatio >= 0.75);
+        result2.Should().BeTrue();
+        placement2.Should().NotBeNull();
+        placement2.SupportRatio.Should().BeGreaterThanOrEqualTo(0.75);
+
     }
 
     private static float InvokeComputeSupportArea(SubBin sb, PlacedBox pb)
