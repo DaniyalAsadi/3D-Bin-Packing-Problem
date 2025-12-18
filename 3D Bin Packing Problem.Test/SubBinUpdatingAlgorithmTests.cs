@@ -130,9 +130,10 @@ public class SubBinUpdatingAlgorithmExtendedTests
 
         // بررسی مرحله اول
         subBinList.Count.Should().Be(3);
-        Assert.Contains(subBinList, sb => sb is { X: 2, Length: 3 });
-        Assert.Contains(subBinList, sb => sb is { Y: 2, Width: 3 });
-        Assert.Contains(subBinList, sb => sb is { Z: 2, Height: 3 });
+        subBinList.Should().Contain(sb => sb.X == 2 && sb.Length == 3);
+        subBinList.Should().Contain(sb => sb.Y == 2 && sb.Width == 3);
+        subBinList.Should().Contain(sb => sb.Z == 2 && sb.Height == 3);
+
 
 
         // --- مرحله ۲ ---
@@ -143,23 +144,25 @@ public class SubBinUpdatingAlgorithmExtendedTests
 
         // ✅ بررسی منطقی خروجی مرحله دوم
         resultAfterSecond.Should().NotBeNull();
-        Assert.All(resultAfterSecond, sb =>
+
+        resultAfterSecond.Should().AllSatisfy(sb =>
         {
-            Assert.True(sb.Length > 0, "طول نباید صفر باشد");
-            Assert.True(sb.Width > 0, "عرض نباید صفر باشد");
-            Assert.True(sb.Height > 0, "ارتفاع نباید صفر باشد");
+            sb.Length.Should().BeGreaterThan(0, "طول نباید صفر باشد");
+            sb.Width.Should().BeGreaterThan(0, "عرض نباید صفر باشد");
+            sb.Height.Should().BeGreaterThan(0, "ارتفاع نباید صفر باشد");
         });
 
         // ✅ هیچ SubBin اولیه‌ای نباید باقی مانده باشد
-        Assert.DoesNotContain(resultAfterSecond, sb => sb.X == 0 && sb.Y == 0 && sb.Z == 0);
+        resultAfterSecond.Should().NotContain(sb => sb.X == 0 && sb.Y == 0 && sb.Z == 0);
 
         // ✅ SubBinها باید در محدوده جدید باشند
-        Assert.All(resultAfterSecond, sb =>
+        resultAfterSecond.Should().AllSatisfy(sb =>
         {
-            Assert.InRange(sb.X, 0, 5);
-            Assert.InRange(sb.Y, 0, 5);
-            Assert.InRange(sb.Z, 0, 5);
+            sb.X.Should().BeInRange(0, 5);
+            sb.Y.Should().BeInRange(0, 5);
+            sb.Z.Should().BeInRange(0, 5);
         });
+
     }
 
     [Fact]

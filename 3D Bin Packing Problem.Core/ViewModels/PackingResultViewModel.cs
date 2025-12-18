@@ -32,7 +32,7 @@ public class PackingResultViewModel
 public record PackedItemViewModel
 {
     public Guid ItemId { get; set; }
-    public Item Item { get; set; }
+    public Item Item { get; set; } = default!;
     public Guid BinTypeId { get; set; }
 
     public Guid InstanceId { get; set; }

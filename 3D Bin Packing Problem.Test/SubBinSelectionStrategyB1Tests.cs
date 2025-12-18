@@ -1,12 +1,14 @@
 ﻿using _3D_Bin_Packing_Problem.Core.Model;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SubBinSelectionStrategy;
+using FluentAssertions;
+
 namespace _3D_Bin_Packing_Problem.Test;
 /// <summary>
 /// Verifies the selection logic for the B1 sub-bin selection strategy.
 /// </summary>
 public class SubBinSelectionStrategyB1Tests
 {
-    private readonly List<BinType> PresetBinTypes = new List<BinType>
+    private readonly List<BinType> _presetBinTypes = new List<BinType>
     {
         BinType.Create(
             name: "Size 1",
@@ -102,11 +104,11 @@ public class SubBinSelectionStrategyB1Tests
         var strategy = new SubBinSelectionStrategyB1();
 
         // Act
-        var selectedBin = strategy.Execute(PresetBinTypes, products);
+        var selectedBin = strategy.Execute(_presetBinTypes, products);
 
         // Assert
-        Assert.NotNull(selectedBin);
-        Assert.Equal(PresetBinTypes[4], selectedBin); // سایز ۵ انتظار می‌رود
+        selectedBin.Should().NotBeNull();
+        _presetBinTypes.Should().HaveElementAt(4, selectedBin); // سایز ۵ انتظار می‌رود
     }
 
     [Fact]
@@ -120,11 +122,11 @@ public class SubBinSelectionStrategyB1Tests
         var strategy = new SubBinSelectionStrategyB1();
 
         // Act
-        var selectedBin = strategy.Execute(PresetBinTypes, products);
+        var selectedBin = strategy.Execute(_presetBinTypes, products);
 
         // Assert
-        Assert.NotNull(selectedBin);
-        Assert.Equal(PresetBinTypes[2], selectedBin); // سایز ۳ بهترین گزینه
+        selectedBin.Should().NotBeNull();
+        _presetBinTypes.Should().HaveElementAt(2, selectedBin); // سایز ۳ بهترین گزینه
     }
 
     [Fact]
@@ -138,11 +140,11 @@ public class SubBinSelectionStrategyB1Tests
         var strategy = new SubBinSelectionStrategyB1();
 
         // Act
-        var selectedBin = strategy.Execute(PresetBinTypes, products);
+        var selectedBin = strategy.Execute(_presetBinTypes, products);
 
         // Assert
-        Assert.NotNull(selectedBin);
-        Assert.Equal(PresetBinTypes[0], selectedBin); // سایز ۱ کافی است
+        selectedBin.Should().NotBeNull();
+        _presetBinTypes.Should().HaveElementAt(0, selectedBin); // سایز ۱ کافی است
     }
 
     [Fact]
@@ -167,6 +169,6 @@ public class SubBinSelectionStrategyB1Tests
         var selectedBin = strategy.Execute(bins, products);
 
         // Assert
-        Assert.Null(selectedBin);
+        selectedBin.Should().BeNull();
     }
 }

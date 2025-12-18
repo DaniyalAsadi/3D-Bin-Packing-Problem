@@ -4,6 +4,7 @@ using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SPA;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SUA;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SubBinOrderingStrategy;
 using _3D_Bin_Packing_Problem.Core.ViewModels;
+using FluentAssertions;
 using System.Numerics;
 
 namespace _3D_Bin_Packing_Problem.Test;
@@ -45,18 +46,20 @@ public class SingleBinPackingAlgorithmTests
         var result = algorithm.Execute(new List<Item> { item }, new BinInstance(binType));
 
         // Assert
-        Assert.Single(result.PackedItems); // فقط یک آیتم باید بسته‌بندی شود
-        Assert.Empty(result.LeftItems);    // نباید آیتمی باقی بماند
+        result.PackedItems.Should().ContainSingle();
+        result.LeftItems.Should().BeEmpty();
 
-        var packed = result.PackedItems.First();
-        Assert.Equal(item.Id, packed.ItemId);
-        Assert.Equal(0, packed.Position.X);
-        Assert.Equal(0, packed.Position.Y);
-        Assert.Equal(0, packed.Position.Z);
-        Assert.Equal(2, packed.Length);
-        Assert.Equal(2, packed.Width);
-        Assert.Equal(2, packed.Height);
-        Assert.Equal(1, packed.SupportRatio);
+        var packed = result.PackedItems.Should().ContainSingle().Which;
+
+        packed.ItemId.Should().Be(item.Id);
+        packed.Position.X.Should().Be(0);
+        packed.Position.Y.Should().Be(0);
+        packed.Position.Z.Should().Be(0);
+        packed.Length.Should().Be(2);
+        packed.Width.Should().Be(2);
+        packed.Height.Should().Be(2);
+        packed.SupportRatio.Should().Be(1);
+
     }
 
     // تست: آیتم بزرگ‌تر از Bin است → باید در LeftItems قرار گیرد
@@ -79,8 +82,8 @@ public class SingleBinPackingAlgorithmTests
         var result = algorithm.Execute(new List<Item> { item }, new BinInstance(binType));
 
         // Assert
-        Assert.Empty(result.PackedItems);
-        Assert.Single(result.LeftItems);
+        result.PackedItems.Should().BeEmpty();
+        result.LeftItems.Should().ContainSingle();
     }
 
     // تست: بعضی آیتم‌ها جا می‌شوند و بعضی نمی‌شوند
@@ -123,14 +126,14 @@ public class SingleBinPackingAlgorithmTests
         var result = algorithm.Execute(items, new BinInstance(binType));
 
         // Assert
-        Assert.Single(result.PackedItems); // فقط یکی باید بسته‌بندی شود
-        Assert.Single(result.LeftItems);   // یکی هم باید جا نشود
+        result.PackedItems.Should().ContainSingle(); // فقط یکی باید بسته‌بندی شود
+        result.LeftItems.Should().ContainSingle();   // یکی هم باید جا نشود
 
         var packed = result.PackedItems.First();
-        Assert.Equal(items[0].Id, packed.ItemId);
-        Assert.Equal(5, packed.Length);
-        Assert.Equal(5, packed.Width);
-        Assert.Equal(5, packed.Height);
+        packed.ItemId.Should().Be(items[0].Id);
+        packed.Length.Should().Be(5);
+        packed.Width.Should().Be(5);
+        packed.Height.Should().Be(5);
     }
 
     // تست: بررسی ApplySpeedUpStrategy
@@ -164,9 +167,9 @@ public class SingleBinPackingAlgorithmTests
         var result = method?.Invoke(algorithm, [subBins, items]) as List<SubBin>;
 
         // Assert
-        Assert.NotNull(result);
-        Assert.Single(result); // فقط یک sub-bin معتبر باید باقی بماند
-        Assert.Equal(validSubBin, result[0]);
+        result.Should().NotBeNull();
+        result.Should().ContainSingle(); // فقط یک sub-bin معتبر باید باقی بماند
+        result.Should().HaveElementAt(0, validSubBin);
     }
     [Fact]
     public void Execute_ShouldPackEightSmallItemsIntoBin_WhenFeasible()
@@ -195,20 +198,24 @@ public class SingleBinPackingAlgorithmTests
         var result = algorithm.Execute(items, new BinInstance(binType));
 
         // Assert
-        Assert.Equal(8, result.PackedItems.Count); // همه ۸ آیتم باید بسته شوند
-        Assert.Empty(result.LeftItems);            // آیتمی نباید باقی بماند
+        result.PackedItems.Should().HaveCount(8);
+        result.LeftItems.Should().BeEmpty();
 
         // بررسی اینکه همه نقاط پوشش داده شدند
-        var cords = result.PackedItems.Select(p => (p.Position.X, p.Position.Y, p.Position.Z)).ToHashSet();
-        Assert.Equal(8, cords.Count);
-        Assert.Contains((0, 0, 0), cords);
-        Assert.Contains((1, 0, 0), cords);
-        Assert.Contains((0, 1, 0), cords);
-        Assert.Contains((1, 1, 0), cords);
-        Assert.Contains((0, 0, 1), cords);
-        Assert.Contains((1, 0, 1), cords);
-        Assert.Contains((0, 1, 1), cords);
-        Assert.Contains((1, 1, 1), cords);
+        var coords = result.PackedItems
+            .Select(p => (p.Position.X, p.Position.Y, p.Position.Z))
+            .ToHashSet();
+
+        coords.Should().HaveCount(8);
+        coords.Should().Contain((0, 0, 0));
+        coords.Should().Contain((1, 0, 0));
+        coords.Should().Contain((0, 1, 0));
+        coords.Should().Contain((1, 1, 0));
+        coords.Should().Contain((0, 0, 1));
+        coords.Should().Contain((1, 0, 1));
+        coords.Should().Contain((0, 1, 1));
+        coords.Should().Contain((1, 1, 1));
+
     }
 
 }
