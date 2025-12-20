@@ -15,7 +15,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
 {
     private readonly IPlacementFeasibilityChecker _checker = new PlacementFeasibilityChecker();
     private readonly ISubBinUpdatingAlgorithm _algorithm = new SubBinUpdatingAlgorithm();
-    BinType binType = new BinType("Default", 1, 1, 1);
+    BinType binType = new BinType("Default", new Dimensions(1, 1, 1));
 
     // ---------------- تقسیم (Divide) ----------------
 

@@ -11,13 +11,10 @@ public class BinType
     /// <summary>
     /// Describes a bin's dimensional properties and derived cost used within packing evaluations.
     /// </summary>
-    internal BinType(string name,
-        float length,
-        float width,
-        float height)
+    internal BinType(string name, Dimensions dimensions)
     {
         Name = name;
-        InnerDimensions = new Dimensions(length, width, height);
+        InnerDimensions = dimensions;
     }
 
     /// <summary>
@@ -63,7 +60,7 @@ public class BinType
     /// </summary>
     public BinType Clone()
     {
-        return new BinType(Name, InnerDimensions.Length, InnerDimensions.Width, InnerDimensions.Height)
+        return new BinType(Name, new Dimensions(InnerDimensions.Length, InnerDimensions.Width, InnerDimensions.Height))
         {
             MaxWeight = MaxWeight,
             Cost = Cost,
@@ -73,22 +70,17 @@ public class BinType
     }
     public static BinType Create(
         string name,
-        float length,
-        float width,
-        float height,
+        Dimensions dimensions,
         decimal maxWeight,
         decimal cost,
         decimal tareWeight = 0)
     {
         name = Guard.Against.NullOrWhiteSpace(name);
-        length = Guard.Against.NegativeOrZero(length, nameof(length));
-        width = Guard.Against.NegativeOrZero(width, nameof(width));
-        height = Guard.Against.NegativeOrZero(height, nameof(height));
         maxWeight = Guard.Against.NegativeOrZero(maxWeight, nameof(maxWeight));
         cost = Guard.Against.Negative(cost, nameof(cost));
         tareWeight = Guard.Against.Negative(tareWeight, nameof(tareWeight));
 
-        return new BinType(name, length, width, height)
+        return new BinType(name, dimensions)
         {
             MaxWeight = maxWeight,
             Cost = cost,

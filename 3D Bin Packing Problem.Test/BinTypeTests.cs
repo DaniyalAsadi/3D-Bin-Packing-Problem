@@ -12,9 +12,7 @@ public class BinTypeTests
         // Act
         var bin = BinType.Create(
             name: "Size 1",
-            length: 100,
-            width: 80,
-            height: 60,
+            new Dimensions(100, 80, 60),
             maxWeight: 50,
             cost: 120_000m,
             tareWeight: 10
@@ -40,9 +38,7 @@ public class BinTypeTests
         // Act
         var bin = BinType.Create(
             name: "Test",
-            length: 10,
-            width: 5,
-            height: 2,
+            new Dimensions(10, 5, 2),
             maxWeight: 10,
             cost: 100
         );
@@ -57,9 +53,7 @@ public class BinTypeTests
         // Act
         Action act = () => BinType.Create(
             name: " ",
-            length: 10,
-            width: 10,
-            height: 10,
+            new Dimensions(10, 10, 10),
             maxWeight: 10,
             cost: 100
         );
@@ -79,9 +73,7 @@ public class BinTypeTests
         // Act
         Action act = () => BinType.Create(
             name: "Invalid",
-            length: length,
-            width: width,
-            height: height,
+            new Dimensions(length, width, height),
             maxWeight: 10,
             cost: 100
         );
@@ -96,9 +88,7 @@ public class BinTypeTests
         // Act
         Action act = () => BinType.Create(
             name: "Invalid",
-            length: 10,
-            width: 10,
-            height: 10,
+            new Dimensions(10, 10, 10),
             maxWeight: 0,
             cost: 100
         );
@@ -113,9 +103,7 @@ public class BinTypeTests
         // Act
         Action act = () => BinType.Create(
             name: "Invalid",
-            length: 10,
-            width: 10,
-            height: 10,
+            new Dimensions(10, 10, 10),
             maxWeight: 10,
             cost: -1
         );
@@ -130,9 +118,7 @@ public class BinTypeTests
         // Act
         Action act = () => BinType.Create(
             name: "Invalid",
-            length: 10,
-            width: 10,
-            height: 10,
+            new Dimensions(10, 10, 10),
             maxWeight: 10,
             cost: 100,
             tareWeight: -5
@@ -148,9 +134,7 @@ public class BinTypeTests
         // Arrange
         var original = BinType.Create(
             name: "CloneMe",
-            length: 100,
-            width: 50,
-            height: 40,
+            new Dimensions(100, 50, 40),
             maxWeight: 80,
             cost: 200_000m,
             tareWeight: 15
@@ -179,9 +163,7 @@ public class BinTypeTests
         // Arrange
         var bin = BinType.Create(
             name: "Implicit",
-            length: 100,
-            width: 100,
-            height: 100,
+            new Dimensions(100, 100, 100),
             maxWeight: 100,
             cost: 300_000m
         );
@@ -199,9 +181,7 @@ public class BinTypeTests
         // Act
         var bin = BinType.Create(
             name: "Readable",
-            length: 10,
-            width: 20,
-            height: 30,
+            new Dimensions(10, 20, 30),
             maxWeight: 50,
             cost: 99.99m
         );

@@ -15,8 +15,8 @@ public class GeneticAlgorithmTests
 
         var bins = new List<BinType>
         {
-            BinType.Create("Small", 100, 100, 100, 1000, 10),
-            BinType.Create("Medium", 200, 200, 200, 2000, 20),
+            BinType.Create("Small",new Dimensions( 100, 100, 100), 1000, 10),
+            BinType.Create("Medium", new Dimensions(200, 200, 200), 2000, 20),
         };
 
         var items = new List<Item>
@@ -39,7 +39,7 @@ public class GeneticAlgorithmTests
 
         var bins = new List<BinType>
         {
-            BinType.Create("OnlyBin", 100, 100, 100, 1000, 10),
+            BinType.Create("OnlyBin", new Dimensions(100, 100, 100), 1000, 10),
         };
 
         var items = new List<Item>

@@ -89,7 +89,7 @@ public class PlacementAlgorithmBehaviorTests
         var items = new List<Item> { itemA, itemB };
 
         // Bin can fit only itemA
-        var bin = new BinType("Default", 1, 1, 1);
+        var bin = new BinType("Default", new Dimensions(1, 1, 1));
         var bins = new List<BinType> { bin };
 
         // Mock ordering strategy: returns items as-is

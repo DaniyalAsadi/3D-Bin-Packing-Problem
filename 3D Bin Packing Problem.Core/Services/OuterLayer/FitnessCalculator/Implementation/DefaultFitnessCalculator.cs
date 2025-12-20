@@ -24,9 +24,7 @@ public class DefaultFitnessCalculator(IPlacementAlgorithm placementAlgorithm) : 
         var results = placementAlgorithm.Execute(items, chromosome.Sequences.Select(e =>
             BinType.Create(
                 e.BinType.Name,
-                e.Length.Value,
-                e.Width.Value,
-                e.Height.Value,
+                new Dimensions(e.Length.Value, e.Width.Value, e.Height.Value),
                 e.BinType.MaxWeight,
                 e.BinType.Cost,
                 e.BinType.TareWeight)).ToList());
