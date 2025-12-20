@@ -84,9 +84,9 @@ public class SingleBinPackingAlgorithm(
                 BinTypeId = x.BinType.Id,
                 InstanceId = binInstance.ClonedInstance,
                 Position = new Vector3(x.Position.X, x.Position.Y, x.Position.Z),
-                Length = x.Orientation.X,
-                Width = x.Orientation.Y,
-                Height = x.Orientation.Z,
+                Length = x.Orientation.Length,
+                Width = x.Orientation.Width,
+                Height = x.Orientation.Height,
                 SupportRatio = x.SupportRatio,
             }).ToList(),
 

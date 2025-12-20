@@ -18,13 +18,13 @@ public class SingleBinPackingAlgorithmTests
     {
         // Arrange
         var item = new Item(new Dimensions(2, 2, 2));
-        var binType = new BinType("Default",new Dimensions( 10, 10, 10));
+        var binType = new BinType("Default", new Dimensions(10, 10, 10));
 
         var expectedPlacement = new PlacementResult(
             item,
             binType,
             new Vector3(0, 0, 0),
-            new Vector3(2, 2, 2),
+            new Dimensions(2, 2, 2),
             1.0,
             0.75
         );
@@ -103,7 +103,7 @@ public class SingleBinPackingAlgorithmTests
             items[0],
             binType,
             new Vector3(0, 0, 0),
-            new Vector3(5, 5, 5),
+            new Dimensions(5, 5, 5),
             1.0,
             0.75
         );
@@ -179,7 +179,7 @@ public class SingleBinPackingAlgorithmTests
             .Select(_ => new Item(new Dimensions(1, 1, 1)))
             .ToList();
 
-        var binType = new BinType("Default", new Dimensions(2,2,2));
+        var binType = new BinType("Default", new Dimensions(2, 2, 2));
 
 
         var feasibilityChecker = new PlacementFeasibilityChecker();

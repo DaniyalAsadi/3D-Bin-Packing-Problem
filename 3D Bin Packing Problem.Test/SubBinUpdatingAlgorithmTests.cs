@@ -209,12 +209,12 @@ public class SubBinUpdatingAlgorithmExtendedTests
                 var a = placements[i];
                 var b = placements[j];
 
-                var overlapX = !((a.Position.X + a.Orientation.X) <= b.Position.X ||
-                                 a.Position.X >= (b.Position.X + b.Orientation.X));
-                var overlapY = !((a.Position.Y + a.Orientation.Y) <= b.Position.Y ||
-                                 a.Position.Y >= (b.Position.Y + b.Orientation.Y));
-                var overlapZ = !((a.Position.Z + a.Orientation.Z) <= b.Position.Z ||
-                                 a.Position.Z >= (b.Position.Z + b.Orientation.Z));
+                var overlapX = !((a.Position.X + a.Orientation.Length) <= b.Position.X ||
+                                 a.Position.X >= (b.Position.X + b.Orientation.Length));
+                var overlapY = !((a.Position.Y + a.Orientation.Width) <= b.Position.Y ||
+                                 a.Position.Y >= (b.Position.Y + b.Orientation.Width));
+                var overlapZ = !((a.Position.Z + a.Orientation.Height) <= b.Position.Z ||
+                                 a.Position.Z >= (b.Position.Z + b.Orientation.Height));
 
                 var overlap = overlapX && overlapY && overlapZ;
 
@@ -228,9 +228,9 @@ public class SubBinUpdatingAlgorithmExtendedTests
             p.Position.X.Should().BeInRange(0, 2);
             p.Position.Y.Should().BeInRange(0, 2);
             p.Position.Z.Should().BeInRange(0, 2);
-            (p.Position.X + p.Orientation.X).Should().BeInRange(0, 3);
-            (p.Position.Y + p.Orientation.Y).Should().BeInRange(0, 3);
-            (p.Position.Z + p.Orientation.Z).Should().BeInRange(0, 3);
+            (p.Position.X + p.Orientation.Length).Should().BeInRange(0, 3);
+            (p.Position.Y + p.Orientation.Width).Should().BeInRange(0, 3);
+            (p.Position.Z + p.Orientation.Height).Should().BeInRange(0, 3);
         });
 
     }

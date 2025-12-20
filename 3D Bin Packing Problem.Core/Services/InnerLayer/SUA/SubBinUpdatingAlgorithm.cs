@@ -21,12 +21,12 @@ public class SubBinUpdatingAlgorithm : ISubBinUpdatingAlgorithm
         if (placement == null) throw new ArgumentNullException(nameof(placement));
 
         var placedBox = new PlacedBox(
-            x: (int)placement.Position.X,
-            y: (int)placement.Position.Y,
-            z: (int)placement.Position.Z,
-            l: (int)placement.Orientation.X,
-            w: (int)placement.Orientation.Y,
-            h: (int)placement.Orientation.Z
+            x: placement.Position.X,
+            y: placement.Position.Y,
+            z: placement.Position.Z,
+            l: placement.Orientation.Length,
+            w: placement.Orientation.Width,
+            h: placement.Orientation.Height
         );
 
         var newSubBins = new List<SubBin>();

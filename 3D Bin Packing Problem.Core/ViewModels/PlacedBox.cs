@@ -3,12 +3,25 @@ namespace _3D_Bin_Packing_Problem.Core.ViewModels;
 /// <summary>
 /// Represents the dimensions and coordinates of a placed item for feasibility checks.
 /// </summary>
-public readonly struct PlacedBox(int x, int y, int z, int l, int w, int h)
+public readonly struct PlacedBox
 {
-    public int X { get; } = x;
-    public int Y { get; } = y;
-    public int Z { get; } = z;
-    public int L { get; } = l; // Length
-    public int W { get; } = w; // Width
-    public int H { get; } = h; // Height
+    /// <summary>
+    /// Represents the dimensions and coordinates of a placed item for feasibility checks.
+    /// </summary>
+    public PlacedBox(float x, float y, float z, float l, float w, float h)
+    {
+        X = x;
+        Y = y;
+        Z = z;
+        L = l;
+        W = w;
+        H = h;
+    }
+
+    public float X { get; }
+    public float Y { get; }
+    public float Z { get; }
+    public float L { get; } // Length
+    public float W { get; } // Width
+    public float H { get; } // Height
 }

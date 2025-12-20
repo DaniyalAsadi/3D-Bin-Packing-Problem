@@ -34,9 +34,9 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
 
         foreach (var orientation in orientations)
         {
-            int L = (int)orientation.X;
-            int W = (int)orientation.Y;
-            int H = (int)orientation.Z; // فقط برای خوانایی
+            var L = orientation.Length;
+            var W = orientation.Width;
+            var H = orientation.Height; // فقط برای خوانایی
 
             var keyPoints = GetKeyPoints(subBin, L, W, _lambda);
 
@@ -47,9 +47,9 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
                     continue;
 
                 var placedBox = new PlacedBox(
-                    x: (int)pos.X,
-                    y: (int)pos.Y,
-                    z: (int)pos.Z,
+                    x: pos.X,
+                    y: pos.Y,
+                    z: pos.Z,
                     l: L,
                     w: W,
                     h: H
@@ -107,7 +107,7 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
     /// تولید ۵ نقطه کلیدی استاندارد (Extreme Points + λ-constraint)
     /// کاملاً سازگار با حاشیه‌ها (Left/Back/Right/Front)
     /// </summary>
-    private static IReadOnlyList<Vector3> GetKeyPoints(SubBin sb, int L, int W, double lambda)
+    private static IReadOnlyList<Vector3> GetKeyPoints(SubBin sb, float L, float W, double lambda)
     {
         lambda = Math.Clamp(lambda, 0.0, 1.0);
 
