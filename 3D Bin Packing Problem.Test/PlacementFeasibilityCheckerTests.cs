@@ -23,7 +23,7 @@ public class PlacementFeasibilityCheckerTests
     public void Execute_ShouldReturnFalse_WhenItemVolumeGreaterThanSubBin()
     {
         var binType = new BinType("Default", 1, 1, 1);
-        var item = new Item(10, 10, 10); // حجم = 1000
+        var item = new Item(new Dimensions(10, 10, 10)); // حجم = 1000
         var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5)); // حجم = 125
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
@@ -43,7 +43,7 @@ public class PlacementFeasibilityCheckerTests
     public void Execute_ShouldReturnTrue_WhenItemFitsExactly()
     {
         var binType = new BinType("Default", 1, 1, 1);
-        var item = new Item(2, 2, 2);
+        var item = new Item(new Dimensions(2, 2, 2));
         var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5));
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
@@ -60,7 +60,7 @@ public class PlacementFeasibilityCheckerTests
     public void Execute_ShouldReturnFalse_WhenSupportRatioTooLow()
     {
         var binType = new BinType("Default", 1, 1, 1);
-        var item = new Item(5, 5, 1);
+        var item = new Item(new Dimensions(5, 5, 1));
         var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(6, 2, 1));
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
@@ -75,7 +75,7 @@ public class PlacementFeasibilityCheckerTests
     [Fact]
     public void GetPoints_ShouldReturnFiveUniquePoints()
     {
-        var item = new Item(2, 2, 1);
+        var item = new Item(new Dimensions(2, 2, 1));
         var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5));
 
         var points = InvokeGetPoints(subBin, 2, 2, 0.75);
@@ -95,7 +95,7 @@ public class PlacementFeasibilityCheckerTests
     public void Execute_ShouldChooseBestMarginPlacement()
     {
         var binType = new BinType("Default", 1, 1, 1);
-        var item = new Item(2, 2, 2);
+        var item = new Item(new Dimensions(2, 2, 2));
         var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(6, 6, 6));
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
@@ -114,7 +114,7 @@ public class PlacementFeasibilityCheckerTests
     {
         var binType = new BinType("Default", 1, 1, 1);
 
-        var item = new Item(10, 1, 1);
+        var item = new Item(new Dimensions(10, 1, 1));
         var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5));
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
@@ -129,7 +129,7 @@ public class PlacementFeasibilityCheckerTests
     [Fact]
     public void GetPoints_ShouldReturnEmpty_WhenItemDoesNotFit()
     {
-        var item = new Item(10, 10, 1);
+        var item = new Item(new Dimensions(10, 10, 1));
         var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5));
 
         var points = InvokeGetPoints(subBin, 10, 10, 0.75);
@@ -143,7 +143,7 @@ public class PlacementFeasibilityCheckerTests
     [Fact]
     public void GetPoints_ShouldFallback_WhenSupportAreaNotEnough()
     {
-        var item = new Item(5, 5, 1);
+        var item = new Item(new Dimensions(5, 5, 1));
         var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5));
 
         var points = InvokeGetPoints(subBin, 5, 5, 0.9);
@@ -173,7 +173,7 @@ public class PlacementFeasibilityCheckerTests
     public void Execute_ShouldSelectCorrectOrientation_WhenMultipleOrientationsPossible()
     {
         var binType = new BinType("Default", 1, 1, 1);
-        var item = new Item(2, 3, 4);
+        var item = new Item(new Dimensions(2, 3, 4));
         var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5));
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
@@ -191,7 +191,7 @@ public class PlacementFeasibilityCheckerTests
     {
         var binType = new BinType("Default", 1, 1, 1);
 
-        var item = new Item(5, 5, 5);
+        var item = new Item(new Dimensions(5, 5, 5));
         var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5));
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
@@ -208,7 +208,7 @@ public class PlacementFeasibilityCheckerTests
     public void Execute_ShouldRespectCustomMargins()
     {
         var binType = new BinType("Default", 1, 1, 1);
-        var item = new Item(2, 2, 2);
+        var item = new Item(new Dimensions(2, 2, 2));
         var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5), 2, 2, 1, 1);
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
@@ -253,7 +253,7 @@ public class PlacementFeasibilityCheckerTests
     public void Execute_ShouldReturnFalse_WhenItemExceedsXBoundary()
     {
         var binType = new BinType("Default", 1, 1, 1);
-        var item = new Item(6, 1, 1);
+        var item = new Item(new Dimensions(6, 1, 1));
         var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5));
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
@@ -269,7 +269,7 @@ public class PlacementFeasibilityCheckerTests
     public void Execute_ShouldReturnFalse_WhenItemExceedsYBoundary()
     {
         var binType = new BinType("Default", 1, 1, 1);
-        var item = new Item(1, 6, 1);
+        var item = new Item(new Dimensions(1, 6, 1));
         var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5));
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
@@ -285,7 +285,7 @@ public class PlacementFeasibilityCheckerTests
     public void Execute_ShouldReturnFalse_WhenItemExceedsZBoundary()
     {
         var binType = new BinType("Default", 1, 1, 1);
-        var item = new Item(1, 1, 6);
+        var item = new Item(new Dimensions(1, 1, 6));
         var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5));
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
@@ -301,7 +301,7 @@ public class PlacementFeasibilityCheckerTests
     public void Execute_ShouldContinue_WhenSmallestMarginNegative()
     {
         var binType = new BinType("Default", 1, 1, 1);
-        var item = new Item(3, 3, 3);
+        var item = new Item(new Dimensions(3, 3, 3));
         var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(3, 2, 3));
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
@@ -321,7 +321,7 @@ public class PlacementFeasibilityCheckerTests
         var binType = new BinType("Default", 1, 1, 1);
         var baseSubBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(10, 10, 10));
 
-        var bottomItem = new Item(10, 10, 2);
+        var bottomItem = new Item(new Dimensions(10, 10, 2));
         var result1 = _checker.Execute(binType, bottomItem, baseSubBin, out var placement1);
 
         result1.Should().BeTrue();
@@ -330,7 +330,7 @@ public class PlacementFeasibilityCheckerTests
         var binType2 = new BinType("Default", 1, 1, 1);
         var topSubBin = new SubBin(new Vector3(0, 0, 2), new Dimensions(10, 10, 8));
 
-        var topItem = new Item(5, 5, 2);
+        var topItem = new Item(new Dimensions(5, 5, 2));
         var result2 = _checker.Execute(binType2, topItem, topSubBin, out var placement2);
 
         result2.Should().BeTrue();

@@ -98,8 +98,8 @@ public class SubBinSelectionStrategyB1Tests
         // Arrange
         var products = new List<Item>
         {
-            new Item(200, 200, 200),
-            new Item(300, 300, 500)
+            new Item(new Dimensions(200, 200, 200)),
+            new Item(new Dimensions(300, 300, 500))
         };
         var strategy = new SubBinSelectionStrategyB1();
 
@@ -117,7 +117,7 @@ public class SubBinSelectionStrategyB1Tests
         // Arrange
         var products = new List<Item>
         {
-            new Item(150, 100, 150),
+            new Item(new Dimensions(150, 100, 150)),
         };
         var strategy = new SubBinSelectionStrategyB1();
 
@@ -135,7 +135,7 @@ public class SubBinSelectionStrategyB1Tests
         // Arrange
         var products = new List<Item>
         {
-            new Item(150, 100, 100),
+            new Item(new Dimensions(150, 100, 100)),
         };
         var strategy = new SubBinSelectionStrategyB1();
 
@@ -153,8 +153,8 @@ public class SubBinSelectionStrategyB1Tests
         // Arrange
         var products = new List<Item>
         {
-            new Item(2, 2, 2),
-            new Item(3, 3, 5)
+            new Item(new Dimensions(2, 2, 2)),
+            new Item(new Dimensions(3, 3, 5))
         };
 
         var bins = new List<BinType>

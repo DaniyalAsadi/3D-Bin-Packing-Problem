@@ -22,7 +22,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
     [Fact]
     public void Execute_ShouldDivideInXRight_WhenItemStartsAtOriginAndCoversFullYAndZ()
     {
-        var item = new Item(2, 5, 5);
+        var item = new Item(new Dimensions(2, 5, 5));
         var subBinList = new List<SubBin> { new(new Vector3(0, 0, 0), new Dimensions(5, 5, 5), 0, 0, 0, 0) };
         var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
         placementResult.Should().NotBeNull();
@@ -33,7 +33,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
     [Fact]
     public void Execute_ShouldDivideInYFront_WhenItemCoversFullXAndZ()
     {
-        var item = new Item(5, 2, 5);
+        var item = new Item(new Dimensions(5, 2, 5));
         var subBinList = new List<SubBin> { new(new Vector3(0, 0, 0), new Dimensions(5, 5, 5), 0, 0, 0, 0) };
 
         var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
@@ -45,7 +45,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
     [Fact]
     public void Execute_ShouldDivideInZTop_WhenItemCoversFullXAndY()
     {
-        var item = new Item(5, 5, 2);
+        var item = new Item(new Dimensions(5, 5, 2));
         var subBinList = new List<SubBin> { new(new Vector3(0, 0, 0), new Dimensions(5, 5, 5), 0, 0, 0, 0) };
 
         var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
@@ -57,7 +57,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
     [Fact]
     public void Execute_ShouldLeaveNoSubBins_WhenItemFillsEntireSubBin()
     {
-        var item = new Item(5, 5, 5);
+        var item = new Item(new Dimensions(5, 5, 5));
         var subBinList = new List<SubBin> { new(new Vector3(0, 0, 0), new Dimensions(5, 5, 5), 0, 0, 0, 0) };
 
         var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
@@ -71,7 +71,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
     public void Execute_ShouldDivideIntoThreeSubBins_WhenItemPlacedAtOrigin()
     {
         // Arrange
-        var item = new Item(2, 2, 2);
+        var item = new Item(new Dimensions(2, 2, 2));
         var subBinList = new List<SubBin>
         {
             new(new Vector3(0, 0, 0), new Dimensions(5, 5, 5), 0, 0, 0, 0)
@@ -121,8 +121,8 @@ public class SubBinUpdatingAlgorithmExtendedTests
             new(new Vector3(0, 0, 0),new Dimensions( 5, 5, 5), 0, 0, 0, 0)
         };
 
-        var item1 = new Item(2, 2, 2);
-        var item2 = new Item(3, 3, 3);
+        var item1 = new Item(new Dimensions(2, 2, 2));
+        var item2 = new Item(new Dimensions(3, 3, 3));
 
         // --- مرحله ۱ ---
         var checkResult = _checker.Execute(binType, item1, subBinList[0], out var placementResult);
@@ -177,7 +177,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
     };
 
         var items = Enumerable.Range(1, 8)
-                              .Select(_ => new Item(1, 1, 1))
+                              .Select(_ => new Item(new Dimensions(1, 1, 1)))
                               .ToList();
 
         var placements = new List<PlacementResult>();
@@ -290,7 +290,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
     [Fact]
     public void Execute_ShouldRemoveNewSubBin_WhenNewIsContainedInOld()
     {
-        var item = new Item(2, 2, 2);
+        var item = new Item(new Dimensions(2, 2, 2));
         var subBinList = new List<SubBin>
         {
             new(new Vector3(0, 0, 0), new Dimensions(10, 10, 10),0,0,0,0)
@@ -374,9 +374,9 @@ public class SubBinUpdatingAlgorithmExtendedTests
 
         var items = new[]
         {
-            new Item(4, 10, 10),
-            new Item(6, 5, 5),
-            new Item(2, 2, 2)
+            new Item(new Dimensions(4, 10, 10)),
+            new Item(new Dimensions(6, 5, 5)),
+            new Item(new Dimensions(2, 2, 2))
         };
 
         foreach (var item in items)

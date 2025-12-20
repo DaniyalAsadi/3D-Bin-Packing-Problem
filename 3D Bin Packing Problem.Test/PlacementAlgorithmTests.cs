@@ -36,8 +36,8 @@ public class PlacementAlgorithmBehaviorTests
     public void Execute_WhenNoBinAvailable_AllItemsMarkedLeft()
     {
         // Arrange
-        var itemA = new Item(1, 1, 1);
-        var itemB = new Item(2, 2, 2);
+        var itemA = new Item(new Dimensions(1, 1, 1));
+        var itemB = new Item(new Dimensions(2, 2, 2));
         var items = new List<Item> { itemA, itemB };
         var bins = new List<BinType>(); // empty or irrelevant for this test
 
@@ -84,8 +84,8 @@ public class PlacementAlgorithmBehaviorTests
     public void Execute_WhenOneBinUsed_ShouldReportPackedAndLeftItems_Correctly()
     {
         // Arrange
-        var itemA = new Item(1, 1, 1);
-        var itemB = new Item(2, 2, 2);
+        var itemA = new Item(new Dimensions(1, 1, 1));
+        var itemB = new Item(new Dimensions(2, 2, 2));
         var items = new List<Item> { itemA, itemB };
 
         // Bin can fit only itemA

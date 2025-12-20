@@ -17,7 +17,7 @@ public class SingleBinPackingAlgorithmTests
     public void Execute_ShouldPackItem_WhenFeasible()
     {
         // Arrange
-        var item = new Item(2, 2, 2);
+        var item = new Item(new Dimensions(2, 2, 2));
         var binType = new BinType("Default", 10, 10, 10);
 
         var expectedPlacement = new PlacementResult(
@@ -67,7 +67,7 @@ public class SingleBinPackingAlgorithmTests
     public void Execute_ShouldLeaveItem_WhenTooLarge()
     {
         // Arrange
-        var item = new Item(20, 20, 20); // بزرگ‌تر از Bin
+        var item = new Item(new Dimensions(20, 20, 20)); // بزرگ‌تر از Bin
         var binType = new BinType("Default", 10, 10, 10);
 
         var feasibilityChecker = new PlacementFeasibilityChecker();
@@ -93,8 +93,8 @@ public class SingleBinPackingAlgorithmTests
         // Arrange
         var items = new List<Item>
     {
-        new Item(5, 5, 5),   // ✅ جا میشه
-        new Item(20, 20, 20) // ❌ جا نمیشه
+        new Item(new Dimensions(5, 5, 5)),   // ✅ جا میشه
+        new Item(new Dimensions(20, 20, 20)) // ❌ جا نمیشه
     };
 
         var binType = new BinType("Default", 10, 10, 10);
@@ -143,8 +143,8 @@ public class SingleBinPackingAlgorithmTests
         // Arrange
         var items = new List<Item>
         {
-            new Item(3, 3, 3),
-            new Item(5, 5, 5)
+            new Item(new Dimensions(3, 3, 3)),
+            new Item(new Dimensions(5, 5, 5))
         };
 
         var validSubBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(10, 10, 10));
@@ -176,7 +176,7 @@ public class SingleBinPackingAlgorithmTests
     {
         // Arrange
         var items = Enumerable.Range(0, 8)
-            .Select(_ => new Item(1, 1, 1))
+            .Select(_ => new Item(new Dimensions(1, 1, 1)))
             .ToList();
 
         var binType = new BinType("Default", 2, 2, 2);

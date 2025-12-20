@@ -11,20 +11,11 @@ namespace _3D_Bin_Packing_Problem.Core.Model;
 /// </summary>
 public class Item
 {
-    private Item(Dimensions dimensions)
+    internal Item(Dimensions dimensions)
     {
         Dimensions = dimensions;
     }
-    internal Item(
-        float length,
-        float width,
-        float height)
-    {
-        length = Guard.Against.NegativeOrZero(length, nameof(length));
-        width = Guard.Against.NegativeOrZero(width, nameof(width));
-        height = Guard.Against.NegativeOrZero(height, nameof(height));
-        Dimensions = new Dimensions(length, width, height);
-    }
+
     /// <summary>
     /// شناسه منحصربه‌فرد قلم
     /// </summary>
