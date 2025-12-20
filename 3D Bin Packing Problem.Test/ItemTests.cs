@@ -12,9 +12,7 @@ public class ItemTests
 
         // Act
         var item = Item.Create(
-            length: 10,
-            width: 20,
-            height: 30,
+            new Dimensions(10, 20, 30),
             weight: 5,
             orderId: orderId
         );
@@ -40,9 +38,7 @@ public class ItemTests
     {
         // Act
         var item = Item.Create(
-            length: 2,
-            width: 3,
-            height: 4,
+            new Dimensions(2, 3, 4),
             weight: 1,
             orderId: Guid.NewGuid()
         );
@@ -56,9 +52,7 @@ public class ItemTests
     {
         // Act
         var item = Item.Create(
-            length: 15,
-            width: 5,
-            height: 10,
+            new Dimensions(15, 5, 10),
             weight: 1,
             orderId: Guid.NewGuid()
         );
@@ -72,9 +66,7 @@ public class ItemTests
     {
         // Act
         var act = () => Item.Create(
-            length: 0,
-            width: 10,
-            height: 10,
+            new Dimensions(0, 10, 10),
             weight: 1,
             orderId: Guid.NewGuid()
         );
@@ -88,9 +80,7 @@ public class ItemTests
     {
         // Act
         var act = () => Item.Create(
-            length: 10,
-            width: 10,
-            height: 10,
+            new Dimensions(10, 10, 10),
             weight: 0,
             orderId: Guid.NewGuid()
         );
@@ -104,9 +94,7 @@ public class ItemTests
     {
         // Act
         var act = () => Item.Create(
-            length: 10,
-            width: 10,
-            height: 10,
+            new Dimensions(10, 10, 10),
             weight: 2,
             orderId: Guid.NewGuid(),
             isFragile: true,
@@ -123,9 +111,7 @@ public class ItemTests
     {
         // Act
         var act = () => Item.Create(
-            length: 10,
-            width: 10,
-            height: 10,
+            new Dimensions(10, 10, 10),
             weight: 2,
             orderId: Guid.NewGuid(),
             isStackable: false,
@@ -148,9 +134,7 @@ public class ItemTests
 
         // Act
         var item = Item.Create(
-            length: 10,
-            width: 20,
-            height: 30,
+            new Dimensions(10, 20, 30),
             weight: 3,
             orderId: Guid.NewGuid(),
             orientations: orientations
@@ -165,9 +149,7 @@ public class ItemTests
     {
         // Act
         var item = Item.Create(
-            length: 1,
-            width: 2,
-            height: 3,
+            new Dimensions(1, 2, 3),
             weight: 1,
             orderId: Guid.NewGuid()
         );
@@ -185,9 +167,7 @@ public class ItemTests
 
         // Act
         Action act = () => Item.Create(
-            length: 10,
-            width: 10,
-            height: 10,
+            new Dimensions(10, 10, 10),
             weight: 2,
             orderId: orderId,
             isStackable: false,

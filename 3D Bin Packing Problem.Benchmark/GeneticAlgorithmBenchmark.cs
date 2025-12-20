@@ -63,11 +63,11 @@ public class GeneticAlgorithmBenchmark
 
         _items = new List<Item>
         {
-            Item.Create(10, 10, 10, 5, _orderId),
-            Item.Create(20, 10, 10, 8, _orderId),
-            Item.Create(30, 20, 15, 15, _orderId),
-            Item.Create(15, 15, 5, 4, _orderId),
-            Item.Create(8, 8, 20, 6, _orderId)
+            Item.Create(new Dimensions(10, 10, 10), 5, _orderId),
+            Item.Create(new Dimensions(20, 10, 10), 8, _orderId),
+            Item.Create(new Dimensions(30, 20, 15), 15, _orderId),
+            Item.Create(new Dimensions(15, 15, 5), 4, _orderId),
+            Item.Create(new Dimensions(8, 8, 20), 6, _orderId)
         };
     }
 

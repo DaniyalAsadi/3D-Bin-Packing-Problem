@@ -69,9 +69,7 @@ public class Item
     /// </summary>
     public Guid OrderId { get; private set; }
     public static Item Create(
-        float length,
-        float width,
-        float height,
+        Dimensions size,
         decimal weight,
         Guid orderId,
         List<Orientation>? orientations = null,
@@ -82,15 +80,12 @@ public class Item
         int? loadingSequence = null,
         LoadType loadType = LoadType.Normal)
     {
-        length = Guard.Against.NegativeOrZero(length, nameof(length));
-        width = Guard.Against.NegativeOrZero(width, nameof(width));
-        height = Guard.Against.NegativeOrZero(height, nameof(height));
         weight = Guard.Against.NegativeOrZero(weight, nameof(weight));
         orientations ??= [Orientation.Xy, Orientation.Xz, Orientation.Yx, Orientation.Yz, Orientation.Zx, Orientation.Zy];
         Guard.Against.InvalidMaxLoadForNonStackable(isStackable, maxLoadOnTop);
         Guard.Against.FragileItemCannotBeStackable(isFragile, isStackable);
         priority = Guard.Against.Negative(priority, nameof(priority));
-        return new Item(new Dimensions(length, width, height))
+        return new Item(size)
         {
             Weight = weight,
             OrderId = orderId,

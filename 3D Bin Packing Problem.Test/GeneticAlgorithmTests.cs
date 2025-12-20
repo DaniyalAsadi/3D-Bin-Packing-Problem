@@ -21,8 +21,8 @@ public class GeneticAlgorithmTests
 
         var items = new List<Item>
         {
-            Item.Create(50, 50, 50, 1, Guid.NewGuid()),
-            Item.Create(80, 80, 80, 2, Guid.NewGuid())
+            Item.Create(new Dimensions(50, 50, 50), 1, Guid.NewGuid()),
+            Item.Create(new Dimensions(80, 80, 80), 2, Guid.NewGuid())
         };
 
         // Act
@@ -44,7 +44,7 @@ public class GeneticAlgorithmTests
 
         var items = new List<Item>
         {
-            Item.Create(90, 90, 90, 1, Guid.NewGuid())
+            Item.Create(new Dimensions(90, 90, 90), 1, Guid.NewGuid())
         };
 
         var sw = Stopwatch.StartNew();
