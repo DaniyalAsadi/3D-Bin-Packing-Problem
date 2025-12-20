@@ -17,9 +17,9 @@ namespace _3D_Bin_Packing_Problem.Benchmark;
 [RankColumn]
 public class GeneticAlgorithmBenchmark
 {
-    private GeneticAlgorithm _geneticAlgorithm;
-    private List<BinType> _binTypes;
-    private List<Item> _items;
+    private GeneticAlgorithm _geneticAlgorithm = GeneticAlgorithm.Default();
+    private List<BinType> _binTypes = [];
+    private List<Item> _items = [];
     private readonly Guid _orderId = Guid.NewGuid();
 
     // Benchmark Parameters
