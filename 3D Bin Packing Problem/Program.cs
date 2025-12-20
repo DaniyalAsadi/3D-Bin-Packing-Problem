@@ -1,5 +1,6 @@
 ﻿using _3D_Bin_Packing_Problem.Core;
 using _3D_Bin_Packing_Problem.Core.Configuration;
+using _3D_Bin_Packing_Problem.Core.Datasets;
 using _3D_Bin_Packing_Problem.Core.Model;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.ItemOrderingStrategy;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.PA;
@@ -74,137 +75,11 @@ var serviceProvider = services.BuildServiceProvider();
 // اجرای برنامه
 var geneticAlgorithm = serviceProvider.GetRequiredService<GeneticAlgorithm>();
 
-//var PresetBinTypes = new List<BinType>
-//{
-//    new() { Description = "Size 1", Length = 150, Width = 100, Height = 100, CostFunc = () => 63800 },
-//    new() { Description = "Size 2", Length = 200, Width = 150, Height = 100, CostFunc = () => 115500 },
-//    new() { Description = "Size 3", Length = 200, Width = 200, Height = 150, CostFunc = () => 172700 },
-//    new() { Description = "Size 4", Length = 300, Width = 200, Height = 200, CostFunc = () => 247500 },
-//    new() { Description = "Size 5", Length = 350, Width = 250, Height = 200, CostFunc = () => 446600 },
-//    new() { Description = "Size 6", Length = 450, Width = 250, Height = 200, CostFunc = () => 559900 },
-//    new() { Description = "Size 7", Length = 400, Width = 300, Height = 250, CostFunc = () => 686400 },
-//    new() { Description = "Size 8", Length = 450, Width = 400, Height = 300, CostFunc = () => 1043900 },
-//    new() { Description = "Size 9", Length = 550, Width = 450, Height = 350, CostFunc = () => 1375000 },
-//};
-//var PresetBinTypes = new List<BinType>
-//{
-//    new() { Description = "Size 1", Length = 20, Width = 20, Height = 20, CostFunc = () => 63800 },
 
-//};
-
-//List<Item> products =
-//[
-//    new(10,10,10),
-//    new(10,10,10),
-//    new(10,10,10),
-//    new(10,10,10),
-//    new(10,10,10),
-//    new(10,10,10),
-//    new(10,10,10),
-//    new(10,10,10),
-//    new(10,10,10),
-//];
-
-//var x = app.Execute(PresetBinTypes, products);
-
-//Console.ForegroundColor = ConsoleColor.Cyan;
-//Console.WriteLine(x.PackingResults);
-//Console.ForegroundColor = ConsoleColor.Gray;
-
-// در متد اصلی، بعد از کدهای فعلی:
-
-var bins = new List<BinType>
-{
-    BinType.Create(
-        name: "Size 1",
-        length: 150,
-        width: 100,
-        height: 100,
-        maxWeight: 20,
-        cost: 63_800m
-    ),
-
-    BinType.Create(
-        name: "Size 2",
-        length: 200,
-        width: 150,
-        height: 100,
-        maxWeight: 30,
-        cost: 115_500m
-    ),
-
-    BinType.Create(
-        name: "Size 3",
-        length: 200,
-        width: 200,
-        height: 150,
-        maxWeight: 40,
-        cost: 172_700m
-    ),
-
-    BinType.Create(
-        name: "Size 4",
-        length: 300,
-        width: 200,
-        height: 200,
-        maxWeight: 50,
-        cost: 247_500m
-    ),
-
-    BinType.Create(
-        name: "Size 5",
-        length: 350,
-        width: 250,
-        height: 200,
-        maxWeight: 60,
-        cost: 446_600m
-    ),
-
-    BinType.Create(
-        name: "Size 6",
-        length: 450,
-        width: 250,
-        height: 200,
-        maxWeight: 70,
-        cost: 559_900m
-    ),
-
-    BinType.Create(
-        name: "Size 7",
-        length: 400,
-        width: 300,
-        height: 250,
-        maxWeight: 80,
-        cost: 686_400m
-    ),
-
-    BinType.Create(
-        name: "Size 8",
-        length: 450,
-        width: 400,
-        height: 300,
-        maxWeight: 100,
-        cost: 1_043_900m
-    ),
-
-    BinType.Create(
-        name: "Size 9",
-        length: 550,
-        width: 450,
-        height: 350,
-        maxWeight: 120,
-        cost: 1_375_000m
-    )
-};
+var bins = BinTypeDataset.StandardBinTypes();
 
 List<Item> items = ItemDatasets.GeneticStressTest();
 
-//var bins = new List<BinType>
-//{
-//    new() { Description = "Size 0", Length = 20, Width = 20, Height = 20, CostFunc = () => 50800 },
-//    new() { Description = "Size 0", Length = 100, Width = 100, Height = 100, CostFunc = () => 60000 },
-
-//};
 
 var startTime = DateTime.Now;
 var chromosome = geneticAlgorithm.Execute(bins, items);

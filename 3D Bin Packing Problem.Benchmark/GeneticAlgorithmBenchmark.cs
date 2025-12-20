@@ -1,5 +1,6 @@
 ﻿using _3D_Bin_Packing_Problem.Core;
 using _3D_Bin_Packing_Problem.Core.Configuration;
+using _3D_Bin_Packing_Problem.Core.Datasets;
 using _3D_Bin_Packing_Problem.Core.Model;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.ItemOrderingStrategy;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SubBinOrderingStrategy;
@@ -8,9 +9,6 @@ using _3D_Bin_Packing_Problem.Core.Services.OuterLayer.Crossover;
 using _3D_Bin_Packing_Problem.Core.Services.OuterLayer.Mutation;
 using BenchmarkDotNet.Attributes;
 using BenchmarkDotNet.Order;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace _3D_Bin_Packing_Problem.Benchmark;
 
@@ -61,7 +59,7 @@ public class GeneticAlgorithmBenchmark
             settings.Mutation = MutationType.All;
         });
 
-        _binTypes = BinType.SeedBins;
+        _binTypes = BinTypeDataset.StandardBinTypes();
 
         _items = new List<Item>
         {

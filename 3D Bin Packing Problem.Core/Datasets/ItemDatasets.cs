@@ -1,4 +1,6 @@
 ﻿using _3D_Bin_Packing_Problem.Core.Model;
+using System;
+using System.Collections.Generic;
 
 public static class ItemDatasets
 {
