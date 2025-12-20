@@ -1,8 +1,10 @@
-﻿using _3D_Bin_Packing_Problem.Core.Model;
+﻿using _3D_Bin_Packing_Problem.Core.Configuration;
+using _3D_Bin_Packing_Problem.Core.Model;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.PFCA;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SUA;
 using _3D_Bin_Packing_Problem.Core.ViewModels;
 using FluentAssertions;
+using System.Numerics;
 using System.Reflection;
 
 namespace _3D_Bin_Packing_Problem.Test;
@@ -21,42 +23,42 @@ public class SubBinUpdatingAlgorithmExtendedTests
     public void Execute_ShouldDivideInXRight_WhenItemStartsAtOriginAndCoversFullYAndZ()
     {
         var item = new Item(2, 5, 5);
-        var subBinList = new List<SubBin> { new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0) };
+        var subBinList = new List<SubBin> { new(new Vector3(0, 0, 0), new Dimensions(5, 5, 5), 0, 0, 0, 0) };
         var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
         placementResult.Should().NotBeNull();
         var result = _algorithm.Execute(subBinList, placementResult);
-        result.Should().ContainSingle(sb => sb.X == 2 && sb.Length == 3);
+        result.Should().ContainSingle(sb => Math.Abs(sb.Position.X - 2) < AppConstants.Tolerance && Math.Abs(sb.Size.Length - 3) < AppConstants.Tolerance);
     }
 
     [Fact]
     public void Execute_ShouldDivideInYFront_WhenItemCoversFullXAndZ()
     {
         var item = new Item(5, 2, 5);
-        var subBinList = new List<SubBin> { new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0) };
+        var subBinList = new List<SubBin> { new(new Vector3(0, 0, 0), new Dimensions(5, 5, 5), 0, 0, 0, 0) };
 
         var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
         placementResult.Should().NotBeNull();
         var result = _algorithm.Execute(subBinList, placementResult);
-        result.Should().ContainSingle(sb => sb.Y == 2 && sb.Width == 3);
+        result.Should().ContainSingle(sb => Math.Abs(sb.Position.Y - 2) < AppConstants.Tolerance && Math.Abs(sb.Size.Width - 3) < AppConstants.Tolerance);
     }
 
     [Fact]
     public void Execute_ShouldDivideInZTop_WhenItemCoversFullXAndY()
     {
         var item = new Item(5, 5, 2);
-        var subBinList = new List<SubBin> { new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0) };
+        var subBinList = new List<SubBin> { new(new Vector3(0, 0, 0), new Dimensions(5, 5, 5), 0, 0, 0, 0) };
 
         var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
         placementResult.Should().NotBeNull();
         var result = _algorithm.Execute(subBinList, placementResult);
-        result.Should().ContainSingle(sb => sb.Z == 2 && sb.Height== 3);
+        result.Should().ContainSingle(sb => Math.Abs(sb.Position.Z - 2) < AppConstants.Tolerance && Math.Abs(sb.Size.Height - 3) < AppConstants.Tolerance);
     }
 
     [Fact]
     public void Execute_ShouldLeaveNoSubBins_WhenItemFillsEntireSubBin()
     {
         var item = new Item(5, 5, 5);
-        var subBinList = new List<SubBin> { new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0) };
+        var subBinList = new List<SubBin> { new(new Vector3(0, 0, 0), new Dimensions(5, 5, 5), 0, 0, 0, 0) };
 
         var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
         placementResult.Should().NotBeNull();
@@ -72,7 +74,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
         var item = new Item(2, 2, 2);
         var subBinList = new List<SubBin>
         {
-            new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0)
+            new(new Vector3(0, 0, 0), new Dimensions(5, 5, 5), 0, 0, 0, 0)
         };
 
 
@@ -88,25 +90,25 @@ public class SubBinUpdatingAlgorithmExtendedTests
 
         // بررسی ابعاد هر SubBin
         var right = result.Should()
-            .ContainSingle(sb => sb.X == 2 && sb.Length == 3)
+            .ContainSingle(sb => Math.Abs(sb.Position.X - 2) < AppConstants.Tolerance && Math.Abs(sb.Size.Length - 3) < AppConstants.Tolerance)
             .Which;
 
-        right.Width.Should().Be(5);
-        right.Height.Should().Be(5);
+        right.Size.Width.Should().Be(5);
+        right.Size.Height.Should().Be(5);
 
         var front = result.Should()
-            .ContainSingle(sb => sb.Y == 2 && sb.Width == 3)
+            .ContainSingle(sb => Math.Abs(sb.Position.Y - 2) < AppConstants.Tolerance && Math.Abs(sb.Size.Width - 3) < AppConstants.Tolerance)
             .Which;
 
-        front.Length.Should().Be(5);
-        front.Height.Should().Be(5);
+        front.Size.Length.Should().Be(5);
+        front.Size.Height.Should().Be(5);
 
         var top = result.Should()
-            .ContainSingle(sb => sb.Z == 2 && sb.Height == 3)
+            .ContainSingle(sb => Math.Abs(sb.Position.Z - 2) < AppConstants.Tolerance && Math.Abs(sb.Size.Height - 3) < AppConstants.Tolerance)
             .Which;
 
-        top.Length.Should().Be(5);
-        top.Width.Should().Be(5);
+        top.Size.Length.Should().Be(5);
+        top.Size.Width.Should().Be(5);
 
     }
 
@@ -116,7 +118,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
         // Arrange
         var subBinList = new List<SubBin>
         {
-            new(0, 0, 0, 5, 5, 5, 0, 0, 0, 0)
+            new(new Vector3(0, 0, 0),new Dimensions( 5, 5, 5), 0, 0, 0, 0)
         };
 
         var item1 = new Item(2, 2, 2);
@@ -130,9 +132,9 @@ public class SubBinUpdatingAlgorithmExtendedTests
 
         // بررسی مرحله اول
         subBinList.Count.Should().Be(3);
-        subBinList.Should().Contain(sb => sb.X == 2 && sb.Length == 3);
-        subBinList.Should().Contain(sb => sb.Y == 2 && sb.Width == 3);
-        subBinList.Should().Contain(sb => sb.Z == 2 && sb.Height == 3);
+        subBinList.Should().Contain(sb => Math.Abs(sb.Position.X - 2) < AppConstants.Tolerance && Math.Abs(sb.Size.Length - 3) < AppConstants.Tolerance);
+        subBinList.Should().Contain(sb => Math.Abs(sb.Position.Y - 2) < AppConstants.Tolerance && Math.Abs(sb.Size.Width - 3) < AppConstants.Tolerance);
+        subBinList.Should().Contain(sb => Math.Abs(sb.Position.Z - 2) < AppConstants.Tolerance && Math.Abs(sb.Size.Height - 3) < AppConstants.Tolerance);
 
 
 
@@ -147,20 +149,20 @@ public class SubBinUpdatingAlgorithmExtendedTests
 
         resultAfterSecond.Should().AllSatisfy(sb =>
         {
-            sb.Length.Should().BeGreaterThan(0, "طول نباید صفر باشد");
-            sb.Width.Should().BeGreaterThan(0, "عرض نباید صفر باشد");
-            sb.Height.Should().BeGreaterThan(0, "ارتفاع نباید صفر باشد");
+            sb.Size.Length.Should().BeGreaterThan(0, "طول نباید صفر باشد");
+            sb.Size.Width.Should().BeGreaterThan(0, "عرض نباید صفر باشد");
+            sb.Size.Height.Should().BeGreaterThan(0, "ارتفاع نباید صفر باشد");
         });
 
         // ✅ هیچ SubBin اولیه‌ای نباید باقی مانده باشد
-        resultAfterSecond.Should().NotContain(sb => sb.X == 0 && sb.Y == 0 && sb.Z == 0);
+        resultAfterSecond.Should().NotContain(sb => Math.Abs(sb.Position.X - 0) < AppConstants.Tolerance && Math.Abs(sb.Position.Y - 0) < AppConstants.Tolerance && sb.Position.Z == 0);
 
         // ✅ SubBinها باید در محدوده جدید باشند
         resultAfterSecond.Should().AllSatisfy(sb =>
         {
-            sb.X.Should().BeInRange(0, 5);
-            sb.Y.Should().BeInRange(0, 5);
-            sb.Z.Should().BeInRange(0, 5);
+            sb.Position.X.Should().BeInRange(0, 5);
+            sb.Position.Y.Should().BeInRange(0, 5);
+            sb.Position.Z.Should().BeInRange(0, 5);
         });
 
     }
@@ -171,7 +173,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
         // Arrange
         var subBinList = new List<SubBin>
     {
-        new(0, 0, 0, 2, 2, 2, 0, 0, 0, 0)
+        new(new Vector3(0, 0, 0),new Dimensions( 2, 2, 2), 0, 0, 0, 0)
     };
 
         var items = Enumerable.Range(1, 8)
@@ -240,7 +242,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
     [Fact]
     public void HasOverlap_ShouldReturnFalse_WhenNoOverlap()
     {
-        var sb = new SubBin(0, 0, 0, 5, 5, 5, 0, 0, 0, 0);
+        var sb = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5), 0, 0, 0, 0);
         var placement = new PlacedBox(
             0,
             0,
@@ -258,7 +260,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
     [Fact]
     public void HasOverlap_ShouldReturnTrue_WhenOverlapExists()
     {
-        var sb = new SubBin(0, 0, 0, 5, 5, 5, 0, 0, 0, 0);
+        var sb = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5), 0, 0, 0, 0);
         var placement = new PlacedBox(
             0,
             0,
@@ -277,8 +279,8 @@ public class SubBinUpdatingAlgorithmExtendedTests
     [Fact]
     public void IsContained_ShouldReturnTrue_WhenASubBinInsideB()
     {
-        var a = new SubBin(1, 1, 1, 2, 2, 2, 0, 0, 0, 0);
-        var b = new SubBin(0, 0, 0, 5, 5, 5, 0, 0, 0, 0);
+        var a = new SubBin(new Vector3(1, 1, 1), new Dimensions(2, 2, 2), 0, 0, 0, 0);
+        var b = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5), 0, 0, 0, 0);
 
         var result = InvokeIsContained(a, b);
 
@@ -291,7 +293,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
         var item = new Item(2, 2, 2);
         var subBinList = new List<SubBin>
         {
-            new(0, 0, 0, 10, 10, 10,0,0,0,0)
+            new(new Vector3(0, 0, 0), new Dimensions(10, 10, 10),0,0,0,0)
         };
 
         var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
@@ -313,8 +315,8 @@ public class SubBinUpdatingAlgorithmExtendedTests
     [Fact]
     public void Merge_ShouldRemoveOldSubBin_WhenOldInsideNew()
     {
-        var oldSb = new SubBin(2, 2, 2, 2, 2, 2, 0, 0, 0, 0);
-        var newSb = new SubBin(0, 0, 0, 10, 10, 10, 0, 0, 0, 0);
+        var oldSb = new SubBin(new Vector3(2, 2, 2), new Dimensions(2, 2, 2), 0, 0, 0, 0);
+        var newSb = new SubBin(new Vector3(0, 0, 0), new Dimensions(10, 10, 10), 0, 0, 0, 0);
 
         InvokeIsContained(oldSb, newSb).Should().BeTrue();
 
@@ -339,8 +341,8 @@ public class SubBinUpdatingAlgorithmExtendedTests
     [Fact]
     public void Merge_ShouldNotRemove_WhenNoContainment()
     {
-        var sb1 = new SubBin(0, 0, 0, 5, 5, 5, 0, 0, 0, 0);
-        var sb2 = new SubBin(6, 6, 6, 5, 5, 5, 0, 0, 0, 0);
+        var sb1 = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5), 0, 0, 0, 0);
+        var sb2 = new SubBin(new Vector3(6, 6, 6), new Dimensions(5, 5, 5), 0, 0, 0, 0);
 
         InvokeIsContained(sb1, sb2).Should().BeFalse();
         InvokeIsContained(sb2, sb1).Should().BeFalse();
@@ -368,7 +370,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
     [Fact]
     public void Execute_ShouldHandleComplexSequentialPlacements()
     {
-        var subBinList = new List<SubBin> { new(0, 0, 0, 10, 10, 10, 0, 0, 0, 0) };
+        var subBinList = new List<SubBin> { new(new Vector3(0, 0, 0), new Dimensions(10, 10, 10), 0, 0, 0, 0) };
 
         var items = new[]
         {

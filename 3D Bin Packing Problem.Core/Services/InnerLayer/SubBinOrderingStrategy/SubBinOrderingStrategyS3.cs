@@ -12,9 +12,9 @@ public class SubBinOrderingStrategyS3 : ISubBinOrderingStrategy
 {
     private double ComputeFitRate(Item item, SubBin sb)
     {
-        var frLength = Math.Min((double)item.Dimensions.Length / sb.Length, (double)sb.Length / item.Dimensions.Length);
-        var frWidth = Math.Min((double)item.Dimensions.Width / sb.Width, (double)sb.Width / item.Dimensions.Width);
-        var frHeight = Math.Min((double)item.Dimensions.Height / sb.Height, (double)sb.Height / item.Dimensions.Height);
+        var frLength = Math.Min((double)item.Dimensions.Length / sb.Size.Length, (double)sb.Size.Length / item.Dimensions.Length);
+        var frWidth = Math.Min((double)item.Dimensions.Width / sb.Size.Width, (double)sb.Size.Width / item.Dimensions.Width);
+        var frHeight = Math.Min((double)item.Dimensions.Height / sb.Size.Height, (double)sb.Size.Height / item.Dimensions.Height);
 
         return frLength * frWidth * frHeight;
     }

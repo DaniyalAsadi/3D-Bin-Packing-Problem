@@ -18,7 +18,7 @@ public class SubBinOrderingStrategyS2 : ISubBinOrderingStrategy
         double touchArea = 0;
 
         // تماس با کف (Z = 0)
-        if (Math.Abs(sb.Z) < Eps)
+        if (Math.Abs(sb.Position.Z) < Eps)
             touchArea += item.Dimensions.Length * item.Dimensions.Width;
 
         // تماس با دیواره پشت (Back = 0)
@@ -47,8 +47,8 @@ public class SubBinOrderingStrategyS2 : ISubBinOrderingStrategy
             // مرتب‌سازی بر اساس بیشترین ناحیه تماس (Touch Area)
             .OrderByDescending(sb => ComputeTouchArea(item, sb))
             // معیارهای تساوی: X، Y، Z به ترتیب نزولی
-            .ThenByDescending(sb => sb.X)
-            .ThenByDescending(sb => sb.Y)
-            .ThenByDescending(sb => sb.Z);
+            .ThenByDescending(sb => sb.Position.X)
+            .ThenByDescending(sb => sb.Position.Y)
+            .ThenByDescending(sb => sb.Position.Z);
     }
 }

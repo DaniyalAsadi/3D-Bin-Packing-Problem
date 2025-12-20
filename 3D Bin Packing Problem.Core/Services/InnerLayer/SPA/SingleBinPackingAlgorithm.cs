@@ -93,12 +93,12 @@ public class SingleBinPackingAlgorithm(
             // 🔹 SubBinهای باقی‌مانده را هم برمی‌گردانیم (مطابق مقاله)
             RemainingSubBins = subBinList.Select(x => new SubBinViewModel()
             {
-                Height = x.Height,
-                Length = x.Length,
-                Width = x.Width,
-                X = x.X,
-                Y = x.Y,
-                Z = x.Z
+                Height = x.Size.Height,
+                Length = x.Size.Length,
+                Width = x.Size.Width,
+                X = x.Position.X,
+                Y = x.Position.Y,
+                Z = x.Position.Z
             }).ToList()
         };
     }

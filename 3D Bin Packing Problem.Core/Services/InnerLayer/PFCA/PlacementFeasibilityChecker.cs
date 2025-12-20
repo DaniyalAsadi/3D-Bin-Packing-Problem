@@ -43,7 +43,7 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
             foreach (var pos in keyPoints)
             {
                 // فقط روی کف SubBin اجازه قرارگیری داریم
-                if (Math.Abs(pos.Z - subBin.Z) > Eps)
+                if (Math.Abs(pos.Z - subBin.Position.Z) > Eps)
                     continue;
 
                 var placedBox = new PlacedBox(
@@ -56,19 +56,19 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
                 );
 
                 // بررسی مرزهای مجاز (با احتساب حاشیه‌ها)
-                if (placedBox.X < subBin.X - subBin.Left ||
-                    placedBox.Y < subBin.Y - subBin.Back ||
-                    placedBox.X + L > subBin.X + subBin.Length + subBin.Right ||
-                    placedBox.Y + W > subBin.Y + subBin.Width + subBin.Front ||
-                    placedBox.Z + H > subBin.Z + subBin.Height)
+                if (placedBox.X < subBin.Position.X - subBin.Left ||
+                    placedBox.Y < subBin.Position.Y - subBin.Back ||
+                    placedBox.X + L > subBin.Position.X + subBin.Size.Length + subBin.Right ||
+                    placedBox.Y + W > subBin.Position.Y + subBin.Size.Width + subBin.Front ||
+                    placedBox.Z + H > subBin.Position.Z + subBin.Size.Height)
                     continue;
 
                 // محاسبه حاشیه‌ها (فاصله تا نزدیک‌ترین دیوار مجاز)
-                var marginLeft = placedBox.X - (subBin.X - subBin.Left);
-                var marginRight = (subBin.X + subBin.Length + subBin.Right) - (placedBox.X + L);
-                var marginBack = placedBox.Y - (subBin.Y - subBin.Back);
-                var marginFront = (subBin.Y + subBin.Width + subBin.Front) - (placedBox.Y + W);
-                var marginTop = (subBin.Z + subBin.Height) - (placedBox.Z + H);
+                var marginLeft = placedBox.X - (subBin.Position.X - subBin.Left);
+                var marginRight = (subBin.Position.X + subBin.Size.Length + subBin.Right) - (placedBox.X + L);
+                var marginBack = placedBox.Y - (subBin.Position.Y - subBin.Back);
+                var marginFront = (subBin.Position.Y + subBin.Size.Width + subBin.Front) - (placedBox.Y + W);
+                var marginTop = (subBin.Position.Z + subBin.Size.Height) - (placedBox.Z + H);
 
                 var margins = new[] { marginLeft, marginRight, marginBack, marginFront, marginTop };
                 var smallestMargin = margins.Min();
@@ -111,10 +111,10 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
     {
         lambda = Math.Clamp(lambda, 0.0, 1.0);
 
-        var xMin = sb.X - sb.Left;
-        var xMax = sb.X + sb.Length + sb.Right - L;
-        var yMin = sb.Y - sb.Back;
-        var yMax = sb.Y + sb.Width + sb.Front - W;
+        var xMin = sb.Position.X - sb.Left;
+        var xMax = sb.Position.X + sb.Size.Length + sb.Right - L;
+        var yMin = sb.Position.Y - sb.Back;
+        var yMax = sb.Position.Y + sb.Size.Width + sb.Front - W;
 
         if (xMin > xMax || yMin > yMax)
             return Array.Empty<Vector3>();
@@ -122,46 +122,46 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
         var itemArea = (long)L * W;
         var requiredArea = (long)Math.Ceiling(lambda * itemArea);
 
-        var coreX1 = sb.X;
-        var coreX2 = sb.X + sb.Length;
-        var coreY1 = sb.Y;
-        var coreY2 = sb.Y + sb.Width;
+        var coreX1 = sb.Position.X;
+        var coreX2 = sb.Position.X + sb.Size.Length;
+        var coreY1 = sb.Position.Y;
+        var coreY2 = sb.Position.Y + sb.Size.Width;
 
         var points = new List<Vector3>();
 
         // Point 1: تا حد امکان عقب و چپ (Back-Left)
-        points.Add(new Vector3(xMin, yMin, sb.Z));
+        points.Add(new Vector3(xMin, yMin, sb.Position.Z));
 
         // Point 2: چسبیده به پشت، ولی کمی جلو برای تأمین λ
         if (lambda > 0 && requiredArea > 0)
         {
-            float maxOverlapX = Math.Min(L, sb.Length);
+            float maxOverlapX = Math.Min(L, sb.Size.Length);
             if (maxOverlapX > 0)
             {
                 float neededY = (requiredArea + maxOverlapX - 1) / maxOverlapX; // ceil division
                 float y2 = coreY1 + neededY - W;
                 y2 = Math.Max(y2, yMin);
                 y2 = Math.Min(y2, yMax);
-                points.Add(new Vector3(xMin, y2, sb.Z));
+                points.Add(new Vector3(xMin, y2, sb.Position.Z));
             }
         }
 
         // Point 3: چسبیده به چپ، ولی کمی راست برای تأمین λ
         if (lambda > 0 && requiredArea > 0)
         {
-            float maxOverlapY = Math.Min(W, sb.Width);
+            float maxOverlapY = Math.Min(W, sb.Size.Width);
             if (maxOverlapY > 0)
             {
                 float neededX = (requiredArea + maxOverlapY - 1) / maxOverlapY;
                 float x3 = coreX1 + neededX - L;
                 x3 = Math.Max(x3, xMin);
                 x3 = Math.Min(x3, xMax);
-                points.Add(new Vector3(x3, yMin, sb.Z));
+                points.Add(new Vector3(x3, yMin, sb.Position.Z));
             }
         }
 
         // Point 4 & 5: گوشه اصلی کف (Core Bottom-Left) — معمولاً بهترین نقطه برای پایداری
-        points.Add(new Vector3(sb.X, sb.Y, sb.Z));
+        points.Add(new Vector3(sb.Position.X, sb.Position.Y, sb.Position.Z));
 
         // حذف تکراری‌ها با دقت بالا
         var unique = new List<Vector3>();
@@ -185,13 +185,13 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
     private static float ComputeSupportArea(SubBin sb, PlacedBox box)
     {
         // فقط روی کف SubBin ساپورت داریم
-        if (Math.Abs(box.Z - sb.Z) > Eps)
+        if (Math.Abs(box.Z - sb.Position.Z) > Eps)
             return 0f;
 
-        var coreX1 = sb.X;
-        var coreX2 = sb.X + sb.Length;
-        var coreY1 = sb.Y;
-        var coreY2 = sb.Y + sb.Width;
+        var coreX1 = sb.Position.X;
+        var coreX2 = sb.Position.X + sb.Size.Length;
+        var coreY1 = sb.Position.Y;
+        var coreY2 = sb.Position.Y + sb.Size.Width;
 
         var boxX1 = box.X;
         var boxX2 = box.X + box.L;

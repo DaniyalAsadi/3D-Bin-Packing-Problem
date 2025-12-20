@@ -25,9 +25,9 @@ public class SubBinOrderingStrategyS4 : ISubBinOrderingStrategy
         // مرتب‌سازی براساس Rule و سپس tie-break X,Y,Z
         var sorted = subBinWithRule
             .OrderBy(s => s.Rule)
-            .ThenBy(s => s.SubBin.X)
-            .ThenBy(s => s.SubBin.Y)
-            .ThenBy(s => s.SubBin.Z)
+            .ThenBy(s => s.SubBin.Position.X)
+            .ThenBy(s => s.SubBin.Position.Y)
+            .ThenBy(s => s.SubBin.Position.Z)
             .Select(s => s.SubBin);
 
         return sorted;
@@ -36,9 +36,9 @@ public class SubBinOrderingStrategyS4 : ISubBinOrderingStrategy
     private static int CalculateRule(SubBin sub, Item item)
     {
         // الگوریتم 5: تعیین Rule براساس اندازه‌ها
-        if (Math.Abs(sub.Length - item.Dimensions.Length) < Tolerance &&
-            Math.Abs(sub.Width - item.Dimensions.Width) < Tolerance &&
-            Math.Abs(sub.Height - item.Dimensions.Height) < Tolerance)
+        if (Math.Abs(sub.Size.Length - item.Dimensions.Length) < Tolerance &&
+            Math.Abs(sub.Size.Width - item.Dimensions.Width) < Tolerance &&
+            Math.Abs(sub.Size.Height - item.Dimensions.Height) < Tolerance)
             return 1;
         if (TwoDimensionsMatch(sub, item))
             return 2;
@@ -55,7 +55,7 @@ public class SubBinOrderingStrategyS4 : ISubBinOrderingStrategy
     private static bool TwoDimensionsMatch(SubBin sub, Item item)
     {
         // چک کردن اینکه هر دو از سه بعد L,W,H برابر باشند
-        var subDims = new[] { sub.Length, sub.Width, sub.Height };
+        var subDims = new[] { sub.Size.Length, sub.Size.Width, sub.Size.Height };
         var itemDims = new[] { item.Dimensions.Length, item.Dimensions.Width, item.Dimensions.Height };
         var matchCount = subDims.Count(d => itemDims.Contains(d));
         return matchCount == 2;
@@ -64,26 +64,26 @@ public class SubBinOrderingStrategyS4 : ISubBinOrderingStrategy
     private static bool LwMatch(SubBin sub, Item item)
     {
         // چک کردن تطابق L و W دقیق
-        return (Math.Abs(sub.Length - item.Dimensions.Length) < Tolerance &&
-                Math.Abs(sub.Width - item.Dimensions.Width) < Tolerance) ||
-               (Math.Abs(sub.Length - item.Dimensions.Width) < Tolerance &&
-                Math.Abs(sub.Width - item.Dimensions.Length) < Tolerance);
+        return (Math.Abs(sub.Size.Length - item.Dimensions.Length) < Tolerance &&
+                Math.Abs(sub.Size.Width - item.Dimensions.Width) < Tolerance) ||
+               (Math.Abs(sub.Size.Length - item.Dimensions.Width) < Tolerance &&
+                Math.Abs(sub.Size.Width - item.Dimensions.Length) < Tolerance);
     }
 
     private static bool HMatches(SubBin sub, Item item)
     {
-        return Math.Abs(sub.Height - item.Dimensions.Length) < Tolerance ||
-               Math.Abs(sub.Height - item.Dimensions.Width) < Tolerance ||
-               Math.Abs(sub.Height - item.Dimensions.Height) < Tolerance;
+        return Math.Abs(sub.Size.Height - item.Dimensions.Length) < Tolerance ||
+               Math.Abs(sub.Size.Height - item.Dimensions.Width) < Tolerance ||
+               Math.Abs(sub.Size.Height - item.Dimensions.Height) < Tolerance;
     }
 
     private static bool LOrWMatches(SubBin sub, Item item)
     {
-        return Math.Abs(sub.Length - item.Dimensions.Length) < Tolerance ||
-               Math.Abs(sub.Length - item.Dimensions.Width) < Tolerance ||
-               Math.Abs(sub.Length - item.Dimensions.Height) < Tolerance ||
-               Math.Abs(sub.Width - item.Dimensions.Length) < Tolerance ||
-               Math.Abs(sub.Width - item.Dimensions.Width) < Tolerance ||
-               Math.Abs(sub.Width - item.Dimensions.Height) < Tolerance;
+        return Math.Abs(sub.Size.Length - item.Dimensions.Length) < Tolerance ||
+               Math.Abs(sub.Size.Length - item.Dimensions.Width) < Tolerance ||
+               Math.Abs(sub.Size.Length - item.Dimensions.Height) < Tolerance ||
+               Math.Abs(sub.Size.Width - item.Dimensions.Length) < Tolerance ||
+               Math.Abs(sub.Size.Width - item.Dimensions.Width) < Tolerance ||
+               Math.Abs(sub.Size.Width - item.Dimensions.Height) < Tolerance;
     }
 }

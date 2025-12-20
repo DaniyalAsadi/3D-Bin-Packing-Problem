@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
+using System.Numerics;
 
 namespace _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SUA;
 
@@ -70,12 +71,12 @@ public class SubBinUpdatingAlgorithm : ISubBinUpdatingAlgorithm
 
     private static bool HasOverlap(SubBin sb, PlacedBox box)
     {
-        return !(box.X + box.L <= sb.X ||
-                 box.X >= sb.X + sb.Length ||
-                 box.Y + box.W <= sb.Y ||
-                 box.Y >= sb.Y + sb.Width ||
-                 box.Z + box.H <= sb.Z ||
-                 box.Z >= sb.Z + sb.Height);
+        return !(box.X + box.L <= sb.Position.X ||
+                 box.X >= sb.Position.X + sb.Size.Length ||
+                 box.Y + box.W <= sb.Position.Y ||
+                 box.Y >= sb.Position.Y + sb.Size.Width ||
+                 box.Z + box.H <= sb.Position.Z ||
+                 box.Z >= sb.Position.Z + sb.Size.Height);
     }
 
     /// <summary>
@@ -92,23 +93,19 @@ public class SubBinUpdatingAlgorithm : ISubBinUpdatingAlgorithm
         var iz1 = box.Z;
         var iz2 = box.Z + box.H;
 
-        var sx1 = sb.X;
-        var sx2 = sb.X + sb.Length;
-        var sy1 = sb.Y;
-        var sy2 = sb.Y + sb.Width;
-        var sz1 = sb.Z;
-        var sz2 = sb.Z + sb.Height;
+        var sx1 = sb.Position.X;
+        var sx2 = sb.Position.X + sb.Size.Length;
+        var sy1 = sb.Position.Y;
+        var sy2 = sb.Position.Y + sb.Size.Width;
+        var sz1 = sb.Position.Z;
+        var sz2 = sb.Position.Z + sb.Size.Height;
 
         // ۱. Right sub-bin
         if (ix2 < sx2)
         {
             result.Add(new SubBin(
-                X: ix2,
-                Y: sy1,
-                Z: sz1,
-                Length: sx2 - ix2,
-                Width: sb.Width,
-                Height: sb.Height,
+                new Vector3(ix2, sy1, sz1),
+                new Dimensions(sx2 - ix2, sb.Size.Width, sb.Size.Height),
                 Left: 0, Right: 0, Back: 0, Front: 0
             ));
         }
@@ -117,12 +114,8 @@ public class SubBinUpdatingAlgorithm : ISubBinUpdatingAlgorithm
         if (iy2 < sy2)
         {
             result.Add(new SubBin(
-                X: sx1,
-                Y: iy2,
-                Z: sz1,
-                Length: sb.Length,
-                Width: sy2 - iy2,
-                Height: sb.Height,
+                new Vector3(sx1, iy2, sz1),
+                new Dimensions(sb.Size.Length, sy2 - iy2, sb.Size.Height),
                 Left: 0, Right: 0, Back: 0, Front: 0
             ));
         }
@@ -131,12 +124,8 @@ public class SubBinUpdatingAlgorithm : ISubBinUpdatingAlgorithm
         if (iz2 < sz2)
         {
             result.Add(new SubBin(
-                X: sx1,
-                Y: sy1,
-                Z: iz2,
-                Length: sb.Length,
-                Width: sb.Width,
-                Height: sz2 - iz2,
+                new Vector3(sx1, sy1, iz2),
+                new Dimensions(sb.Size.Length, sb.Size.Width, sz2 - iz2),
                 Left: 0, Right: 0, Back: 0, Front: 0
             ));
         }
@@ -193,33 +182,29 @@ public class SubBinUpdatingAlgorithm : ISubBinUpdatingAlgorithm
         result = null;
 
         // ادغام در جهت X
-        if (Math.Abs(a.Y - b.Y) < Eps &&
-            Math.Abs(a.Z - b.Z) < Eps &&
-            Math.Abs(a.Width - b.Width) < Eps &&
-            Math.Abs(a.Height - b.Height) < Eps)
+        if (Math.Abs(a.Position.Y - b.Position.Y) < Eps &&
+            Math.Abs(a.Position.Z - b.Position.Z) < Eps &&
+            Math.Abs(a.Size.Width - b.Size.Width) < Eps &&
+            Math.Abs(a.Size.Height - b.Size.Height) < Eps)
         {
-            if (a.X + a.Length < b.X + Eps && b.X < a.X + a.Length + Eps)
+            if (a.Position.X + a.Size.Length < b.Position.X + Eps && b.Position.X < a.Position.X + a.Size.Length + Eps)
             {
                 result = new SubBin(
-                    X: Math.Min(a.X, b.X),
-                    Y: a.Y,
-                    Z: a.Z,
-                    Length: Math.Max(a.X + a.Length, b.X + b.Length) - Math.Min(a.X, b.X),
-                    Width: a.Width,
-                    Height: a.Height,
+                    a.Position with { X = Math.Min(a.Position.X, b.Position.X) },
+                    new Dimensions(Math.Max(a.Position.X + a.Size.Length, b.Position.X + b.Size.Length) - Math.Min(a.Position.X, b.Position.X),
+                    a.Size.Width,
+                    a.Size.Height),
                     Left: 0, Right: 0, Back: 0, Front: 0
                 );
                 return true;
             }
-            if (b.X + b.Length < a.X + Eps && a.X < b.X + b.Length + Eps)
+            if (b.Position.X + b.Size.Length < a.Position.X + Eps && a.Position.X < b.Position.X + b.Size.Length + Eps)
             {
                 result = new SubBin(
-                    X: Math.Min(a.X, b.X),
-                    Y: a.Y,
-                    Z: a.Z,
-                    Length: Math.Max(a.X + a.Length, b.X + b.Length) - Math.Min(a.X, b.X),
-                    Width: a.Width,
-                    Height: a.Height,
+                    a.Position with { X = Math.Min(a.Position.X, b.Position.X) },
+                    new Dimensions(Math.Max(a.Position.X + a.Size.Length, b.Position.X + b.Size.Length) - Math.Min(a.Position.X, b.Position.X),
+                    a.Size.Width,
+                    a.Size.Height),
                     Left: 0, Right: 0, Back: 0, Front: 0
                 );
                 return true;
@@ -227,21 +212,19 @@ public class SubBinUpdatingAlgorithm : ISubBinUpdatingAlgorithm
         }
 
         // ادغام در جهت Y
-        if (Math.Abs(a.X - b.X) < Eps &&
-            Math.Abs(a.Z - b.Z) < Eps &&
-            Math.Abs(a.Length - b.Length) < Eps &&
-            Math.Abs(a.Height - b.Height) < Eps)
+        if (Math.Abs(a.Position.X - b.Position.X) < Eps &&
+            Math.Abs(a.Position.Z - b.Position.Z) < Eps &&
+            Math.Abs(a.Size.Length - b.Size.Length) < Eps &&
+            Math.Abs(a.Size.Height - b.Size.Height) < Eps)
         {
-            if (a.Y + a.Width < b.Y + Eps && b.Y < a.Y + a.Width + Eps ||
-                b.Y + b.Width < a.Y + Eps && a.Y < b.Y + b.Width + Eps)
+            if (a.Position.Y + a.Size.Width < b.Position.Y + Eps && b.Position.Y < a.Position.Y + a.Size.Width + Eps ||
+                b.Position.Y + b.Size.Width < a.Position.Y + Eps && a.Position.Y < b.Position.Y + b.Size.Width + Eps)
             {
                 result = new SubBin(
-                    X: a.X,
-                    Y: Math.Min(a.Y, b.Y),
-                    Z: a.Z,
-                    Length: a.Length,
-                    Width: Math.Max(a.Y + a.Width, b.Y + b.Width) - Math.Min(a.Y, b.Y),
-                    Height: a.Height,
+                    a.Position with { Y = Math.Min(a.Position.Y, b.Position.Y) },
+                    new Dimensions(a.Size.Length,
+                    Math.Max(a.Position.Y + a.Size.Width, b.Position.Y + b.Size.Width) - Math.Min(a.Position.Y, b.Position.Y),
+                    a.Size.Height),
                     Left: 0, Right: 0, Back: 0, Front: 0
                 );
                 return true;
@@ -249,21 +232,19 @@ public class SubBinUpdatingAlgorithm : ISubBinUpdatingAlgorithm
         }
 
         // ادغام در جهت Z
-        if (Math.Abs(a.X - b.X) < Eps &&
-            Math.Abs(a.Y - b.Y) < Eps &&
-            Math.Abs(a.Length - b.Length) < Eps &&
-            Math.Abs(a.Width - b.Width) < Eps)
+        if (Math.Abs(a.Position.X - b.Position.X) < Eps &&
+            Math.Abs(a.Position.Y - b.Position.Y) < Eps &&
+            Math.Abs(a.Size.Length - b.Size.Length) < Eps &&
+            Math.Abs(a.Size.Width - b.Size.Width) < Eps)
         {
-            if (a.Z + a.Height < b.Z + Eps && b.Z < a.Z + a.Height + Eps ||
-                b.Z + b.Height < a.Z + Eps && a.Z < b.Z + b.Height + Eps)
+            if (a.Position.Z + a.Size.Height < b.Position.Z + Eps && b.Position.Z < a.Position.Z + a.Size.Height + Eps ||
+                b.Position.Z + b.Size.Height < a.Position.Z + Eps && a.Position.Z < b.Position.Z + b.Size.Height + Eps)
             {
                 result = new SubBin(
-                    X: a.X,
-                    Y: a.Y,
-                    Z: Math.Min(a.Z, b.Z),
-                    Length: a.Length,
-                    Width: a.Width,
-                    Height: Math.Max(a.Z + a.Height, b.Z + b.Height) - Math.Min(a.Z, b.Z),
+                    a.Position with { Z = Math.Min(a.Position.Z, b.Position.Z) },
+                    new Dimensions(a.Size.Length,
+                    a.Size.Width,
+                    Math.Max(a.Position.Z + a.Size.Height, b.Position.Z + b.Size.Height) - Math.Min(a.Position.Z, b.Position.Z)),
                     Left: 0, Right: 0, Back: 0, Front: 0
                 );
                 return true;
@@ -275,11 +256,11 @@ public class SubBinUpdatingAlgorithm : ISubBinUpdatingAlgorithm
 
     private static bool IsContained(SubBin small, SubBin big)
     {
-        return small.X >= big.X - Eps &&
-               small.Y >= big.Y - Eps &&
-               small.Z >= big.Z - Eps &&
-               small.X + small.Length <= big.X + big.Length + Eps &&
-               small.Y + small.Width <= big.Y + big.Width + Eps &&
-               small.Z + small.Height <= big.Z + big.Height + Eps;
+        return small.Position.X >= big.Position.X - Eps &&
+               small.Position.Y >= big.Position.Y - Eps &&
+               small.Position.Z >= big.Position.Z - Eps &&
+               small.Position.X + small.Size.Length <= big.Position.X + big.Size.Length + Eps &&
+               small.Position.Y + small.Size.Width <= big.Position.Y + big.Size.Width + Eps &&
+               small.Position.Z + small.Size.Height <= big.Position.Z + big.Size.Height + Eps;
     }
 }

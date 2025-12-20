@@ -147,8 +147,8 @@ public class SingleBinPackingAlgorithmTests
             new Item(5, 5, 5)
         };
 
-        var validSubBin = new SubBin(0, 0, 0, 10, 10, 10, 0, 0, 0, 0);
-        var tooSmallSubBin = new SubBin(0, 0, 0, 2, 2, 2, 0, 0, 0, 0); // نباید انتخاب بشه
+        var validSubBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(10, 10, 10));
+        var tooSmallSubBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(2, 2, 2)); // نباید انتخاب بشه
 
         var subBins = new List<SubBin> { validSubBin, tooSmallSubBin };
 

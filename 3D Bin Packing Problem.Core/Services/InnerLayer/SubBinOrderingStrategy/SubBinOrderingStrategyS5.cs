@@ -12,7 +12,7 @@ public class SubBinOrderingStrategyS5 : ISubBinOrderingStrategy
 {
     private double ComputeCornerDistance(SubBin sb)
     {
-        return Math.Sqrt(sb.X * sb.X + sb.Y * sb.Y + sb.Z * sb.Z);
+        return Math.Sqrt(sb.Position.X * sb.Position.X + sb.Position.Y * sb.Position.Y + sb.Position.Z * sb.Position.Z);
     }
 
     public IEnumerable<SubBin> Apply(IEnumerable<SubBin> subBins, Item item)
@@ -20,9 +20,9 @@ public class SubBinOrderingStrategyS5 : ISubBinOrderingStrategy
         return subBins
             .OrderBy(ComputeCornerDistance)
             .ThenByDescending(sb => sb.Volume)
-            .ThenBy(sb => sb.X)
-            .ThenBy(sb => sb.Y)
-            .ThenBy(sb => sb.Z)
+            .ThenBy(sb => sb.Position.X)
+            .ThenBy(sb => sb.Position.Y)
+            .ThenBy(sb => sb.Position.Z)
             .ThenBy(_ => item.Id);
     }
 }
