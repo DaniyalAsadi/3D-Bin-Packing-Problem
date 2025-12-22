@@ -1,5 +1,5 @@
 ﻿using _3D_Bin_Packing_Problem.Core.Datasets;
-using _3D_Bin_Packing_Problem.Core.Model;
+using _3D_Bin_Packing_Problem.Core.Models;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SubBinSelectionStrategy;
 using FluentAssertions;
 

@@ -1,7 +1,7 @@
 using Ardalis.GuardClauses;
 using System;
 
-namespace _3D_Bin_Packing_Problem.Core.Model;
+namespace _3D_Bin_Packing_Problem.Core.Models;
 
 /// <summary>
 /// Describes a bin's dimensional properties and derived cost used within packing evaluations.

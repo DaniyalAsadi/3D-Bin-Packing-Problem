@@ -20,7 +20,7 @@
 // - Use Moq to stub factories/strategies and the single-bin packing algorithm.
 // - Use SetupSequence for sub-bin selection to simulate multiple iterations.
 // - Construct Item and ItemViewModel objects with stable Guid Ids to assert identity.
-using _3D_Bin_Packing_Problem.Core.Model;
+using _3D_Bin_Packing_Problem.Core.Models;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.ItemOrderingStrategy;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.PA;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SPA;

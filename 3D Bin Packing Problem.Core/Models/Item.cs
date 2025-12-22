@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace _3D_Bin_Packing_Problem.Core.Model;
+namespace _3D_Bin_Packing_Problem.Core.Models;
 
 /// <summary>
 /// Represents an item with dimensions and volume information for packing.

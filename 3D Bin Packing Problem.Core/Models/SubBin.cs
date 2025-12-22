@@ -1,7 +1,7 @@
 using System;
 using System.Numerics;
 
-namespace _3D_Bin_Packing_Problem.Core.Model;
+namespace _3D_Bin_Packing_Problem.Core.Models;
 
 /// <summary>
 /// Represents a sub-region within a bin along with its dimensions and boundary margins.

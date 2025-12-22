@@ -1,7 +1,7 @@
 ﻿using _3D_Bin_Packing_Problem.Core;
 using _3D_Bin_Packing_Problem.Core.Configuration;
 using _3D_Bin_Packing_Problem.Core.Datasets;
-using _3D_Bin_Packing_Problem.Core.Model;
+using _3D_Bin_Packing_Problem.Core.Models;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.ItemOrderingStrategy;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.PA;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.PFCA;

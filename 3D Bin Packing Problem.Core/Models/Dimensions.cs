@@ -1,6 +1,6 @@
 ﻿using Ardalis.GuardClauses;
 
-namespace _3D_Bin_Packing_Problem.Core.Model;
+namespace _3D_Bin_Packing_Problem.Core.Models;
 
 public record Dimensions(float Length, float Width, float Height)
 {

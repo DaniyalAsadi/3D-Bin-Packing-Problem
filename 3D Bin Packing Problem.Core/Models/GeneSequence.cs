@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace _3D_Bin_Packing_Problem.Core.Model;
+namespace _3D_Bin_Packing_Problem.Core.Models;
 
 /// <summary>
 /// Represents a collection of genes describing a single bin type's dimensions.

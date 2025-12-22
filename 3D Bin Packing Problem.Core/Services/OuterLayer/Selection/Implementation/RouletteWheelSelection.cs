@@ -1,5 +1,5 @@
 ﻿using _3D_Bin_Packing_Problem.Core.Configuration;
-using _3D_Bin_Packing_Problem.Core.Model;
+using _3D_Bin_Packing_Problem.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

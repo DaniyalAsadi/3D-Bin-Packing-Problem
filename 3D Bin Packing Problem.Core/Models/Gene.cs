@@ -2,7 +2,7 @@ using _3D_Bin_Packing_Problem.Core.Configuration;
 using System;
 using System.Globalization;
 
-namespace _3D_Bin_Packing_Problem.Core.Model;
+namespace _3D_Bin_Packing_Problem.Core.Models;
 
 /// <summary>
 /// Encapsulates a mutable integer gene value used within chromosomes.

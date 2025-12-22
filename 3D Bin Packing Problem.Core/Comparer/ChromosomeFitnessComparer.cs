@@ -1,5 +1,5 @@
 using System.Collections.Generic;
-using _3D_Bin_Packing_Problem.Core.Model;
+using _3D_Bin_Packing_Problem.Core.Models;
 
 /// <summary>
 /// Compares chromosomes based on fitness values in descending order.

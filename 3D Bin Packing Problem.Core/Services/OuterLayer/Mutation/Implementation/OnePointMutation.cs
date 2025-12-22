@@ -1,4 +1,4 @@
-﻿using _3D_Bin_Packing_Problem.Core.Model;
+﻿using _3D_Bin_Packing_Problem.Core.Models;
 using System;
 
 namespace _3D_Bin_Packing_Problem.Core.Services.OuterLayer.Mutation.Implementation;

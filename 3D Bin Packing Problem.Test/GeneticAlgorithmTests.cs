@@ -1,5 +1,5 @@
 ﻿using _3D_Bin_Packing_Problem.Core;
-using _3D_Bin_Packing_Problem.Core.Model;
+using _3D_Bin_Packing_Problem.Core.Models;
 using FluentAssertions;
 using System.Diagnostics;
 
