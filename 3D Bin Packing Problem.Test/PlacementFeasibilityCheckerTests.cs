@@ -1,10 +1,8 @@
-﻿using _3D_Bin_Packing_Problem.Core.Configuration;
-using _3D_Bin_Packing_Problem.Core.Extensions;
+﻿using _3D_Bin_Packing_Problem.Core.Extensions;
 using _3D_Bin_Packing_Problem.Core.Models;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.PFCA;
 using _3D_Bin_Packing_Problem.Core.ViewModels;
 using FluentAssertions;
-using System.Numerics;
 
 namespace _3D_Bin_Packing_Problem.Test;
 
@@ -14,7 +12,6 @@ namespace _3D_Bin_Packing_Problem.Test;
 public class PlacementFeasibilityCheckerTests
 {
     private readonly PlacementFeasibilityChecker _checker = new();
-    private const float Eps = AppConstants.Tolerance;
     private BinType binType = new BinType("Default", new Dimensions(1, 1, 1));
 
     /// <summary>
@@ -24,7 +21,7 @@ public class PlacementFeasibilityCheckerTests
     public void Execute_ShouldReturnFalse_WhenItemVolumeGreaterThanSubBin()
     {
         var item = new Item(new Dimensions(10, 10, 10)); // حجم = 1000
-        var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5)); // حجم = 125
+        var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5)); // حجم = 125
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
@@ -43,7 +40,7 @@ public class PlacementFeasibilityCheckerTests
     public void Execute_ShouldReturnTrue_WhenItemFitsExactly()
     {
         var item = new Item(new Dimensions(2, 2, 2));
-        var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5));
+        var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5));
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
@@ -59,7 +56,7 @@ public class PlacementFeasibilityCheckerTests
     public void Execute_ShouldReturnFalse_WhenSupportRatioTooLow()
     {
         var item = new Item(new Dimensions(5, 5, 1));
-        var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(6, 2, 1));
+        var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(6, 2, 1));
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
@@ -74,7 +71,7 @@ public class PlacementFeasibilityCheckerTests
     public void GetPoints_ShouldReturnFiveUniquePoints()
     {
         var item = new Item(new Dimensions(2, 2, 1));
-        var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5));
+        var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5));
 
         var points = InvokeGetPoints(subBin, 2, 2, 0.75);
 
@@ -93,7 +90,7 @@ public class PlacementFeasibilityCheckerTests
     public void Execute_ShouldChooseBestMarginPlacement()
     {
         var item = new Item(new Dimensions(2, 2, 2));
-        var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(6, 6, 6));
+        var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(6, 6, 6));
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
@@ -111,7 +108,7 @@ public class PlacementFeasibilityCheckerTests
     {
 
         var item = new Item(new Dimensions(10, 1, 1));
-        var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5));
+        var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5));
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
@@ -126,7 +123,7 @@ public class PlacementFeasibilityCheckerTests
     public void GetPoints_ShouldReturnEmpty_WhenItemDoesNotFit()
     {
         var item = new Item(new Dimensions(10, 10, 1));
-        var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5));
+        var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5));
 
         var points = InvokeGetPoints(subBin, 10, 10, 0.75);
 
@@ -140,12 +137,12 @@ public class PlacementFeasibilityCheckerTests
     public void GetPoints_ShouldFallback_WhenSupportAreaNotEnough()
     {
         var item = new Item(new Dimensions(5, 5, 1));
-        var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5));
+        var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5));
 
         var points = InvokeGetPoints(subBin, 5, 5, 0.9);
 
         points.Should().ContainSingle();
-        points.Should().HaveElementAt(0, new Vector3(0, 0, 0));
+        points.Should().HaveElementAt(0, new Point3(0, 0, 0));
     }
 
     /// <summary>
@@ -154,7 +151,7 @@ public class PlacementFeasibilityCheckerTests
     [Fact]
     public void ComputeSupportArea_ShouldBePartial_WhenItemOverhangs()
     {
-        var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5));
+        var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5));
         var placedBox = new PlacedBox(x: 3, y: 0, z: 0, l: 5, w: 2, h: 1);
 
         var result = InvokeComputeSupportArea(subBin, placedBox);
@@ -169,7 +166,7 @@ public class PlacementFeasibilityCheckerTests
     public void Execute_ShouldSelectCorrectOrientation_WhenMultipleOrientationsPossible()
     {
         var item = new Item(new Dimensions(2, 3, 4));
-        var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5));
+        var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5));
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
@@ -186,7 +183,7 @@ public class PlacementFeasibilityCheckerTests
     {
 
         var item = new Item(new Dimensions(5, 5, 5));
-        var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5));
+        var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5));
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
@@ -202,7 +199,7 @@ public class PlacementFeasibilityCheckerTests
     public void Execute_ShouldRespectCustomMargins()
     {
         var item = new Item(new Dimensions(2, 2, 2));
-        var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5), 2, 2, 1, 1);
+        var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5), 2, 2, 1, 1);
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
@@ -217,7 +214,7 @@ public class PlacementFeasibilityCheckerTests
     [Fact]
     public void ComputeSupportArea_ShouldBeFull_WhenItemCompletelyInside()
     {
-        var sb = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5));
+        var sb = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5));
         var pb = new PlacedBox(x: 1, y: 1, z: 0, l: 3, w: 3, h: 1);
 
         var result = InvokeComputeSupportArea(sb, pb);
@@ -230,7 +227,7 @@ public class PlacementFeasibilityCheckerTests
     [Fact]
     public void ComputeSupportArea_ShouldBeZero_WhenNoOverlap()
     {
-        var sb = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5));
+        var sb = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5));
         var pb = new PlacedBox(x: 10, y: 10, z: 0, l: 2, w: 2, h: 1);
 
         var result = InvokeComputeSupportArea(sb, pb);
@@ -246,7 +243,7 @@ public class PlacementFeasibilityCheckerTests
     public void Execute_ShouldReturnFalse_WhenItemExceedsXBoundary()
     {
         var item = new Item(new Dimensions(6, 1, 1));
-        var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5));
+        var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5));
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
@@ -261,7 +258,7 @@ public class PlacementFeasibilityCheckerTests
     public void Execute_ShouldReturnFalse_WhenItemExceedsYBoundary()
     {
         var item = new Item(new Dimensions(1, 6, 1));
-        var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5));
+        var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5));
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
@@ -276,7 +273,7 @@ public class PlacementFeasibilityCheckerTests
     public void Execute_ShouldReturnFalse_WhenItemExceedsZBoundary()
     {
         var item = new Item(new Dimensions(1, 1, 6));
-        var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(5, 5, 5));
+        var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5));
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
@@ -291,7 +288,7 @@ public class PlacementFeasibilityCheckerTests
     public void Execute_ShouldContinue_WhenSmallestMarginNegative()
     {
         var item = new Item(new Dimensions(3, 3, 3));
-        var subBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(3, 2, 3));
+        var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(3, 2, 3));
 
         var result = _checker.Execute(binType, item, subBin, out var placement);
 
@@ -307,7 +304,7 @@ public class PlacementFeasibilityCheckerTests
     [Fact]
     public void Execute_ShouldAllowStacking_WhenSupportRatioIsSatisfied()
     {
-        var baseSubBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(10, 10, 10));
+        var baseSubBin = new SubBin(new Point3(0, 0, 0), new Dimensions(10, 10, 10));
 
         var bottomItem = new Item(new Dimensions(10, 10, 2));
         var result1 = _checker.Execute(binType, bottomItem, baseSubBin, out var placement1);
@@ -315,7 +312,7 @@ public class PlacementFeasibilityCheckerTests
         result1.Should().BeTrue();
         placement1.Should().NotBeNull();
 
-        var topSubBin = new SubBin(new Vector3(0, 0, 2), new Dimensions(10, 10, 8));
+        var topSubBin = new SubBin(new Point3(0, 0, 2), new Dimensions(10, 10, 8));
 
         var topItem = new Item(new Dimensions(5, 5, 2));
         var result2 = _checker.Execute(binType, topItem, topSubBin, out var placement2);
@@ -333,11 +330,11 @@ public class PlacementFeasibilityCheckerTests
 
         return (float)method.Invoke(null, new object[] { sb, pb })!;
     }
-    private static IReadOnlyList<Vector3> InvokeGetPoints(SubBin sb, int L, int W, double lambda)
+    private static IReadOnlyList<Point3> InvokeGetPoints(SubBin sb, int L, int W, double lambda)
     {
         var method = typeof(PlacementFeasibilityChecker)
             .GetMethod("GetKeyPoints", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!;
 
-        return (IReadOnlyList<Vector3>)method.Invoke(null, new object[] { sb, L, W, lambda })!;
+        return (IReadOnlyList<Point3>)method.Invoke(null, new object[] { sb, L, W, lambda })!;
     }
 }

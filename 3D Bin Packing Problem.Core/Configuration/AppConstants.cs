@@ -16,7 +16,7 @@ public static class AppConstants
     public const string InnerLayerHeuristic = "MultiHeuristic";
 
     // Default precision or rounding factor
-    public const float Tolerance = 1e-6f;
+    //public const float Tolerance = 1e-6f;
 }
 public class GeneticAlgorithmSettings
 {

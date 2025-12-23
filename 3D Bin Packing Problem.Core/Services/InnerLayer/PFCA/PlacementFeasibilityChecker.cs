@@ -5,7 +5,6 @@ using _3D_Bin_Packing_Problem.Core.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
 
 namespace _3D_Bin_Packing_Problem.Core.Services.InnerLayer.PFCA;
 
@@ -14,7 +13,6 @@ namespace _3D_Bin_Packing_Problem.Core.Services.InnerLayer.PFCA;
 /// </summary>
 public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
 {
-    private const float Eps = AppConstants.Tolerance;
     private readonly double _lambda = SettingsManager.Current.Genetic.SupportThreshold;
 
     public static PlacementResult? LastPlacement { get; private set; }
@@ -36,14 +34,14 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
         {
             var L = orientation.Length;
             var W = orientation.Width;
-            var H = orientation.Height; // فقط برای خوانایی
+            var H = orientation.Height;
 
             var keyPoints = GetKeyPoints(subBin, L, W, _lambda);
 
             foreach (var pos in keyPoints)
             {
-                // فقط روی کف SubBin اجازه قرارگیری داریم
-                if (Math.Abs(pos.Z - subBin.Position.Z) > Eps)
+                // Only allow placement on the SubBin floor
+                if (pos.Z != subBin.Position.Z)
                     continue;
 
                 var placedBox = new PlacedBox(
@@ -55,7 +53,7 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
                     h: H
                 );
 
-                // بررسی مرزهای مجاز (با احتساب حاشیه‌ها)
+                // Boundary checks
                 if (placedBox.X < subBin.Position.X - subBin.Left ||
                     placedBox.Y < subBin.Position.Y - subBin.Back ||
                     placedBox.X + L > subBin.Position.X + subBin.Size.Length + subBin.Right ||
@@ -63,7 +61,7 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
                     placedBox.Z + H > subBin.Position.Z + subBin.Size.Height)
                     continue;
 
-                // محاسبه حاشیه‌ها (فاصله تا نزدیک‌ترین دیوار مجاز)
+                // Margins
                 var marginLeft = placedBox.X - (subBin.Position.X - subBin.Left);
                 var marginRight = (subBin.Position.X + subBin.Size.Length + subBin.Right) - (placedBox.X + L);
                 var marginBack = placedBox.Y - (subBin.Position.Y - subBin.Back);
@@ -73,19 +71,21 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
                 var margins = new[] { marginLeft, marginRight, marginBack, marginFront, marginTop };
                 var smallestMargin = margins.Min();
 
-                if (smallestMargin < -Eps)
-                    continue; // خارج از محدوده مجاز
+                if (smallestMargin < 0)
+                    continue;
 
-                // محاسبه نسبت تکیه‌گاه (فقط روی کف اصلی SubBin)
+                // Support ratio
                 var supportArea = ComputeSupportArea(subBin, placedBox);
                 var itemBaseArea = (double)L * W;
                 var supportRatio = itemBaseArea > 0 ? supportArea / itemBaseArea : 0.0;
 
-                if (supportRatio < _lambda - Eps)
+                if (supportRatio < _lambda)
                     continue;
 
-                // بهترین موقعیت بر اساس بیشترین حاشیه کوچک‌ترین (Stable + Compact)
-                if (!(smallestMargin < bestMargin - Eps)) continue;
+                // Best placement = maximize smallest margin
+                if (smallestMargin >= bestMargin)
+                    continue;
+
                 bestMargin = smallestMargin;
                 bestResult = new PlacementResult(
                     Item: item,
@@ -103,11 +103,7 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
         return bestResult != null;
     }
 
-    /// <summary>
-    /// تولید ۵ نقطه کلیدی استاندارد (Extreme Points + λ-constraint)
-    /// کاملاً سازگار با حاشیه‌ها (Left/Back/Right/Front)
-    /// </summary>
-    private static IReadOnlyList<Vector3> GetKeyPoints(SubBin sb, float L, float W, double lambda)
+    private static IReadOnlyList<Point3> GetKeyPoints(SubBin sb, int L, int W, double lambda)
     {
         lambda = Math.Clamp(lambda, 0.0, 1.0);
 
@@ -117,75 +113,67 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
         var yMax = sb.Position.Y + sb.Size.Width + sb.Front - W;
 
         if (xMin > xMax || yMin > yMax)
-            return Array.Empty<Vector3>();
+            return Array.Empty<Point3>();
 
-        var itemArea = (long)L * W;
-        var requiredArea = (long)Math.Ceiling(lambda * itemArea);
+        var itemArea = L * W;
+        var requiredArea = (int)Math.Ceiling(lambda * itemArea);
 
         var coreX1 = sb.Position.X;
-        var coreX2 = sb.Position.X + sb.Size.Length;
         var coreY1 = sb.Position.Y;
-        var coreY2 = sb.Position.Y + sb.Size.Width;
 
-        var points = new List<Vector3>();
+        var points = new List<Point3>();
 
-        // Point 1: تا حد امکان عقب و چپ (Back-Left)
-        points.Add(new Vector3(xMin, yMin, sb.Position.Z));
+        // Point 1: Back-Left
+        points.Add(new Point3(xMin, yMin, sb.Position.Z));
 
-        // Point 2: چسبیده به پشت، ولی کمی جلو برای تأمین λ
+        // Point 2: Back + λ shift
         if (lambda > 0 && requiredArea > 0)
         {
-            float maxOverlapX = Math.Min(L, sb.Size.Length);
+            var maxOverlapX = Math.Min(L, sb.Size.Length);
             if (maxOverlapX > 0)
             {
-                float neededY = (requiredArea + maxOverlapX - 1) / maxOverlapX; // ceil division
-                float y2 = coreY1 + neededY - W;
-                y2 = Math.Max(y2, yMin);
-                y2 = Math.Min(y2, yMax);
-                points.Add(new Vector3(xMin, y2, sb.Position.Z));
+                var neededY = (requiredArea + maxOverlapX - 1) / maxOverlapX;
+                var y2 = coreY1 + neededY - W;
+                y2 = Math.Clamp(y2, yMin, yMax);
+                points.Add(new Point3(xMin, y2, sb.Position.Z));
             }
         }
 
-        // Point 3: چسبیده به چپ، ولی کمی راست برای تأمین λ
+        // Point 3: Left + λ shift
         if (lambda > 0 && requiredArea > 0)
         {
-            float maxOverlapY = Math.Min(W, sb.Size.Width);
+            var maxOverlapY = Math.Min(W, sb.Size.Width);
             if (maxOverlapY > 0)
             {
-                float neededX = (requiredArea + maxOverlapY - 1) / maxOverlapY;
-                float x3 = coreX1 + neededX - L;
-                x3 = Math.Max(x3, xMin);
-                x3 = Math.Min(x3, xMax);
-                points.Add(new Vector3(x3, yMin, sb.Position.Z));
+                var neededX = (requiredArea + maxOverlapY - 1) / maxOverlapY;
+                var x3 = coreX1 + neededX - L;
+                x3 = Math.Clamp(x3, xMin, xMax);
+                points.Add(new Point3(x3, yMin, sb.Position.Z));
             }
         }
 
-        // Point 4 & 5: گوشه اصلی کف (Core Bottom-Left) — معمولاً بهترین نقطه برای پایداری
-        points.Add(new Vector3(sb.Position.X, sb.Position.Y, sb.Position.Z));
+        // Point 4 & 5: Core bottom-left
+        points.Add(new Point3(sb.Position.X, sb.Position.Y, sb.Position.Z));
 
         // حذف تکراری‌ها با دقت بالا
-        var unique = new List<Vector3>();
-        foreach (var p in points)
+        var unique = new List<Point3>();
+        foreach (var p in from p in points
+                          let p1 = p
+                          let exists = unique.Any(q =>
+                     q.X == p1.X &&
+                     q.Y == p1.Y)
+                          where !exists
+                          select p)
         {
-            bool exists = unique.Any(q =>
-                Math.Abs(q.X - p.X) < Eps &&
-                Math.Abs(q.Y - p.Y) < Eps);
-
-            if (!exists)
-                unique.Add(p);
+            unique.Add(p);
         }
 
         return unique;
     }
 
-    /// <summary>
-    /// محاسبه دقیق مساحت تکیه‌گاه روی کف اصلی SubBin
-    /// فقط وقتی Z برابر باشد و تقاطع با بخش اصلی (Core) داشته باشد
-    /// </summary>
     private static float ComputeSupportArea(SubBin sb, PlacedBox box)
     {
-        // فقط روی کف SubBin ساپورت داریم
-        if (Math.Abs(box.Z - sb.Position.Z) > Eps)
+        if (box.Z != sb.Position.Z)
             return 0f;
 
         var coreX1 = sb.Position.X;

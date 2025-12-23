@@ -1,4 +1,3 @@
-using _3D_Bin_Packing_Problem.Core.Configuration;
 using System;
 using System.Globalization;
 
@@ -7,12 +6,12 @@ namespace _3D_Bin_Packing_Problem.Core.Models;
 /// <summary>
 /// Encapsulates a mutable integer gene value used within chromosomes.
 /// </summary>
-public class Gene(float value) : IEquatable<Gene>
+public class Gene(int value) : IEquatable<Gene>
 {
-    public float Value { get; } = value;
+    public int Value { get; } = value;
 
 
-    public bool Equals(Gene? other) => other is not null && Math.Abs(Value - other.Value) < AppConstants.Tolerance;
+    public bool Equals(Gene? other) => other is not null && Value.Equals(other.Value);
 
     public override bool Equals(object? obj) => obj is Gene g && Equals(g);
 

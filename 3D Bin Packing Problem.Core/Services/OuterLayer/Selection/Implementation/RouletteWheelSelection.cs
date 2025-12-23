@@ -1,5 +1,4 @@
-﻿using _3D_Bin_Packing_Problem.Core.Configuration;
-using _3D_Bin_Packing_Problem.Core.Models;
+﻿using _3D_Bin_Packing_Problem.Core.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,22 +24,31 @@ public class RouletteWheelSelection(IComparer<Chromosome> comparer) : ISelection
         if (elitismPopulationSize > nextGenerationSize)
             throw new ArgumentException("Elitism size cannot exceed next generation size.");
 
-
-        // 2. Sort by fitness (descending) and preserve elites
+        // 1. Elitism
         var elites = population
             .OrderByDescending(e => e.Fitness)
             .Take(elitismPopulationSize)
             .ToList();
 
-
-        // 3. Compute total fitness for roulette wheel
-        var totalFitness = population.Sum(e => e.Fitness);
-        if (totalFitness <= 0)
-            totalFitness = AppConstants.Tolerance; // avoid division by zero
-
         var selected = new List<Chromosome>(elites);
 
-        // 4. Roulette wheel selection for the rest
+        // 2. Compute total fitness
+        var totalFitness = population.Sum(e => e.Fitness);
+
+        // If all fitness values are zero → fallback to uniform random selection
+        if (totalFitness <= 0)
+        {
+            while (selected.Count < nextGenerationSize)
+            {
+                var randomIndex = _random.Next(population.Count);
+                selected.Add(population[randomIndex]);
+            }
+
+            selected.Sort(comparer);
+            return selected;
+        }
+
+        // 3. Roulette wheel selection
         for (var i = elites.Count; i < nextGenerationSize; i++)
         {
             var spin = _random.NextDouble() * totalFitness;
@@ -49,15 +57,15 @@ public class RouletteWheelSelection(IComparer<Chromosome> comparer) : ISelection
             foreach (var e in population)
             {
                 cumulative += e.Fitness;
-                if (!(cumulative >= spin)) continue;
-                selected.Add(e);
-                break;
+                if (cumulative >= spin)
+                {
+                    selected.Add(e);
+                    break;
+                }
             }
         }
 
         selected.Sort(comparer);
-        return selected; // 🔹 حالا کل لیست برمی‌گرده
+        return selected;
     }
 }
-
-

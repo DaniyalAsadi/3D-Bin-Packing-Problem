@@ -5,7 +5,6 @@ using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SUA;
 using _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SubBinOrderingStrategy;
 using _3D_Bin_Packing_Problem.Core.ViewModels;
 using FluentAssertions;
-using System.Numerics;
 
 namespace _3D_Bin_Packing_Problem.Test;
 /// <summary>
@@ -23,7 +22,7 @@ public class SingleBinPackingAlgorithmTests
         var expectedPlacement = new PlacementResult(
             item,
             binType,
-            new Vector3(0, 0, 0),
+            new Point3(0, 0, 0),
             new Dimensions(2, 2, 2),
             1.0,
             0.75
@@ -102,7 +101,7 @@ public class SingleBinPackingAlgorithmTests
         var placementResult = new PlacementResult(
             items[0],
             binType,
-            new Vector3(0, 0, 0),
+            new Point3(0, 0, 0),
             new Dimensions(5, 5, 5),
             1.0,
             0.75
@@ -147,8 +146,8 @@ public class SingleBinPackingAlgorithmTests
             new Item(new Dimensions(5, 5, 5))
         };
 
-        var validSubBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(10, 10, 10));
-        var tooSmallSubBin = new SubBin(new Vector3(0, 0, 0), new Dimensions(2, 2, 2)); // نباید انتخاب بشه
+        var validSubBin = new SubBin(new Point3(0, 0, 0), new Dimensions(10, 10, 10));
+        var tooSmallSubBin = new SubBin(new Point3(0, 0, 0), new Dimensions(2, 2, 2)); // نباید انتخاب بشه
 
         var subBins = new List<SubBin> { validSubBin, tooSmallSubBin };
 

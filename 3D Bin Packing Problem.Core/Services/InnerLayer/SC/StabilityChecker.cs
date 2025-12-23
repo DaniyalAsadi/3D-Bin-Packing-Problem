@@ -1,14 +1,12 @@
-﻿using System;
+﻿using _3D_Bin_Packing_Problem.Core.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using _3D_Bin_Packing_Problem.Core.Configuration;
-using _3D_Bin_Packing_Problem.Core.ViewModels;
 
 namespace _3D_Bin_Packing_Problem.Core.Services.InnerLayer.SC;
 
 public class StabilityChecker : IStabilityChecker
 {
-    private const float Eps = AppConstants.Tolerance;
 
     public bool IsStable(PackingResultsViewModel packingResult)
     {
@@ -26,7 +24,7 @@ public class StabilityChecker : IStabilityChecker
             {
                 if (p.Item.IsFragile)
                 {
-                    if (p.Position.Z > Eps || Math.Abs(p.SupportRatio - 1.0) > Eps)
+                    if (p.Position.Z != 0 || p.SupportRatio > 1.0)
                         return false;
                 }
             }
@@ -68,11 +66,24 @@ public class StabilityChecker : IStabilityChecker
 
     private static bool HasVerticalOverlap(PackedItemViewModel bottom, PackedItemViewModel top)
     {
-        // top دقیقاً روی bottom
-        return top.Position.Z >= bottom.Position.Z + bottom.Height - Eps &&
-               top.Position.X < bottom.Position.X + bottom.Length + Eps &&
-               top.Position.X + top.Length > bottom.Position.X - Eps &&
-               top.Position.Y < bottom.Position.Y + bottom.Width + Eps &&
-               top.Position.Y + top.Width > bottom.Position.Y - Eps;
+        // top باید دقیقاً روی bottom باشد
+        if (top.Position.Z < bottom.Position.Z + bottom.Height)
+            return false;
+
+        // بررسی هم‌پوشانی در محور X
+        var overlapX =
+            top.Position.X < bottom.Position.X + bottom.Length &&
+            top.Position.X + top.Length > bottom.Position.X;
+
+        if (!overlapX)
+            return false;
+
+        // بررسی هم‌پوشانی در محور Y
+        var overlapY =
+            top.Position.Y < bottom.Position.Y + bottom.Width &&
+            top.Position.Y + top.Width > bottom.Position.Y;
+
+        return overlapY;
     }
+
 }

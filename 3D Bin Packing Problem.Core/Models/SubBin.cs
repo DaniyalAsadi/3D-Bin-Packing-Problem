@@ -1,5 +1,4 @@
 using System;
-using System.Numerics;
 
 namespace _3D_Bin_Packing_Problem.Core.Models;
 
@@ -8,7 +7,7 @@ namespace _3D_Bin_Packing_Problem.Core.Models;
 /// </summary>
 public record SubBin
 {
-    public Vector3 Position { get; }
+    public Point3 Position { get; }
     public Dimensions Size { get; }
     public int Back { get; }
     public int Left { get; }
@@ -18,7 +17,7 @@ public record SubBin
     public float Volume => Size.Volume;
 
     public SubBin(BinType binType) : this(
-        new Vector3(0, 0, 0),
+        new Point3(0, 0, 0),
         new Dimensions(binType.InnerDimensions.Length,
         binType.InnerDimensions.Width,
         binType.InnerDimensions.Height))
@@ -28,7 +27,7 @@ public record SubBin
     /// Represents a sub-region within a bin along with its dimensions and boundary margins.
     /// </summary>
     public SubBin(
-        Vector3 position,
+        Point3 position,
         Dimensions size,
         int Back = 0,
         int Left = 0,

@@ -8,7 +8,13 @@ public readonly struct PlacedBox
     /// <summary>
     /// Represents the dimensions and coordinates of a placed item for feasibility checks.
     /// </summary>
-    public PlacedBox(float x, float y, float z, float l, float w, float h)
+    public PlacedBox(
+        int x,
+        int y,
+        int z,
+        int l,
+        int w,
+        int h)
     {
         X = x;
         Y = y;
@@ -18,10 +24,10 @@ public readonly struct PlacedBox
         H = h;
     }
 
-    public float X { get; }
-    public float Y { get; }
-    public float Z { get; }
-    public float L { get; } // Length
-    public float W { get; } // Width
-    public float H { get; } // Height
+    public int X { get; }
+    public int Y { get; }
+    public int Z { get; }
+    public int L { get; } // Length
+    public int W { get; } // Width
+    public int H { get; } // Height
 }

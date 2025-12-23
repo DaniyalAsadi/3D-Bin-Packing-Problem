@@ -68,7 +68,7 @@ public class BinTypeTests
     [InlineData(10, 10, 0)]
     [InlineData(-1, 10, 10)]
     public void Create_Should_Throw_When_Dimension_Is_Invalid(
-        float length, float width, float height)
+        int length, int width, int height)
     {
         // Act
         Action act = () => BinType.Create(
