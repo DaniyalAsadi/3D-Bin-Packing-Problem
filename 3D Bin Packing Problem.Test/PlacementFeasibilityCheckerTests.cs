@@ -12,7 +12,7 @@ namespace _3D_Bin_Packing_Problem.Test;
 public class PlacementFeasibilityCheckerTests
 {
     private readonly PlacementFeasibilityChecker _checker = new();
-    private BinType binType = new BinType("Default", new Dimensions(1, 1, 1));
+    private readonly BinType _binType = new("Default", new Dimensions(1, 1, 1));
 
     /// <summary>
     /// اگر حجم آیتم از حجم SubBin بیشتر باشد باید False برگرداند
@@ -23,7 +23,7 @@ public class PlacementFeasibilityCheckerTests
         var item = new Item(new Dimensions(10, 10, 10)); // حجم = 1000
         var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5)); // حجم = 125
 
-        var result = _checker.Execute(binType, item, subBin, out var placement);
+        var result = _checker.Execute(_binType, item, subBin, out var placement);
 
         result.Should().BeFalse();
         placement.Should().BeNull();
@@ -42,7 +42,7 @@ public class PlacementFeasibilityCheckerTests
         var item = new Item(new Dimensions(2, 2, 2));
         var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5));
 
-        var result = _checker.Execute(binType, item, subBin, out var placement);
+        var result = _checker.Execute(_binType, item, subBin, out var placement);
 
         result.Should().BeTrue();
         placement.Should().NotBeNull();
@@ -58,7 +58,7 @@ public class PlacementFeasibilityCheckerTests
         var item = new Item(new Dimensions(5, 5, 1));
         var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(6, 2, 1));
 
-        var result = _checker.Execute(binType, item, subBin, out var placement);
+        var result = _checker.Execute(_binType, item, subBin, out var placement);
 
         result.Should().BeFalse();
         placement.Should().BeNull();
@@ -92,7 +92,7 @@ public class PlacementFeasibilityCheckerTests
         var item = new Item(new Dimensions(2, 2, 2));
         var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(6, 6, 6));
 
-        var result = _checker.Execute(binType, item, subBin, out var placement);
+        var result = _checker.Execute(_binType, item, subBin, out var placement);
 
         result.Should().BeTrue();
         placement.Should().NotBeNull();
@@ -110,7 +110,7 @@ public class PlacementFeasibilityCheckerTests
         var item = new Item(new Dimensions(10, 1, 1));
         var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5));
 
-        var result = _checker.Execute(binType, item, subBin, out var placement);
+        var result = _checker.Execute(_binType, item, subBin, out var placement);
 
         result.Should().BeFalse();
         placement.Should().BeNull();
@@ -168,7 +168,7 @@ public class PlacementFeasibilityCheckerTests
         var item = new Item(new Dimensions(2, 3, 4));
         var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5));
 
-        var result = _checker.Execute(binType, item, subBin, out var placement);
+        var result = _checker.Execute(_binType, item, subBin, out var placement);
 
         result.Should().BeTrue();
         placement.Should().NotBeNull();
@@ -185,7 +185,7 @@ public class PlacementFeasibilityCheckerTests
         var item = new Item(new Dimensions(5, 5, 5));
         var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5));
 
-        var result = _checker.Execute(binType, item, subBin, out var placement);
+        var result = _checker.Execute(_binType, item, subBin, out var placement);
 
         result.Should().BeTrue();
         placement.Should().NotBeNull();
@@ -201,7 +201,7 @@ public class PlacementFeasibilityCheckerTests
         var item = new Item(new Dimensions(2, 2, 2));
         var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5), 2, 2, 1, 1);
 
-        var result = _checker.Execute(binType, item, subBin, out var placement);
+        var result = _checker.Execute(_binType, item, subBin, out var placement);
 
         result.Should().BeTrue();
         placement.Should().NotBeNull();
@@ -245,7 +245,7 @@ public class PlacementFeasibilityCheckerTests
         var item = new Item(new Dimensions(6, 1, 1));
         var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5));
 
-        var result = _checker.Execute(binType, item, subBin, out var placement);
+        var result = _checker.Execute(_binType, item, subBin, out var placement);
 
         result.Should().BeFalse();
         placement.Should().BeNull();
@@ -260,7 +260,7 @@ public class PlacementFeasibilityCheckerTests
         var item = new Item(new Dimensions(1, 6, 1));
         var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5));
 
-        var result = _checker.Execute(binType, item, subBin, out var placement);
+        var result = _checker.Execute(_binType, item, subBin, out var placement);
 
         result.Should().BeFalse();
         placement.Should().BeNull();
@@ -275,7 +275,7 @@ public class PlacementFeasibilityCheckerTests
         var item = new Item(new Dimensions(1, 1, 6));
         var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(5, 5, 5));
 
-        var result = _checker.Execute(binType, item, subBin, out var placement);
+        var result = _checker.Execute(_binType, item, subBin, out var placement);
 
         result.Should().BeFalse();
         placement.Should().BeNull();
@@ -290,7 +290,7 @@ public class PlacementFeasibilityCheckerTests
         var item = new Item(new Dimensions(3, 3, 3));
         var subBin = new SubBin(new Point3(0, 0, 0), new Dimensions(3, 2, 3));
 
-        var result = _checker.Execute(binType, item, subBin, out var placement);
+        var result = _checker.Execute(_binType, item, subBin, out var placement);
 
         result.Should().BeFalse();
         placement.Should().BeNull();
@@ -307,7 +307,7 @@ public class PlacementFeasibilityCheckerTests
         var baseSubBin = new SubBin(new Point3(0, 0, 0), new Dimensions(10, 10, 10));
 
         var bottomItem = new Item(new Dimensions(10, 10, 2));
-        var result1 = _checker.Execute(binType, bottomItem, baseSubBin, out var placement1);
+        var result1 = _checker.Execute(_binType, bottomItem, baseSubBin, out var placement1);
 
         result1.Should().BeTrue();
         placement1.Should().NotBeNull();
@@ -315,7 +315,7 @@ public class PlacementFeasibilityCheckerTests
         var topSubBin = new SubBin(new Point3(0, 0, 2), new Dimensions(10, 10, 8));
 
         var topItem = new Item(new Dimensions(5, 5, 2));
-        var result2 = _checker.Execute(binType, topItem, topSubBin, out var placement2);
+        var result2 = _checker.Execute(_binType, topItem, topSubBin, out var placement2);
 
         result2.Should().BeTrue();
         placement2.Should().NotBeNull();
