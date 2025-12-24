@@ -21,8 +21,8 @@ public class PlacementAlgorithm(
     {
         var itemOrderingStrategy = itemOrderingStrategyFactory.Create(SettingsManager.Current.ItemOrdering, bins);
         var subBinSelectionStrategy = subBinSelectionStrategyFactory.Create(SettingsManager.Current.SubBinSelection);
-        items = itemOrderingStrategy.Apply(items).ToList();
-        var leftItemList = items;
+        var sortedItems = itemOrderingStrategy.Apply(items).ToList();
+        var leftItemList = sortedItems;
         var packingResultsViewModel = new PackingResultsViewModel();
 
         while (leftItemList.Count != 0)

@@ -41,10 +41,6 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
 
             foreach (var pos in keyPoints)
             {
-                // Only allow placement on the SubBin floor (single-layer)
-                if (pos.Z != subBin.Position.Z)
-                    continue;
-
                 var placedBox = new PlacedBox(
                     x: pos.X,
                     y: pos.Y,
