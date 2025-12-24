@@ -142,17 +142,27 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
         }
 
         // Left + λ shift
-        if (lambda > 0 && requiredArea > 0)
+        if (!(lambda > 0) || requiredArea <= 0)
         {
-            var maxOverlapY = Math.Min(W, sb.Size.Width);
-            if (maxOverlapY > 0)
-            {
-                var neededX = (requiredArea + maxOverlapY - 1) / maxOverlapY;
-                var x3 = coreX1 + neededX - L;
-                x3 = Math.Clamp(x3, xMin, xMax);
-                points.Add(new Point3(x3, yMin, sb.Position.Z));
-            }
+            return points
+                .GroupBy(p => (p.X, p.Y))
+                .Select(g => g.First())
+                .ToList();
         }
+
+        var maxOverlapY = Math.Min(W, sb.Size.Width);
+        if (maxOverlapY <= 0)
+        {
+            return points
+                .GroupBy(p => (p.X, p.Y))
+                .Select(g => g.First())
+                .ToList();
+        }
+
+        var neededX = (requiredArea + maxOverlapY - 1) / maxOverlapY;
+        var x3 = coreX1 + neededX - L;
+        x3 = Math.Clamp(x3, xMin, xMax);
+        points.Add(new Point3(x3, yMin, sb.Position.Z));
 
         // Remove duplicates
         return points
