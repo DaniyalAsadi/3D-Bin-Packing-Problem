@@ -323,18 +323,18 @@ public class PlacementFeasibilityCheckerTests
 
     }
 
-    private static float InvokeComputeSupportArea(SubBin sb, PlacedBox pb)
+    private static double InvokeComputeSupportArea(SubBin sb, PlacedBox pb)
     {
         var method = typeof(PlacementFeasibilityChecker)
             .GetMethod("ComputeSupportArea", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!;
 
-        return (float)method.Invoke(null, new object[] { sb, pb })!;
+        return (double)method.Invoke(null, [sb, pb])!;
     }
     private static IReadOnlyList<Point3> InvokeGetPoints(SubBin sb, int L, int W, double lambda)
     {
         var method = typeof(PlacementFeasibilityChecker)
             .GetMethod("GetKeyPoints", System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Static)!;
 
-        return (IReadOnlyList<Point3>)method.Invoke(null, new object[] { sb, L, W, lambda })!;
+        return (IReadOnlyList<Point3>)method.Invoke(null, [sb, L, W, lambda])!;
     }
 }

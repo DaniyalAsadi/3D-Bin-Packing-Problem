@@ -15,12 +15,13 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
 {
     private readonly double _lambda = SettingsManager.Current.Genetic.SupportThreshold;
 
-    public static PlacementResult? LastPlacement { get; private set; }
-
-    public bool Execute(BinType binType, Item item, SubBin subBin, out PlacementResult? result)
+    public bool Execute(
+        BinType binType,
+        Item item,
+        SubBin subBin,
+        out PlacementResult? result)
     {
         result = null;
-        LastPlacement = null;
 
         if (subBin.Volume < item.Volume)
             return false;
@@ -40,7 +41,7 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
 
             foreach (var pos in keyPoints)
             {
-                // Only allow placement on the SubBin floor
+                // Only allow placement on the SubBin floor (single-layer)
                 if (pos.Z != subBin.Position.Z)
                     continue;
 
@@ -76,13 +77,13 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
 
                 // Support ratio
                 var supportArea = ComputeSupportArea(subBin, placedBox);
-                var itemBaseArea = (double)L * W;
-                var supportRatio = itemBaseArea > 0 ? supportArea / itemBaseArea : 0.0;
+                var itemBaseArea = L * W;
+                var supportRatio = supportArea / itemBaseArea;
 
                 if (supportRatio < _lambda)
                     continue;
 
-                // Best placement = maximize smallest margin
+                // Tight packing: minimize smallest margin
                 if (smallestMargin >= bestMargin)
                     continue;
 
@@ -99,9 +100,10 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
         }
 
         result = bestResult;
-        LastPlacement = bestResult;
         return bestResult != null;
     }
+
+    // ----------------------------------------------------
 
     private static IReadOnlyList<Point3> GetKeyPoints(SubBin sb, int L, int W, double lambda)
     {
@@ -121,12 +123,16 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
         var coreX1 = sb.Position.X;
         var coreY1 = sb.Position.Y;
 
-        var points = new List<Point3>();
+        var points = new List<Point3>
+        {
+            // Back-Left
+            new Point3(xMin, yMin, sb.Position.Z),
 
-        // Point 1: Back-Left
-        points.Add(new Point3(xMin, yMin, sb.Position.Z));
+            // Core
+            new Point3(sb.Position.X, sb.Position.Y, sb.Position.Z)
+        };
 
-        // Point 2: Back + λ shift
+        // Back + λ shift
         if (lambda > 0 && requiredArea > 0)
         {
             var maxOverlapX = Math.Min(L, sb.Size.Length);
@@ -139,7 +145,7 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
             }
         }
 
-        // Point 3: Left + λ shift
+        // Left + λ shift
         if (lambda > 0 && requiredArea > 0)
         {
             var maxOverlapY = Math.Min(W, sb.Size.Width);
@@ -152,29 +158,17 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
             }
         }
 
-        // Point 4 & 5: Core bottom-left
-        points.Add(new Point3(sb.Position.X, sb.Position.Y, sb.Position.Z));
-
-        // حذف تکراری‌ها با دقت بالا
-        var unique = new List<Point3>();
-        foreach (var p in from p in points
-                          let p1 = p
-                          let exists = unique.Any(q =>
-                     q.X == p1.X &&
-                     q.Y == p1.Y)
-                          where !exists
-                          select p)
-        {
-            unique.Add(p);
-        }
-
-        return unique;
+        // Remove duplicates
+        return points
+            .GroupBy(p => (p.X, p.Y))
+            .Select(g => g.First())
+            .ToList();
     }
 
-    private static float ComputeSupportArea(SubBin sb, PlacedBox box)
+    private static double ComputeSupportArea(SubBin sb, PlacedBox box)
     {
         if (box.Z != sb.Position.Z)
-            return 0f;
+            return 0.0;
 
         var coreX1 = sb.Position.X;
         var coreX2 = sb.Position.X + sb.Size.Length;
@@ -192,8 +186,8 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
         var oy2 = Math.Min(coreY2, boxY2);
 
         if (ox2 <= ox1 || oy2 <= oy1)
-            return 0f;
+            return 0.0;
 
-        return (ox2 - ox1) * (oy2 - oy1);
+        return (double)(ox2 - ox1) * (oy2 - oy1);
     }
 }
