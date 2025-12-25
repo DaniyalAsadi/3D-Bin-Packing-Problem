@@ -10,13 +10,15 @@ public record PlacementResult(
     BinType BinType,
     Point3 Position,
     Dimensions Orientation,
+    PlacedBox PlacedBox,
     double SmallestMargin,
     double SupportRatio)
 {
     public Item Item { get; set; } = Item;
     public BinType BinType { get; set; } = BinType;
     public Point3 Position { get; set; } = Position;
-    public Dimensions Orientation { get; set; } = Orientation; // یکی از 6 حالت چرخش
+    public Dimensions Orientation { get; set; } = Orientation; 
+    public PlacedBox PlacedBox { get; set; } = PlacedBox;
     public double SmallestMargin { get; set; } = SmallestMargin;
     public double SupportRatio { get; set; } = SupportRatio;
 }

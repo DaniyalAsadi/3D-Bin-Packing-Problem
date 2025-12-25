@@ -24,6 +24,7 @@ public class SingleBinPackingAlgorithmTests
             binType,
             new Point3(0, 0, 0),
             new Dimensions(2, 2, 2),
+            new PlacedBox(0, 0, 0, 2, 2, 2),
             1.0,
             0.75
         );
@@ -103,6 +104,7 @@ public class SingleBinPackingAlgorithmTests
             binType,
             new Point3(0, 0, 0),
             new Dimensions(5, 5, 5),
+            new PlacedBox(0, 0, 0, 5, 5, 5),
             1.0,
             0.75
         );

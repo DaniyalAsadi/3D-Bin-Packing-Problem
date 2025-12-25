@@ -28,6 +28,7 @@ public class SingleBinPackingAlgorithm(
         var subBinList = new List<SubBin> { binType };
         var leftItemList = new List<Item>();
         var packedItemList = new List<PlacementResult>();
+        var placedBoxes = new List<PlacedBox>();
 
         foreach (var item in itemList.ToList())
         {
@@ -42,16 +43,17 @@ public class SingleBinPackingAlgorithm(
             }
 
             // 🔹 مرتب‌سازی SubBinها بر اساس استراتژی انتخابی (S1..S5)
-            validSubBins = subBinOrderingStrategy.Apply(validSubBins, item).ToList();
+            validSubBins = [.. subBinOrderingStrategy.Apply(validSubBins, item)];
 
             var placed = false;
 
+
             foreach (var validSubBin in validSubBins)
             {
-                if (!feasibilityChecker.Execute(binType, item, validSubBin, out var placementResult)) continue;
+                if (!feasibilityChecker.Execute(binType, item, validSubBin, placedBoxes, out var placementResult)) continue;
                 if (placementResult is null) throw new ArgumentNullException(nameof(placementResult));
-
                 packedItemList.Add(placementResult);
+                placedBoxes.Add(placementResult.PlacedBox);
 
                 // 🔹 آپدیت SubBin باید بر اساس placementResult انجام شود، نه فقط item
                 subBinList = subBinUpdatingAlgorithm.Execute(subBinList, placementResult);

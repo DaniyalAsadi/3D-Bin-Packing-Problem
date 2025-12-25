@@ -18,7 +18,8 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
     public bool Execute(
         BinType binType,
         Item item,
-        SubBin subBin,
+        SubBin subBin, 
+        List<PlacedBox> placedBoxes,
         out PlacementResult? result)
     {
         result = null;
@@ -33,11 +34,8 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
 
         foreach (var orientation in orientations)
         {
-            var L = orientation.Length;
-            var W = orientation.Width;
-            var H = orientation.Height;
 
-            var keyPoints = GetKeyPoints(subBin, L, W, _lambda);
+            var keyPoints = GetKeyPoints(subBin, orientation.Length, orientation.Width, _lambda);
 
             foreach (var pos in keyPoints)
             {
@@ -45,25 +43,25 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
                     x: pos.X,
                     y: pos.Y,
                     z: pos.Z,
-                    l: L,
-                    w: W,
-                    h: H
+                    l: orientation.Length,
+                    w: orientation.Width,
+                    h: orientation.Height
                 );
 
                 // Boundary checks
                 if (placedBox.X < subBin.Position.X - subBin.Left ||
                     placedBox.Y < subBin.Position.Y - subBin.Back ||
-                    placedBox.X + L > subBin.Position.X + subBin.Size.Length + subBin.Right ||
-                    placedBox.Y + W > subBin.Position.Y + subBin.Size.Width + subBin.Front ||
-                    placedBox.Z + H > subBin.Position.Z + subBin.Size.Height)
+                    placedBox.X + orientation.Length > subBin.Position.X + subBin.Size.Length + subBin.Right ||
+                    placedBox.Y + orientation.Width > subBin.Position.Y + subBin.Size.Width + subBin.Front ||
+                    placedBox.Z + orientation.Height > subBin.Position.Z + subBin.Size.Height)
                     continue;
 
                 // Margins
                 var marginLeft = placedBox.X - (subBin.Position.X - subBin.Left);
-                var marginRight = (subBin.Position.X + subBin.Size.Length + subBin.Right) - (placedBox.X + L);
+                var marginRight = (subBin.Position.X + subBin.Size.Length + subBin.Right) - (placedBox.X + orientation.Length);
                 var marginBack = placedBox.Y - (subBin.Position.Y - subBin.Back);
-                var marginFront = (subBin.Position.Y + subBin.Size.Width + subBin.Front) - (placedBox.Y + W);
-                var marginTop = (subBin.Position.Z + subBin.Size.Height) - (placedBox.Z + H);
+                var marginFront = (subBin.Position.Y + subBin.Size.Width + subBin.Front) - (placedBox.Y + orientation.Width);
+                var marginTop = (subBin.Position.Z + subBin.Size.Height) - (placedBox.Z + orientation.Height);
 
                 var margins = new[] { marginLeft, marginRight, marginBack, marginFront, marginTop };
                 var smallestMargin = margins.Min();
@@ -73,7 +71,7 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
 
                 // Support ratio
                 var supportArea = ComputeSupportArea(subBin, placedBox);
-                var itemBaseArea = L * W;
+                var itemBaseArea = orientation.Length * orientation.Width;
                 var supportRatio = supportArea / itemBaseArea;
 
                 if (supportRatio < _lambda)
@@ -89,6 +87,7 @@ public class PlacementFeasibilityChecker : IPlacementFeasibilityChecker
                     BinType: binType,
                     Position: pos,
                     Orientation: orientation,
+                    PlacedBox: placedBox,
                     SmallestMargin: smallestMargin,
                     SupportRatio: supportRatio
                 );

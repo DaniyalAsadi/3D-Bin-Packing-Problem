@@ -22,7 +22,8 @@ public class SubBinUpdatingAlgorithmExtendedTests
     {
         var item = new Item(new Dimensions(2, 5, 5));
         var subBinList = new List<SubBin> { new(new Point3(0, 0, 0), new Dimensions(5, 5, 5), 0, 0, 0, 0) };
-        var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
+        var placedBoxes = new List<PlacedBox>();
+        var checkResult = _checker.Execute(binType, item, subBinList[0],placedBoxes, out var placementResult);
         placementResult.Should().NotBeNull();
         var result = _algorithm.Execute(subBinList, placementResult);
         result.Should().ContainSingle(sb =>
@@ -36,8 +37,8 @@ public class SubBinUpdatingAlgorithmExtendedTests
     {
         var item = new Item(new Dimensions(5, 2, 5));
         var subBinList = new List<SubBin> { new(new Point3(0, 0, 0), new Dimensions(5, 5, 5), 0, 0, 0, 0) };
-
-        var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
+        var placedBoxes = new List<PlacedBox>();
+        var checkResult = _checker.Execute(binType, item, subBinList[0],placedBoxes, out var placementResult);
         placementResult.Should().NotBeNull();
         var result = _algorithm.Execute(subBinList, placementResult);
         result.Should().ContainSingle(sb =>
@@ -51,8 +52,8 @@ public class SubBinUpdatingAlgorithmExtendedTests
     {
         var item = new Item(new Dimensions(5, 5, 2));
         var subBinList = new List<SubBin> { new(new Point3(0, 0, 0), new Dimensions(5, 5, 5), 0, 0, 0, 0) };
-
-        var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
+        var placedBoxes = new List<PlacedBox>();
+        var checkResult = _checker.Execute(binType, item, subBinList[0],placedBoxes, out var placementResult);
         placementResult.Should().NotBeNull();
         var result = _algorithm.Execute(subBinList, placementResult);
         result.Should().ContainSingle(sb =>
@@ -66,8 +67,8 @@ public class SubBinUpdatingAlgorithmExtendedTests
     {
         var item = new Item(new Dimensions(5, 5, 5));
         var subBinList = new List<SubBin> { new(new Point3(0, 0, 0), new Dimensions(5, 5, 5), 0, 0, 0, 0) };
-
-        var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
+        var placedBoxes = new List<PlacedBox>();
+        var checkResult = _checker.Execute(binType, item, subBinList[0],placedBoxes, out var placementResult);
         placementResult.Should().NotBeNull();
         var result = _algorithm.Execute(subBinList, placementResult);
         result.Should().BeEmpty();
@@ -83,11 +84,11 @@ public class SubBinUpdatingAlgorithmExtendedTests
             {
                 new(new Point3(0, 0, 0), new Dimensions(5, 5, 5), 0, 0, 0, 0)
             };
-
+        var placedBoxes = new List<PlacedBox>();
 
 
         // Act
-        var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
+        var checkResult = _checker.Execute(binType, item, subBinList[0],placedBoxes, out var placementResult);
         placementResult.Should().NotBeNull();
         var result = _algorithm.Execute(subBinList, placementResult);
 
@@ -131,9 +132,10 @@ public class SubBinUpdatingAlgorithmExtendedTests
 
         var item1 = new Item(new Dimensions(2, 2, 2));
         var item2 = new Item(new Dimensions(3, 3, 3));
+        var placedBoxes = new List<PlacedBox>();
 
         // --- مرحله ۱ ---
-        var checkResult = _checker.Execute(binType, item1, subBinList[0], out var placementResult);
+        var checkResult = _checker.Execute(binType, item1, subBinList[0],placedBoxes, out var placementResult);
         placementResult.Should().NotBeNull();
         subBinList = _algorithm.Execute(subBinList, placementResult);
 
@@ -147,7 +149,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
 
 
         // --- مرحله ۲ ---
-        var checkResult2 = _checker.Execute(binType, item2, subBinList[0], out var placementResult2);
+        var checkResult2 = _checker.Execute(binType, item2, subBinList[0], [placementResult.PlacedBox], out var placementResult2);
         placementResult.Should().NotBeNull();
         var resultAfterSecond = _algorithm.Execute(subBinList, placementResult2);
 
@@ -238,8 +240,9 @@ public class SubBinUpdatingAlgorithmExtendedTests
         {
             new(new Point3(0, 0, 0), new Dimensions(10, 10, 10),0,0,0,0)
         };
+        var placedBoxes = new List<PlacedBox>();
 
-        var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
+        var checkResult = _checker.Execute(binType, item, subBinList[0], placedBoxes, out var placementResult);
         placementResult.Should().NotBeNull();
         var result = _algorithm.Execute(subBinList, placementResult);
 
@@ -321,13 +324,16 @@ public class SubBinUpdatingAlgorithmExtendedTests
             new Item(new Dimensions(6, 5, 5)),
             new Item(new Dimensions(2, 2, 2))
         };
+        var placedBoxes = new List<PlacedBox>();
 
         foreach (var item in items)
         {
 
-            var checkResult = _checker.Execute(binType, item, subBinList[0], out var placementResult);
+            var checkResult = _checker.Execute(binType, item, subBinList[0],placedBoxes, out var placementResult);
             placementResult.Should().NotBeNull();
+            placedBoxes.Add(placementResult.PlacedBox);
             subBinList = _algorithm.Execute(subBinList, placementResult);
+
         }
 
         subBinList.Should().NotBeEmpty();
@@ -341,7 +347,7 @@ public class SubBinUpdatingAlgorithmExtendedTests
         var method = typeof(SubBinUpdatingAlgorithm)
             .GetMethod("HasOverlap", BindingFlags.NonPublic | BindingFlags.Static)!;
 
-        return (bool)method.Invoke(null, new object[] { sb, box })!;
+        return (bool)method.Invoke(null, [sb, box])!;
     }
 
     private static bool InvokeIsContained(SubBin a, SubBin b)
@@ -349,6 +355,6 @@ public class SubBinUpdatingAlgorithmExtendedTests
         var method = typeof(SubBinUpdatingAlgorithm)
             .GetMethod("IsContained", BindingFlags.NonPublic | BindingFlags.Static)!;
 
-        return (bool)method.Invoke(null, new object[] { a, b })!;
+        return (bool)method.Invoke(null, [a, b])!;
     }
 }
